@@ -29,11 +29,11 @@ jobs:
           dotnet-version: 6.x
 
       - name: Build
-        run: dotnet build TheOtherRoles/TheOtherRoles.csproj --configuration Release
+        run: dotnet build BetterOtherRoles/BetterOtherRoles.csproj --configuration Release
 
-      - name: Upload TheOtherRoles
+      - name: Upload BetterOtherRoles
         uses: actions/upload-artifact@v2
         with:
-          name: TheOtherRoles.dll
-          path: TheOtherRoles/bin/Release/net6.0/TheOtherRoles.dll
+          name: BetterOtherRoles.dll
+          path: BetterOtherRoles/bin/Release/net6.0/TheOtherRoles.dll
 
