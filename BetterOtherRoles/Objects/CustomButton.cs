@@ -5,7 +5,7 @@ using BetterOtherRoles.Players;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static BetterOtherRoles.TheOtherRoles;
+using static BetterOtherRoles.BetterOtherRoles;
 
 namespace BetterOtherRoles.Objects {
     public class CustomButton {

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using BetterOtherRoles.Utilities;
 using UnityEngine;
-using static BetterOtherRoles.TheOtherRoles;
+using static BetterOtherRoles.BetterOtherRoles;
 
 namespace BetterOtherRoles.Objects {
     class Bloodytrail {

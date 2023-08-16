@@ -1,6 +1,6 @@
 using HarmonyLib;
 using Hazel;
-using static BetterOtherRoles.TheOtherRoles;
+using static BetterOtherRoles.BetterOtherRoles;
 using static BetterOtherRoles.HudManagerStartPatch;
 using static BetterOtherRoles.GameHistory;
 using static BetterOtherRoles.TORMapOptions;
@@ -64,6 +64,8 @@ namespace BetterOtherRoles
         Ninja,
         Thief,
         Bomber,
+        Fallen,
+        Undertaker,
         Crewmate,
         Impostor,
         // Modifier ---
@@ -149,6 +151,8 @@ namespace BetterOtherRoles
         PlaceBomb,
         DefuseBomb,
         ShareRoom,
+        UndertakerDragBody,
+        UndertakerDropBody,
 
         // Gamemode
         SetGuesserGm,
@@ -367,6 +371,9 @@ namespace BetterOtherRoles
                         break;
                     case RoleId.Bomber:
                         Bomber.bomber = player;
+                        break;
+                    case RoleId.Undertaker:
+                        Undertaker.Player = player;
                         break;
                     }
         }
@@ -1053,6 +1060,7 @@ namespace BetterOtherRoles
             if (target == Cleaner.cleaner) Cleaner.cleaner = thief;
             if (target == Warlock.warlock) Warlock.warlock = thief;
             if (target == BountyHunter.bountyHunter) BountyHunter.bountyHunter = thief;
+            if (target == Undertaker.Player) Undertaker.Player = thief;
             if (target == Witch.witch) {
                 Witch.witch = thief;
                 if (MeetingHud.Instance) 
@@ -1072,6 +1080,13 @@ namespace BetterOtherRoles
             if (Thief.thief == PlayerControl.LocalPlayer) CustomButton.ResetAllCooldowns();
             Thief.clearAndReload();
             Thief.formerThief = thief;  // After clearAndReload, else it would get reset...
+            if (!CustomOptionHolder.StolenPlayerKeepsHisTeam.getBool())
+            {
+                Fallen.ClearAndReload();
+                Fallen.Player = target;
+                RoleManager.Instance.SetRole(target, RoleTypes.Crewmate);
+                Fallen.Player.clearAllTasks();
+            }
         }
         
         public static void setTrap(byte[] buff) {
@@ -1483,6 +1498,16 @@ namespace BetterOtherRoles
                     byte roomPlayer = reader.ReadByte();
                     byte roomId = reader.ReadByte();
                     RPCProcedure.shareRoom(roomPlayer, roomId);
+                    break;
+                case (byte)CustomRPC.UndertakerDragBody:
+                    var bodyId = reader.ReadByte();
+                    Undertaker.DragBody(bodyId);
+                    break;
+                case (byte)CustomRPC.UndertakerDropBody:
+                    var x = reader.ReadSingle();
+                    var y = reader.ReadSingle();
+                    var z = reader.ReadSingle();
+                    Undertaker.DropBody(new Vector3(x, y, z));
                     break;
             }
         }

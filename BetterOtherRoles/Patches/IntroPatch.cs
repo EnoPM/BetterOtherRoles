@@ -1,6 +1,6 @@
 using HarmonyLib;
 using System;
-using static BetterOtherRoles.TheOtherRoles;
+using static BetterOtherRoles.BetterOtherRoles;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;

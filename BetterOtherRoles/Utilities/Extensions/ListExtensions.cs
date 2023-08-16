@@ -20,13 +20,13 @@ public static class ListExtensions
 
     public static T PickOneRandom<T>(this List<T> list)
     {
-        var toRemove = list[TheOtherRoles.Rnd.Next(0, list.Count)];
+        var toRemove = list[BetterOtherRoles.Rnd.Next(0, list.Count)];
         list.Remove(toRemove);
         return toRemove;
     }
 
     public static T GetOneRandom<T>(this List<T> list)
     {
-        return list[TheOtherRoles.Rnd.Next(0, list.Count)];
+        return list[BetterOtherRoles.Rnd.Next(0, list.Count)];
     }
 }

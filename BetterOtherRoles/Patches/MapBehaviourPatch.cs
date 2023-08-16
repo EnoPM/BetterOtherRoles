@@ -3,6 +3,7 @@ using Reactor.Utilities.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BetterOtherRoles.Modules;
 using BetterOtherRoles.Objects;
 using BetterOtherRoles.Players;
 using BetterOtherRoles.Utilities;

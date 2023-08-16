@@ -1,6 +1,6 @@
   
 using HarmonyLib;
-using static BetterOtherRoles.TheOtherRoles;
+using static BetterOtherRoles.BetterOtherRoles;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
@@ -99,6 +99,7 @@ namespace BetterOtherRoles.Patches {
             if (Lawyer.lawyer != null) notWinners.Add(Lawyer.lawyer);
             if (Pursuer.pursuer != null) notWinners.Add(Pursuer.pursuer);
             if (Thief.thief != null) notWinners.Add(Thief.thief);
+            if (Fallen.Player != null) notWinners.Add(Fallen.Player);
 
             notWinners.AddRange(Jackal.formerJackals);
 

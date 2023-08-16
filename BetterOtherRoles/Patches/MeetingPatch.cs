@@ -2,7 +2,7 @@ using HarmonyLib;
 using Hazel;
 using System.Collections.Generic;
 using System.Linq;
-using static BetterOtherRoles.TheOtherRoles;
+using static BetterOtherRoles.BetterOtherRoles;
 using static BetterOtherRoles.TORMapOptions;
 using BetterOtherRoles.Objects;
 using System;

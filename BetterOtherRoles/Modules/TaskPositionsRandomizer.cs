@@ -54,7 +54,7 @@ public static class TaskPositionsRandomizer
             .Select(o => o.GetComponent<SpriteRenderer>().sprite)
             .ToList();
         var randomizedList = wires
-            .OrderBy(_ => TheOtherRoles.Rnd.Next())
+            .OrderBy(_ => BetterOtherRoles.Rnd.Next())
             .ToList();
         for (var i = 0; i < randomizedList.Count; i++)
         {
@@ -69,7 +69,7 @@ public static class TaskPositionsRandomizer
 
     private static void MoveUpload(Console upload, List<Console> downloads)
     {
-        if (TheOtherRoles.Rnd.Next(downloads.Count + 1) == 1) return;
+        if (BetterOtherRoles.Rnd.Next(downloads.Count + 1) == 1) return;
         var download = downloads.GetOneRandom();
         var uploadObj = upload.gameObject;
         var downloadObj = download.gameObject;

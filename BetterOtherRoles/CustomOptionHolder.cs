@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using BetterOtherRoles.Modules;
 using UnityEngine;
-using static BetterOtherRoles.TheOtherRoles;
-using Types = BetterOtherRoles.CustomOption.CustomOptionType;
+using static BetterOtherRoles.BetterOtherRoles;
+using Types = BetterOtherRoles.Modules.CustomOption.CustomOptionType;
 
 namespace BetterOtherRoles {
     public class CustomOptionHolder {
@@ -238,6 +239,7 @@ namespace BetterOtherRoles {
         public static CustomOption thiefCanUseVents;
         public static CustomOption thiefCanKillSheriff;
         public static CustomOption thiefCanStealWithGuess;
+        public static CustomOption StolenPlayerKeepsHisTeam;
 
 
         public static CustomOption trapperSpawnRate;
@@ -256,6 +258,10 @@ namespace BetterOtherRoles {
         public static CustomOption bomberDefuseDuration;
         public static CustomOption bomberBombCooldown;
         public static CustomOption bomberBombActiveAfter;
+        
+        public static CustomOption UndertakerSpawnRate;
+        public static CustomOption UndertakerSpeedModifier;
+        public static CustomOption UndertakerDisableVent;
 
         public static CustomOption modifiersAreHidden;
 
@@ -468,6 +474,11 @@ namespace BetterOtherRoles {
             bomberDefuseDuration = CustomOption.Create(464, Types.Impostor, "Bomb Defuse Duration", 3f, 0.5f, 30f, 0.5f, bomberSpawnRate);
             bomberBombCooldown = CustomOption.Create(465, Types.Impostor, "Bomb Cooldown", 15f, 2.5f, 30f, 2.5f, bomberSpawnRate);
             bomberBombActiveAfter = CustomOption.Create(466, Types.Impostor, "Bomb Is Active After", 3f, 0.5f, 15f, 0.5f, bomberSpawnRate);
+            
+            UndertakerSpawnRate = CustomOption.Create(5009, Types.Impostor, cs(Undertaker.Color, "Undertaker"), rates, null, true);
+            UndertakerSpeedModifier = CustomOption.Create(5010, Types.Impostor,
+                "Speed modifier while dragging", 0f, -100f, 100f, 5f, UndertakerSpawnRate);
+            UndertakerDisableVent = CustomOption.Create(5011, Types.Impostor, "Disable vent while dragging", true, UndertakerSpawnRate);
 
             guesserSpawnRate = CustomOption.Create(310, Types.Neutral, cs(Guesser.color, "Guesser"), rates, null, true);
             guesserIsImpGuesserRate = CustomOption.Create(311, Types.Neutral, "Chance That The Guesser Is An Impostor", rates, guesserSpawnRate);
@@ -628,6 +639,7 @@ namespace BetterOtherRoles {
             thiefHasImpVision = CustomOption.Create(403, Types.Neutral, "Thief Has Impostor Vision", true, thiefSpawnRate);
             thiefCanUseVents = CustomOption.Create(404, Types.Neutral, "Thief Can Use Vents", true, thiefSpawnRate);
             thiefCanStealWithGuess = CustomOption.Create(405, Types.Neutral, "Thief Can Guess To Steal A Role (If Guesser)", false, thiefSpawnRate);
+            StolenPlayerKeepsHisTeam = CustomOption.Create(5008, Types.Neutral, "The stolen player keeps his team", false, thiefSpawnRate);
 
             trapperSpawnRate = CustomOption.Create(410, Types.Crewmate, cs(Trapper.color, "Trapper"), rates, null, true);
             trapperCooldown = CustomOption.Create(420, Types.Crewmate, "Trapper Cooldown", 30f, 5f, 120f, 5f, trapperSpawnRate);

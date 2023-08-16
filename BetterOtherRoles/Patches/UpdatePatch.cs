@@ -1,7 +1,7 @@
 using HarmonyLib;
 using System;
 using UnityEngine;
-using static BetterOtherRoles.TheOtherRoles;
+using static BetterOtherRoles.BetterOtherRoles;
 using BetterOtherRoles.Objects;
 using System.Collections.Generic;
 using System.Linq;
@@ -281,6 +281,16 @@ namespace BetterOtherRoles.Patches {
                 __instance.KillButton.Hide();
                 return;
             }
+            
+            if(Undertaker.Player && CachedPlayer.LocalPlayer.PlayerControl == Undertaker.Player && Undertaker.DraggedBody != null) 
+            {
+                __instance.KillButton.graphic.color = Palette.DisabledClear;
+                __instance.KillButton.buttonLabelText.color = Palette.DisabledClear;
+                __instance.KillButton.cooldownTimerText.color = Palette.DisabledClear;
+                __instance.KillButton.graphic.material.SetFloat(Shader.PropertyToID("_Desat"), 1f);
+                return;
+            }
+            
             bool enabled = true;
             if (Vampire.vampire != null && Vampire.vampire == CachedPlayer.LocalPlayer.PlayerControl)
                 enabled = false;

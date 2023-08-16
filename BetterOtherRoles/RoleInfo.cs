@@ -2,7 +2,7 @@ using System.Linq;
 using System;
 using System.Collections.Generic;
 using BetterOtherRoles.Players;
-using static BetterOtherRoles.TheOtherRoles;
+using static BetterOtherRoles.BetterOtherRoles;
 using UnityEngine;
 using BetterOtherRoles.Utilities;
 using BetterOtherRoles.CustomGameModes;
@@ -73,7 +73,10 @@ namespace BetterOtherRoles
         public static RoleInfo ninja = new RoleInfo("Ninja", Ninja.color, "Surprise and assassinate your foes", "Surprise and assassinate your foes", RoleId.Ninja);
         public static RoleInfo thief = new RoleInfo("Thief", Thief.color, "Steal a killers role by killing them", "Steal a killers role", RoleId.Thief, true);
         public static RoleInfo bomber = new RoleInfo("Bomber", Bomber.color, "Bomb all Crewmates", "Bomb all Crewmates", RoleId.Bomber);
-
+        public static RoleInfo fallen = new RoleInfo("Fallen", Fallen.Color, "You are fallen",
+            "A thief stole your role", RoleId.Fallen, true);
+        public static RoleInfo undertaker = new RoleInfo("Undertaker", Undertaker.Color, "Drag bodies to hide them", "Drag bodies to hide them", RoleId.Undertaker);
+        
         public static RoleInfo hunter = new RoleInfo("Hunter", Palette.ImpostorRed, Helpers.cs(Palette.ImpostorRed, "Seek and kill everyone"), "Seek and kill everyone", RoleId.Impostor);
         public static RoleInfo hunted = new RoleInfo("Hunted", Color.white, "Hide", "Hide", RoleId.Crewmate);
 
@@ -198,6 +201,7 @@ namespace BetterOtherRoles
             if (p == Witch.witch) infos.Add(witch);
             if (p == Ninja.ninja) infos.Add(ninja);
             if (p == Bomber.bomber) infos.Add(bomber);
+            if (p == Undertaker.Player) infos.Add(undertaker);
             if (p == Detective.detective) infos.Add(detective);
             if (p == TimeMaster.timeMaster) infos.Add(timeMaster);
             if (p == Medic.medic) infos.Add(medic);
@@ -221,6 +225,7 @@ namespace BetterOtherRoles
             if (p == Trapper.trapper) infos.Add(trapper);
             if (p == Pursuer.pursuer) infos.Add(pursuer);
             if (p == Thief.thief) infos.Add(thief);
+            if (p == Fallen.Player) infos.Add(fallen);
 
             // Default roles (just impostor, just crewmate, or hunter / hunted for hide n seek
             if (infos.Count == count) {

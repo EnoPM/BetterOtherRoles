@@ -5,7 +5,7 @@ using UnityEngine;
 using BetterOtherRoles;
 using BetterOtherRoles.Patches;
 using BetterOtherRoles.Players;
-using static BetterOtherRoles.TheOtherRoles;
+using static BetterOtherRoles.BetterOtherRoles;
 using System.Linq;
 using InnerNet;
 using BetterOtherRoles.Modules;
@@ -47,9 +47,9 @@ namespace BetterOtherRoles.Utilities {
         }
 
         public static void Update() {
-            if (!isEnabled || eventQueue == null || AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started || TheOtherRoles.Rnd == null || IntroCutscene.Instance) return;
+            if (!isEnabled || eventQueue == null || AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started || BetterOtherRoles.Rnd == null || IntroCutscene.Instance) return;
             foreach (EventTypes curEvent in eventQueue.ToArray()) {
-                if (TheOtherRoles.Rnd.NextSingle() < eventProbabilities[(int)curEvent]) {
+                if (BetterOtherRoles.Rnd.NextSingle() < eventProbabilities[(int)curEvent]) {
                     eventQueue.Remove(curEvent);
                     StartEvent(curEvent);
                 }
@@ -123,12 +123,12 @@ namespace BetterOtherRoles.Utilities {
                     })));
                     break;
                 case EventTypes.Communication:
-                    int index = TheOtherRoles.Rnd.Next(relevantPlayers.Count);
+                    int index = BetterOtherRoles.Rnd.Next(relevantPlayers.Count);
                     CachedPlayer firstPlayer = relevantPlayers[index];
                     relevantPlayers.RemoveAt(index);
                     string msg = firstPlayer.Data.PlayerName + " ";
                     foreach (CachedPlayer pc in relevantPlayers.ToArray()) {
-                        if (TheOtherRoles.Rnd.NextSingle() < 1f / relevantPlayers.Count) {
+                        if (BetterOtherRoles.Rnd.NextSingle() < 1f / relevantPlayers.Count) {
                             relevantPlayers.Remove(pc);
                             msg += pc.Data.PlayerName + " ";
                         }
@@ -136,7 +136,7 @@ namespace BetterOtherRoles.Utilities {
                     RoomTracker tracker = FastDestroyableSingleton<HudManager>.Instance.roomTracker;
                     string lastRoom = "";
                     try { lastRoom = FastDestroyableSingleton<TranslationController>.Instance.GetString(tracker.LastRoom.RoomId); } catch { }
-                    msg += lastRoom != ""? lastRoom : (TheOtherRoles.Rnd.Next(2) > 0 ? "sus" : "safe");
+                    msg += lastRoom != ""? lastRoom : (BetterOtherRoles.Rnd.Next(2) > 0 ? "sus" : "safe");
 
                     FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(relevantPlayers[Rnd.Next(relevantPlayers.Count)], $"{msg}");
                     break;

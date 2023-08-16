@@ -3,7 +3,7 @@ using Hazel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static BetterOtherRoles.TheOtherRoles;
+using static BetterOtherRoles.BetterOtherRoles;
 using static BetterOtherRoles.GameHistory;
 using BetterOtherRoles.Objects;
 using BetterOtherRoles.Players;
@@ -13,6 +13,7 @@ using BetterOtherRoles.CustomGameModes;
 using static UnityEngine.GraphicsBuffer;
 using AmongUs.GameOptions;
 using BetterOtherRoles.Modules;
+using InnerNet;
 using Sentry.Internal.Extensions;
 
 namespace BetterOtherRoles.Patches {
@@ -270,6 +271,90 @@ namespace BetterOtherRoles.Patches {
             if (Jackal.wasTeamRed) untargetables.Add(Jackal.jackal);
             Eraser.currentTarget = setTarget(onlyCrewmates: !Eraser.canEraseAnyone, untargetablePlayers: Eraser.canEraseAnyone ? new List<PlayerControl>() : untargetables);
             setPlayerOutline(Eraser.currentTarget, Eraser.color);
+        }
+
+        private static void UndertakerSetTarget()
+        {
+            if (Undertaker.Player == null || Undertaker.Player != CachedPlayer.LocalPlayer.PlayerControl) return;
+            if (Undertaker.TargetBody != null)
+            {
+                Helpers.SetDeadBodyOutline(Undertaker.TargetBody, null);
+            }
+
+            if (Undertaker.DraggedBody == null)
+            {
+                Undertaker.TargetBody = Helpers.setDeadTarget(2f / 3f);
+                Helpers.SetDeadBodyOutline(Undertaker.TargetBody, Undertaker.Color);
+            }
+        }
+
+        private static void UndertakerCanDropTarget()
+        {
+            if (Undertaker.Player == null || Undertaker.Player != CachedPlayer.LocalPlayer.PlayerControl) return;
+            var component = Undertaker.DraggedBody;
+            
+            Undertaker.CanDropBody = false;
+            
+            if (component == null) return;
+            
+            if (component.enabled && Vector2.Distance(Undertaker.Player.GetTruePosition(), component.TruePosition) <= Undertaker.Player.MaxReportDistance && !PhysicsHelpers.AnythingBetween(CachedPlayer.LocalPlayer.PlayerControl.GetTruePosition(), component.TruePosition, Constants.ShipAndObjectsMask, false))
+            {
+                Undertaker.CanDropBody = true;
+            }
+        }
+
+        private static void UndertakerUpdate()
+        {
+            var undertakerPlayer = Undertaker.Player;
+            var bodyComponent = Undertaker.DraggedBody;
+
+            if (undertakerPlayer == null || bodyComponent == null) return;
+
+            var undertakerPos = undertakerPlayer.transform.position;
+            var bodyLastPos = bodyComponent.transform.position;
+
+            var direction = undertakerPlayer.gameObject.GetComponent<Rigidbody2D>().velocity.normalized;
+            
+            var newBodyPos = direction == Vector2.zero
+                ? bodyLastPos
+                : undertakerPos - (Vector3)(direction * (2f / 3f)) + (Vector3)bodyComponent.myCollider.offset;
+            newBodyPos.z = undertakerPos.z + 0.005f;
+            
+            bodyComponent.transform.position.Set(newBodyPos.x, newBodyPos.y, newBodyPos.z);
+
+            if (direction == Direction.right) newBodyPos += new Vector3(0.3f, 0, 0);
+            if (direction == Direction.up) newBodyPos += new Vector3(0.15f, 0.2f, 0);
+            if (direction == Direction.down) newBodyPos += new Vector3(0.15f, -0.2f, 0);
+            if (direction == Direction.upleft) newBodyPos += new Vector3(0, 0.1f, 0);
+            if (direction == Direction.upright) newBodyPos += new Vector3(0.3f, 0.1f, 0);
+            if (direction == Direction.downright) newBodyPos += new Vector3(0.3f, -0.2f, 0);
+            if (direction == Direction.downleft) newBodyPos += new Vector3(0f, -0.2f, 0);
+
+            if (PhysicsHelpers.AnythingBetween(
+                    undertakerPlayer.GetTruePosition(),
+                    newBodyPos,
+                    Constants.ShipAndObjectsMask,
+                    false
+                ))
+            {
+                newBodyPos = new Vector3(undertakerPos.x, undertakerPos.y, bodyLastPos.z);
+            }
+
+            if (undertakerPlayer.Data.IsDead)
+            {
+                if (undertakerPlayer.AmOwner)
+                {
+                    Undertaker.RpcDropBody(newBodyPos);
+                }
+
+                return;
+            }
+
+            bodyComponent.transform.position = newBodyPos;
+
+            if (!undertakerPlayer.AmOwner) return;
+
+            Helpers.SetDeadBodyOutline(bodyComponent, Color.green);
         }
 
         static void deputyUpdate()
@@ -655,7 +740,7 @@ namespace BetterOtherRoles.Patches {
                 foreach (PlayerControl p in CachedPlayer.AllPlayers) {
                     if (!p.Data.IsDead && !p.Data.Disconnected && p != p.Data.Role.IsImpostor && p != Spy.spy && (p != Sidekick.sidekick || !Sidekick.wasTeamRed) && (p != Jackal.jackal || !Jackal.wasTeamRed) && (p != Mini.mini || Mini.isGrownUp()) && (Lovers.getPartner(BountyHunter.bountyHunter) == null || p != Lovers.getPartner(BountyHunter.bountyHunter))) possibleTargets.Add(p);
                 }
-                BountyHunter.bounty = possibleTargets[TheOtherRoles.Rnd.Next(0, possibleTargets.Count)];
+                BountyHunter.bounty = possibleTargets[BetterOtherRoles.Rnd.Next(0, possibleTargets.Count)];
                 if (BountyHunter.bounty == null) return;
 
                 // Ghost Info
@@ -845,6 +930,7 @@ namespace BetterOtherRoles.Patches {
                     Bait.active.Remove(entry.Key);
                     if (entry.Key.killerIfExisting != null && entry.Key.killerIfExisting.PlayerId == CachedPlayer.LocalPlayer.PlayerId) {
                         Helpers.handleVampireBiteOnBodyReport(); // Manually call Vampire handling, since the CmdReportDeadBody Prefix won't be called
+                        Helpers.HandleUndertakerDropOnBodyReport();
                         RPCProcedure.uncheckedCmdReportDeadBody(entry.Key.killerIfExisting.PlayerId, entry.Key.player.PlayerId);
 
                         MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UncheckedCmdReportDeadBody, Hazel.SendOption.Reliable, -1);
@@ -999,7 +1085,12 @@ namespace BetterOtherRoles.Patches {
                 // Vampire
                 vampireSetTarget();
                 Garlic.UpdateAll();
+                // Trapper
                 Trap.Update();
+                // Undertaker
+                UndertakerSetTarget();
+                UndertakerCanDropTarget();
+                UndertakerUpdate();
                 // Eraser
                 eraserSetTarget();
                 // Engineer
@@ -1088,6 +1179,7 @@ namespace BetterOtherRoles.Patches {
         public static bool Prefix(PlayerControl __instance) {
             if (HideNSeek.isHideNSeekGM) return false;
             Helpers.handleVampireBiteOnBodyReport();
+            Helpers.HandleUndertakerDropOnBodyReport();
             return true;
         }
     }
@@ -1402,18 +1494,40 @@ namespace BetterOtherRoles.Patches {
     }
 
     [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.FixedUpdate))]
-    public static class PlayerPhysicsFixedUpdate {
+    public static class PlayerPhysicsFixedUpdate
+    {
         public static void Postfix(PlayerPhysics __instance)
         {
-            bool shouldInvert = (Invert.invert.FindAll(x => x.PlayerId == CachedPlayer.LocalPlayer.PlayerId).Count > 0 && Invert.meetings > 0) ^ EventUtility.eventInvert;  // xor. if already invert, eventInvert will turn it off for 10s
-            if (__instance.AmOwner &&
+            if (!__instance.AmOwner || !AmongUsClient.Instance ||
+                AmongUsClient.Instance.GameState != InnerNetClient.GameStates.Started ||
+                CachedPlayer.LocalPlayer.Data.IsDead || !GameData.Instance || !__instance.myPlayer.CanMove) return;
+
+            UpdateInvert(__instance);
+            UpdateUndertakerPhysics(__instance);
+        }
+
+        private static void UpdateUndertakerPhysics(PlayerPhysics playerPhysics)
+        {
+            if (Undertaker.Player != CachedPlayer.LocalPlayer.PlayerControl || Undertaker.DraggedBody == null) return;
+            playerPhysics.body.velocity *= 1f + CustomOptionHolder.UndertakerSpeedModifier.getFloat() / 100f;
+        }
+
+        private static void UpdateInvert(PlayerPhysics playerPhysics)
+        {
+            var shouldInvert =
+                (Invert.invert.FindAll(x => x.PlayerId == CachedPlayer.LocalPlayer.PlayerId).Count > 0 &&
+                 Invert.meetings > 0) ^
+                EventUtility.eventInvert; // xor. if already invert, eventInvert will turn it off for 10s
+            if (playerPhysics.AmOwner &&
                 AmongUsClient.Instance &&
                 AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started &&
-                !CachedPlayer.LocalPlayer.Data.IsDead && 
-                shouldInvert && 
-                GameData.Instance && 
-                __instance.myPlayer.CanMove)  
-                __instance.body.velocity *= -1;
+                !CachedPlayer.LocalPlayer.Data.IsDead &&
+                shouldInvert &&
+                GameData.Instance &&
+                playerPhysics.myPlayer.CanMove)
+            {
+                playerPhysics.body.velocity *= -1;
+            }
         }
     }
 

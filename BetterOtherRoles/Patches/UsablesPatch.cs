@@ -3,7 +3,7 @@ using System;
 using Hazel;
 using UnityEngine;
 using System.Linq;
-using static BetterOtherRoles.TheOtherRoles;
+using static BetterOtherRoles.BetterOtherRoles;
 using static BetterOtherRoles.GameHistory;
 using static BetterOtherRoles.TORMapOptions;
 using System.Collections.Generic;
@@ -106,9 +106,13 @@ namespace BetterOtherRoles.Patches {
             }
             if (Trapper.playersOnMap.Contains(CachedPlayer.LocalPlayer.PlayerControl)) return false;
 
-            bool canUse;
-            bool couldUse;
-            __instance.CanUse(CachedPlayer.LocalPlayer.Data, out canUse, out couldUse);
+            if (Undertaker.Player == CachedPlayer.LocalPlayer.PlayerControl &&
+                CustomOptionHolder.UndertakerDisableVent.getBool() && Undertaker.DraggedBody != null)
+            {
+                return false;
+            }
+
+            __instance.CanUse(CachedPlayer.LocalPlayer.Data, out var canUse, out _);
             bool canMoveInVents = CachedPlayer.LocalPlayer.PlayerControl != Spy.spy && !Trapper.playersOnMap.Contains(CachedPlayer.LocalPlayer.PlayerControl);
             if (!canUse) return false; // No need to execute the native method as using is disallowed anyways
 

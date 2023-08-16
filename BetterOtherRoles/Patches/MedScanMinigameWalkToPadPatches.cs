@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Linq;
 using BepInEx.Unity.IL2CPP.Utils;
+using BetterOtherRoles.Modules;
 using HarmonyLib;
 using UnityEngine;
 

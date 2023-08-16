@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using BetterOtherRoles.Players;
 using BetterOtherRoles.Utilities;
-using static BetterOtherRoles.TheOtherRoles;
+using static BetterOtherRoles.BetterOtherRoles;
 
 namespace BetterOtherRoles.Objects {
 
@@ -100,7 +100,7 @@ namespace BetterOtherRoles.Objects {
             animationFgRenderer.material = FastDestroyableSingleton<HatManager>.Instance.PlayerMaterial;
 
             // Only render the inactive portals for the Portalmaker
-            bool playerIsPortalmaker = CachedPlayer.LocalPlayer.PlayerControl == TheOtherRoles.Portalmaker.portalmaker;
+            bool playerIsPortalmaker = CachedPlayer.LocalPlayer.PlayerControl == BetterOtherRoles.Portalmaker.portalmaker;
             portalGameObject.SetActive(playerIsPortalmaker);
             portalFgAnimationGameObject.SetActive(true);
 

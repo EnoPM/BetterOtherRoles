@@ -23,8 +23,8 @@ namespace BetterOtherRoles.Objects
         private static Sprite _footprintSprite;
         private static Sprite FootprintSprite => _footprintSprite ??= Helpers.loadSpriteFromResources("BetterOtherRoles.Resources.Footprint.png", 600f);
 
-        private static bool AnonymousFootprints => TheOtherRoles.Detective.anonymousFootprints;
-        private static float FootprintDuration => TheOtherRoles.Detective.footprintDuration;
+        private static bool AnonymousFootprints => BetterOtherRoles.Detective.anonymousFootprints;
+        private static float FootprintDuration => BetterOtherRoles.Detective.footprintDuration;
         
         private class Footprint
         {

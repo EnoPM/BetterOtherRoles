@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using HarmonyLib;
 using BetterOtherRoles.Utilities;
-using static BetterOtherRoles.TheOtherRoles;
+using static BetterOtherRoles.BetterOtherRoles;
 using UnityEngine;
 using BetterOtherRoles.CustomGameModes;
 using AmongUs.GameOptions;
