@@ -11,6 +11,7 @@ using BetterOtherRoles.Utilities;
 using AmongUs.Data;
 using Assets.InnerNet;
 using System.Linq;
+using BetterOtherRoles.UI;
 
 namespace BetterOtherRoles.Modules {
     [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]
@@ -55,71 +56,7 @@ namespace BetterOtherRoles.Modules {
             passiveCreditsButton.OnClick = new Button.ButtonClickedEvent();
 
             passiveCreditsButton.OnClick.AddListener((System.Action)delegate {
-                // do stuff
-                if (popUp != null) Object.Destroy(popUp);
-                var popUpTemplate = Object.FindObjectOfType<AnnouncementPopUp>(true);
-                if (popUpTemplate == null) {
-                    BetterOtherRolesPlugin.Logger.LogError("couldnt show credits, popUp is null");
-                    return;
-                }
-                popUp = Object.Instantiate(popUpTemplate);
-
-                popUp.gameObject.SetActive(true);
-                string creditsString = @$"<align=""center""><b>Github Contributors:</b>
-Alex2911    amsyarasyiq    MaximeGillot
-Psynomit    probablyadnf    JustASysAdmin
-
-[https://discord.gg/77RkMJHWsM]Discord[] Moderators:
-Streamblox    Draco Cordraconis
-Thanks to all our discord helpers!
-
-Thanks to miniduikboot & GD for hosting modded servers
-
-";
-                creditsString += $@"<size=60%> Other Credits & Resources:
-OxygenFilter - For the versions v2.3.0 to v2.6.1, we were using the OxygenFilter for automatic deobfuscation
-Reactor - The framework used for all versions before v2.0.0, and again since 4.2.0
-BepInEx - Used to hook game functions
-Essentials - Custom game options by DorCoMaNdO:
-Before v1.6: We used the default Essentials release
-v1.6-v1.8: We slightly changed the default Essentials.
-v2.0.0 and later: As we were not using Reactor anymore, we are using our own implementation, inspired by the one from DorCoMaNdO
-Jackal and Sidekick - Original idea for the Jackal and Sidekick came from Dhalucard
-Among-Us-Love-Couple-Mod - Idea for the Lovers modifier comes from Woodi-dev
-Jester - Idea for the Jester role came from Maartii
-ExtraRolesAmongUs - Idea for the Engineer and Medic role came from NotHunter101. Also some code snippets from their implementation were used.
-Among-Us-Sheriff-Mod - Idea for the Sheriff role came from Woodi-dev
-TooManyRolesMods - Idea for the Detective and Time Master roles comes from Hardel-DW. Also some code snippets from their implementation were used.
-TownOfUs - Idea for the Swapper, Shifter, Arsonist and a similar Mayor role came from Slushiegoose
-Ottomated - Idea for the Morphling, Snitch and Camouflager role came from Ottomated
-Crowded-Mod - Our implementation for 10+ player lobbies was inspired by the one from the Crowded Mod Team
-Goose-Goose-Duck - Idea for the Vulture role came from Slushiegoose
-TheEpicRoles - Idea for the first kill shield (partly) and the tabbed option menu (fully + some code), by LaicosVK DasMonschta Nova</size>";
-                creditsString += "</align>";
-
-                Assets.InnerNet.Announcement creditsAnnouncement = new() {
-                    Id = "torCredits",
-                    Language = 0,
-                    Number = 500,
-                    Title = "The Other Roles\nCredits & Resources",
-                    ShortTitle = "TOR Credits",
-                    SubTitle = "",
-                    PinState = false,
-                    Date = "01.07.2021",
-                    Text = creditsString,
-                };
-                __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>((p) => {
-                    if (p == 1) {
-                        var backup = DataManager.Player.Announcements.allAnnouncements;
-                        DataManager.Player.Announcements.allAnnouncements = new();
-                        popUp.Init(false);
-                        DataManager.Player.Announcements.SetAnnouncements(new Announcement[] { creditsAnnouncement });
-                        popUp.CreateAnnouncementList();
-                        popUp.UpdateAnnouncementText(creditsAnnouncement.Number);
-                        popUp.visibleAnnouncements._items[0].PassiveButton.OnClick.RemoveAllListeners();
-                        DataManager.Player.Announcements.allAnnouncements = backup;
-                    }
-                })));
+                UIManager.CreditsPanel?.Toggle();
             });
             
         }

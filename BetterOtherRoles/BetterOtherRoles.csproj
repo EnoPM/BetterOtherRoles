@@ -18,8 +18,13 @@
 		<PackageReference Include="AmongUs.GameLibs.Steam" Version="2023.7.11" />
         <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.670" />
 		<PackageReference Include="BepInEx.IL2CPP.MSBuild" Version="2.1.0-rc.1" />
-        <PackageReference Include="Reactor" Version="2.2.0-ci.235" />
     </ItemGroup>
+   
+	<ItemGroup>
+	  <Reference Include="UniverseLib.IL2CPP">
+	    <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us - BetterOtherRoles\BepInEx\plugins\BetterOtherRoles\UniverseLib.IL2CPP.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
     <Target Name="CopyPlugins" AfterTargets="AfterBuild">
         <Copy SourceFiles="$(TargetPath)" DestinationFolder="C:\Program Files (x86)\Steam\steamapps\common\Among Us - BetterOtherRoles\BepInEx\plugins\BetterOtherRoles" />
     </Target>

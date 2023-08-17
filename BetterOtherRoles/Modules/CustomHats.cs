@@ -184,7 +184,7 @@ namespace BetterOtherRoles.Modules {
 
         private static HatData CreateHatBehaviour(CustomHatLoader.CustomHatOnline chd, bool fromDisk = true) {
             if (fromDisk) {
-                string filePath = Path.GetDirectoryName(Application.dataPath) + @"\TheOtherHats\";
+                string filePath = Path.GetDirectoryName(Application.dataPath) + @"\BetterOtherHats\";
                 chd.resource = filePath + chd.resource;
                 if (chd.backresource != null)
                     chd.backresource = filePath + chd.backresource;
@@ -261,7 +261,7 @@ namespace BetterOtherRoles.Modules {
                 static void Prefix(HatParent __instance) {
                     if (DestroyableSingleton<TutorialManager>.InstanceExists) {
                         try {
-                            string filePath = Path.GetDirectoryName(Application.dataPath) + @"\TheOtherHats\Test";
+                            string filePath = Path.GetDirectoryName(Application.dataPath) + @"\BetterOtherHats\Test";
                             if (!Directory.Exists(filePath)) Directory.CreateDirectory(filePath);
                             DirectoryInfo d = new DirectoryInfo(filePath);
                             string[] filePaths = d.GetFiles("*.png").Select(x => x.FullName).ToArray(); // Getting Text files
@@ -287,7 +287,7 @@ namespace BetterOtherRoles.Modules {
                         __instance.Hat = hat;
                         __instance.hatDataAsset = __instance.Hat.CreateAddressableAsset();
 
-                        string filePath = Path.GetDirectoryName(Application.dataPath) + @"\TheOtherHats\Test";
+                        string filePath = Path.GetDirectoryName(Application.dataPath) + @"\BetterOtherHats\Test";
                         if (!Directory.Exists(filePath)) return true;
                         DirectoryInfo d = new DirectoryInfo(filePath);
                         string[] filePaths = d.GetFiles("*.png").Select(x => x.FullName).ToArray(); // Getting Test files
@@ -591,7 +591,7 @@ namespace BetterOtherRoles.Modules {
 
     public class CustomHatLoader {
         public static bool running = false;
-        private const string REPO = "https://raw.githubusercontent.com/Eisbison/TheOtherHats/master";
+        private const string REPO = "https://raw.githubusercontent.com/EnoPM/BetterOtherHats/master";
 
         public static List<CustomHatOnline> hatdetails = new List<CustomHatOnline>();
         private static Task hatFetchTask = null;
@@ -642,6 +642,7 @@ namespace BetterOtherRoles.Modules {
 
                 for (JToken current = jobj.First; current != null; current = current.Next) {
                     if (current.HasValues) {
+                        if (current["package"]?.ToString() == "Dingus" && !DevConfig.IsDingusRelease) continue;
                         CustomHatOnline info = new CustomHatOnline();
 
                         info.name = current["name"]?.ToString();
@@ -670,7 +671,7 @@ namespace BetterOtherRoles.Modules {
 
                 List<string> markedfordownload = new List<string>();
 
-                string filePath = Path.GetDirectoryName(Application.dataPath) + @"\TheOtherHats\";
+                string filePath = Path.GetDirectoryName(Application.dataPath) + @"\BetterOtherHats\";
                 if (!Directory.Exists(filePath)) Directory.CreateDirectory(filePath);
                 MD5 md5 = MD5.Create();
                 foreach (CustomHatOnline data in hatdatas) {

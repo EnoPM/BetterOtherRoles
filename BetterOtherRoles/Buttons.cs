@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using BetterOtherRoles.Players;
 using BetterOtherRoles.Utilities;
 using BetterOtherRoles.CustomGameModes;
+using BetterOtherRoles.Modules;
 
 namespace BetterOtherRoles
 {
@@ -77,6 +78,20 @@ namespace BetterOtherRoles
         public static TMPro.TMP_Text portalmakerButtonText1;
         public static TMPro.TMP_Text portalmakerButtonText2;
         public static TMPro.TMP_Text huntedShieldCountText;
+
+        static HudManagerStartPatch()
+        {
+            GameEvents.OnGameStarted += SetFirstCooldowns;
+        }
+
+        private static void SetFirstCooldowns()
+        {
+            vampireKillButton.Timer = vampireKillButton.MaxTimer;
+            ninjaButton.Timer = ninjaButton.MaxTimer;
+            witchSpellButton.Timer = witchSpellButton.MaxTimer;
+            arsonistButton.Timer = arsonistButton.MaxTimer;
+            warlockCurseButton.Timer = warlockCurseButton.MaxTimer;
+        }
 
         public static void setCustomButtonCooldowns() {
             if (!initialized) {
@@ -1744,7 +1759,7 @@ namespace BetterOtherRoles
             // Bomber button
             bomberButton = new CustomButton(
                 () => {
-                    if (Helpers.checkMuderAttempt(Bomber.bomber, Bomber.bomber) != MurderAttemptResult.BlankKill) {
+                    if (Helpers.checkMuderAttempt(Bomber.bomber, Bomber.bomber, showShieldAnimation: false) != MurderAttemptResult.BlankKill) {
                         var pos = CachedPlayer.LocalPlayer.transform.position;
                         byte[] buff = new byte[sizeof(float) * 2];
                         Buffer.BlockCopy(BitConverter.GetBytes(pos.x), 0, buff, 0 * sizeof(float), sizeof(float));

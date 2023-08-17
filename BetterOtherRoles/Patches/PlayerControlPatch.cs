@@ -738,7 +738,17 @@ namespace BetterOtherRoles.Patches {
                 BountyHunter.bountyUpdateTimer = BountyHunter.bountyDuration;
                 var possibleTargets = new List<PlayerControl>();
                 foreach (PlayerControl p in CachedPlayer.AllPlayers) {
-                    if (!p.Data.IsDead && !p.Data.Disconnected && p != p.Data.Role.IsImpostor && p != Spy.spy && (p != Sidekick.sidekick || !Sidekick.wasTeamRed) && (p != Jackal.jackal || !Jackal.wasTeamRed) && (p != Mini.mini || Mini.isGrownUp()) && (Lovers.getPartner(BountyHunter.bountyHunter) == null || p != Lovers.getPartner(BountyHunter.bountyHunter))) possibleTargets.Add(p);
+                    if (p.Data.IsDead || p.Data.Disconnected) continue;
+                    if (p.Data.Role.IsImpostor || p == Spy.spy) continue;
+                    if (FirstKillShield.Enabled && FirstKillShield.ShieldedPlayer == p) continue;
+                    if (Jackal.jackal == p && Jackal.wasTeamRed) continue;
+                    if (Sidekick.sidekick == p && Sidekick.wasTeamRed) continue;
+                    if (BountyHunter.bountyHunter.getPartner() == p) continue;
+                    if (p == Mini.mini && !Mini.isGrownUp()) continue;
+                    if (p == BountyHunter.bounty) continue;
+                    if (p.Data.PlayerName == FirstKillShield.FirstKilledPlayerName) continue;
+
+                    possibleTargets.Add(p);
                 }
                 BountyHunter.bounty = possibleTargets[BetterOtherRoles.Rnd.Next(0, possibleTargets.Count)];
                 if (BountyHunter.bounty == null) return;

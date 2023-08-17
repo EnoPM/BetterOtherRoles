@@ -8,6 +8,7 @@ using BetterOtherRoles.Objects;
 using System;
 using BetterOtherRoles.Modules;
 using BetterOtherRoles.Players;
+using BetterOtherRoles.UI;
 using BetterOtherRoles.Utilities;
 using UnityEngine;
 using Innersloth.Assets;
@@ -760,7 +761,7 @@ namespace BetterOtherRoles.Patches {
                 SoundEffectsManager.stopAll();
 
                 // Close In-Game Settings Display if open
-                HudManagerUpdate.CloseSettings();
+                UIManager.CustomOptionsPanel?.SetActive(false);
             }
         }
 

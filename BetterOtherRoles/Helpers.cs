@@ -13,7 +13,6 @@ using BetterOtherRoles.Utilities;
 using System.Threading.Tasks;
 using System.Net;
 using BetterOtherRoles.CustomGameModes;
-using Reactor.Utilities.Extensions;
 using AmongUs.GameOptions;
 using Innersloth.Assets;
 
@@ -341,7 +340,7 @@ namespace BetterOtherRoles {
                         renderer.color = new Color(color.r, color.g, color.b, Mathf.Clamp01((1 - p) * 2 * 0.75f));
                 }
                 if (p == 1f && renderer != null) renderer.enabled = false;
-                if (p == 1f) messageText.gameObject.Destroy();
+                if (p == 1f) UnityEngine.Object.Destroy(messageText.gameObject);
             })));
         }
 
@@ -370,7 +369,7 @@ namespace BetterOtherRoles {
             return roleCouldUse;
         }
 
-        public static MurderAttemptResult checkMuderAttempt(PlayerControl killer, PlayerControl target, bool blockRewind = false, bool ignoreBlank = false, bool ignoreIfKillerIsDead = false) {
+        public static MurderAttemptResult checkMuderAttempt(PlayerControl killer, PlayerControl target, bool blockRewind = false, bool ignoreBlank = false, bool ignoreIfKillerIsDead = false, bool showShieldAnimation = true) {
             var targetRole = RoleInfo.getRoleInfoForPlayer(target, false).FirstOrDefault();
 
             // Modified vanilla checks
@@ -396,10 +395,14 @@ namespace BetterOtherRoles {
 
             // Block impostor shielded kill
             if (Medic.shielded != null && Medic.shielded == target) {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(killer.NetId, (byte)CustomRPC.ShieldedMurderAttempt, Hazel.SendOption.Reliable, -1);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.shieldedMurderAttempt();
-                SoundEffectsManager.play("fail");
+                if (showShieldAnimation)
+                {
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(killer.NetId, (byte)CustomRPC.ShieldedMurderAttempt, Hazel.SendOption.Reliable, -1);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.shieldedMurderAttempt();
+                    SoundEffectsManager.play("fail");
+                }
+                
                 return MurderAttemptResult.SuppressKill;
             }
 

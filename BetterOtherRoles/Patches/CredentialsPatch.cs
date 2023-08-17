@@ -2,6 +2,7 @@
 using System;
 using BetterOtherRoles;
 using BetterOtherRoles.CustomGameModes;
+using BetterOtherRoles.Modules;
 using BetterOtherRoles.Players;
 using BetterOtherRoles.Utilities;
 using TMPro;
@@ -14,17 +15,18 @@ namespace BetterOtherRoles.Patches
     {
         public const string ColoredLogo = "<color=#fcba03>Better</color><color=#ff351f>OtherRoles</color>";
         public const string BasedCopyright = "Based on <color=#ff351f>TheOtherRoles</color>";
-        public const string CreatorsCopyright = "Created by <color=#FCCE03FF>EnoPM</color>";
+        public const string CreatorsCopyright = "Created by <color=#7897d6ff>EnoPM</color>";
+        public const string DingusRelease = "<color=#f779efff><b>Dingus special edition</b></color>";
         public const string EndOfLine = "\n";
 
         public static string fullCredentialsVersion =
             $@"<size=130%>{ColoredLogo}</size> v{BetterOtherRolesPlugin.Version.ToString()}";
 
         public static string fullCredentials =
-            $@"<size=70%>{BasedCopyright}</size>{EndOfLine}<size=60%>{CreatorsCopyright}</size>";
+            $@"{(DevConfig.IsDingusRelease ? $"<size=70%>{DingusRelease}</size>{EndOfLine}" : string.Empty)}<size=70%>{BasedCopyright}</size>{EndOfLine}<size=80%><b>{CreatorsCopyright}</b></size>";
 
         public static string mainMenuCredentials =
-            $@"{BasedCopyright}{EndOfLine}{CreatorsCopyright}";
+            $@"{(DevConfig.IsDingusRelease ? $"<size=90%>{DingusRelease}</size>{EndOfLine}" : string.Empty)}{BasedCopyright}{EndOfLine}<b>{CreatorsCopyright}</b>";
 
         [HarmonyPatch(typeof(PingTracker), nameof(PingTracker.Update))]
         internal static class PingTrackerPatch
@@ -51,9 +53,10 @@ namespace BetterOtherRoles.Patches
                     string gameModeText = $"";
                     if (HideNSeek.isHideNSeekGM) gameModeText = $"Hide 'N Seek";
                     else if (HandleGuesser.isGuesserGm) gameModeText = $"Guesser";
-                    if (gameModeText != "") gameModeText = Helpers.cs(Color.yellow, gameModeText) + "\n";
+                    if (gameModeText != "") gameModeText = " - " + Helpers.cs(Color.yellow, gameModeText);
+                    var needEol = gameModeText != string.Empty || DevConfig.IsDingusRelease;
                     __instance.text.text =
-                        $"<size=130%>{ColoredLogo}</size> v{BetterOtherRolesPlugin.Version.ToString()}\n{gameModeText}" +
+                        $"<size=130%>{ColoredLogo}</size> v{BetterOtherRolesPlugin.Version.ToString()}\n{(DevConfig.IsDingusRelease ? $"<size=70%>{DingusRelease}</size>" : string.Empty)}{gameModeText}{(needEol ? EndOfLine : string.Empty)}" +
                         __instance.text.text;
                     if (CachedPlayer.LocalPlayer.Data.IsDead || (!(CachedPlayer.LocalPlayer.PlayerControl == null) &&
                                                                  (CachedPlayer.LocalPlayer.PlayerControl ==

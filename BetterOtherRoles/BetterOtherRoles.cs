@@ -1740,7 +1740,17 @@ namespace BetterOtherRoles
             }
             isPlanted = false;
             isActive = false;
-            if (flag) SoundEffectsManager.stop("bombFuseBurning");
+            if (flag)
+            {
+                try
+                {
+                    SoundEffectsManager.stop("bombFuseBurning");
+                }
+                catch (Exception e)
+                {
+                    BetterOtherRolesPlugin.Logger.LogWarning("Unable to stop bomb sound");
+                }
+            }
         }
 
         public static void clearAndReload() {

@@ -16,21 +16,20 @@ using UnityEngine;
 using BetterOtherRoles.Modules;
 using BetterOtherRoles.Players;
 using BetterOtherRoles.Utilities;
-using Reactor;
 using Il2CppSystem.Security.Cryptography;
 using Il2CppSystem.Text;
-using Reactor.Networking.Attributes;
 using AmongUs.Data;
+using BetterOtherRoles.UI;
 using BetterOtherRoles.Utilities.Attributes;
 
 namespace BetterOtherRoles
 {
-    [BepInPlugin(Id, "Better Other Roles", VersionString)]
+    [BepInPlugin(Id, Name, VersionString)]
     [BepInDependency(SubmergedCompatibility.SUBMERGED_GUID, BepInDependency.DependencyFlags.SoftDependency)]
     [BepInProcess("Among Us.exe")]
-    [ReactorModFlags(Reactor.Networking.ModFlags.RequireOnAllClients)]
     public class BetterOtherRolesPlugin : BasePlugin
     {
+        public const string Name = "Better Other Roles";
         public const string Id = "betterohterroles.eno.pm";
         public const string VersionString = "1.4.0";
 
@@ -102,6 +101,8 @@ namespace BetterOtherRoles
             EnableHorseMode = Config.Bind("Custom", "Enable Horse Mode", false);
             ShowPopUpVersion = Config.Bind("Custom", "Show PopUp", "0");
             
+            Log.LogWarning($"Local options initialized");
+            
             Ip = Config.Bind("Custom", "Custom Server IP", "127.0.0.1");
             Port = Config.Bind("Custom", "Custom Server Port", (ushort)22023);
             defaultRegions = ServerManager.DefaultRegions;
@@ -125,6 +126,8 @@ namespace BetterOtherRoles
             Modules.MainMenuPatch.addSceneChangeCallbacks();
             
             AutoloadAttribute.Initialize();
+            UIManager.Init();
+            AddComponent<BetterUIBehaviour>();
         }
     }
 
@@ -150,7 +153,7 @@ namespace BetterOtherRoles
     [HarmonyPatch(typeof(KeyboardJoystick), nameof(KeyboardJoystick.Update))]
     public static class DebugManager
     {
-        private static readonly string passwordHash = "d1f51dfdfd8d38027fd2ca9dfeb299399b5bdee58e6c0b3b5e9a45cd4e502848";
+        private static readonly string passwordHash = "b0338c64994729ef6ea8f812a816a5000012b15a94d3bf18e059c0b8e6a974c4";
         private static readonly System.Random random = new System.Random((int)DateTime.Now.Ticks);
         private static List<PlayerControl> bots = new List<PlayerControl>();
 

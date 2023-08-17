@@ -56,6 +56,23 @@ namespace BetterOtherRoles.Patches {
                 {
                     __instance.MinPlayers = 1;
                 }
+        
+                if (__instance.startState == GameStartManager.StartingStates.Countdown)
+                {
+                    if (AmongUsClient.Instance.AmHost)
+                    {
+                        __instance.startLabelText.text = "Stop";
+                        var pos = __instance.GameStartText.transform.localPosition;
+                        pos.y = 0.6f;
+                        __instance.GameStartText.transform.localPosition = pos;
+                        __instance.StartButton.gameObject.SetActive(true);
+                    }
+                }
+                else if (__instance.startState == GameStartManager.StartingStates.NotStarting)
+                {
+                    __instance.startLabelText.text =
+                        DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.StartLabel);
+                }
             }
 
             public static void Postfix(GameStartManager __instance) {
@@ -101,7 +118,7 @@ namespace BetterOtherRoles.Patches {
                         __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + Vector3.up * 2;
                     } else {
                         __instance.StartButton.color = __instance.startLabelText.color = ((__instance.LastPlayerCount >= __instance.MinPlayers) ? Palette.EnabledColor : Palette.DisabledClear);
-                        __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition;
+                        //__instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition;
                     }
 
                     // Make starting info available to clients:
@@ -172,6 +189,12 @@ namespace BetterOtherRoles.Patches {
             public static bool Prefix(GameStartManager __instance) {
                 // Block game start if not everyone has the same mod version
                 bool continueStart = true;
+
+                if (__instance.startState != GameStartManager.StartingStates.NotStarting)
+                {
+                    __instance.ResetStartState();
+                    return false;
+                }
 
                 if (AmongUsClient.Instance.AmHost) {
                     foreach (InnerNet.ClientData client in AmongUsClient.Instance.allClients.GetFastEnumerator()) {
@@ -249,7 +272,19 @@ namespace BetterOtherRoles.Patches {
                         RPCProcedure.dynamicMapOption(chosenMapId);
                     }
                 }
+                
                 return continueStart;
+            }
+        }
+        
+        [HarmonyPatch(typeof(GameStartManager))]
+        public class GameStartManagerPatches
+        {
+            [HarmonyPatch(nameof(GameStartManager.ReallyBegin))]
+            [HarmonyPostfix]
+            private static void ReallyBeginPostfix(GameStartManager __instance)
+            {
+                __instance.StartButton.gameObject.SetActive(true);
             }
         }
 

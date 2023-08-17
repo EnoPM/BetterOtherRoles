@@ -457,12 +457,24 @@ namespace BetterOtherRoles.Patches {
 
         private static bool CheckAndEndGameForTaskWin(ShipStatus __instance) {
             if (HideNSeek.isHideNSeekGM && !HideNSeek.taskWinPossible) return false;
-            if (GameData.Instance.TotalTasks > 0 && GameData.Instance.TotalTasks <= GameData.Instance.CompletedTasks) {
-                //__instance.enabled = false;
-                GameManager.Instance.RpcEndGame(GameOverReason.HumansByTask, false);
-                return true;
+            var totalTasks = 0;
+            var completedTasks = 0;
+            foreach (var player in PlayerControl.AllPlayerControls)
+            {
+                if (player.Data.Role.IsImpostor) continue;
+                if (Helpers.isNeutral(player)) continue;
+                if (Lovers.existingWithKiller() && Lovers.existingAndAlive() &&
+                    (Lovers.lover1 == player || Lovers.lover2 == player)) continue;
+                var (tasksCompleted, tasksTotal) = TasksHandler.taskInfo(player.Data);
+                totalTasks += tasksTotal;
+                completedTasks += tasksCompleted;
             }
-            return false;
+
+            if (totalTasks == 0 || completedTasks < totalTasks) return false;
+            
+            //__instance.enabled = false;
+            GameManager.Instance.RpcEndGame(GameOverReason.HumansByTask, false);
+            return true;
         }
 
         private static bool CheckAndEndGameForProsecutorWin(ShipStatus __instance) {

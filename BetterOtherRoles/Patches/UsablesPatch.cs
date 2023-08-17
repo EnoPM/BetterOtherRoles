@@ -11,7 +11,6 @@ using BetterOtherRoles.Players;
 using BetterOtherRoles.Utilities;
 using BetterOtherRoles.Objects;
 using BetterOtherRoles.CustomGameModes;
-using Reactor.Utilities.Extensions;
 using AmongUs.GameOptions;
 
 namespace BetterOtherRoles.Patches {
@@ -655,7 +654,7 @@ namespace BetterOtherRoles.Patches {
 
         private static void resetNightVision() {
             foreach (var go in nightVisionOverlays) {
-                go.Destroy();
+                UnityEngine.Object.Destroy(go);
             }
             nightVisionOverlays = null;
 

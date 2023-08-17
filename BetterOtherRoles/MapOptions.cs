@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using BetterOtherRoles.UI;
 using UnityEngine;
 
 namespace BetterOtherRoles{
@@ -17,7 +18,18 @@ namespace BetterOtherRoles{
         public static bool showLighterDarker = true;
         public static bool enableSoundEffects = true;
         public static bool enableHorseMode = false;
-        public static CustomGamemodes gameMode = CustomGamemodes.Classic;
+
+        public static CustomGamemodes gameMode
+        {
+            get => _gameMode;
+            set
+            {
+                var oldValue = _gameMode;
+                _gameMode = value;
+                UIManager.CustomOptionsPanel?.CheckForUpdate(oldValue, _gameMode);
+            }
+        }
+        private static CustomGamemodes _gameMode = CustomGamemodes.Classic;
 
         // Updating values
         public static int meetingsCount = 0;
