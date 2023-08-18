@@ -152,7 +152,9 @@ namespace BetterOtherRoles
             vip,
             invert,
             chameleon,
-            shifter
+            shifter,
+            undertaker,
+            fallen,
         };
 
         public static List<RoleInfo> getRoleInfoForPlayer(PlayerControl p, bool showModifier = true) {

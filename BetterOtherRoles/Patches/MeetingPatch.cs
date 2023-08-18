@@ -416,6 +416,8 @@ namespace BetterOtherRoles.Patches {
                 if (roleInfo.roleId == RoleId.Spy && roleData.impostors.Count <= 1) continue;
                 if (roleInfo.roleId == RoleId.Prosecutor && (CustomOptionHolder.lawyerIsProsecutorChance.getSelection() == 0 || CustomOptionHolder.lawyerSpawnRate.getSelection() == 0)) continue;
                 if (roleInfo.roleId == RoleId.Lawyer && (CustomOptionHolder.lawyerIsProsecutorChance.getSelection() == 10 || CustomOptionHolder.lawyerSpawnRate.getSelection() == 0)) continue;
+                if (roleInfo.roleId == RoleId.Fallen) continue;
+                if (roleInfo.roleId == RoleId.Sheriff && CustomOptionHolder.sheriffSpawnRate.getSelection() == 0) continue;
                 if (Snitch.snitch != null && HandleGuesser.guesserCantGuessSnitch) {
                     var (playerCompleted, playerTotal) = TasksHandler.taskInfo(Snitch.snitch.Data);
                     int numberOfLeftTasks = playerTotal - playerCompleted;
