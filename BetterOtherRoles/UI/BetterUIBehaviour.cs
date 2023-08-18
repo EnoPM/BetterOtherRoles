@@ -24,6 +24,21 @@ public class BetterUIBehaviour : MonoBehaviour
         {
             UIManager.CreditsPanel?.Toggle();
         }
+
+        if (InputManager.GetKeyDown(KeyCode.F6))
+        {
+            var gameObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
+            foreach (var go in gameObjects)
+            {
+                if (go.name == "Comms" || go.name == "Weapons")
+                {
+                    var pos = go.transform.position;
+                    pos.z = 2f;
+                    go.transform.position = pos;
+                }
+                BetterOtherRolesPlugin.Logger.LogMessage($"{go.name}: {go.transform.position} < {go.transform.parent?.name}");
+            }
+        }
 #endif
     }
 }

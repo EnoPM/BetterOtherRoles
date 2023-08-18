@@ -65,6 +65,7 @@ public static class BetterPolus
     {
         Clear();
         if (!ShipStatus.Instance) return;
+        AdjustRoomsZ();
         if (Enabled.getBool())
         {
             if (IsAdjustmentsDone) return;
@@ -75,6 +76,21 @@ public static class BetterPolus
             if (!IsAdjustmentsDone) return;
             RevertChanges(ShipStatus.Instance);
         }
+    }
+
+    private static void AdjustRoomsZ()
+    {
+        if (!ShipStatus.Instance || ShipStatus.Instance.Type != ShipStatus.MapType.Pb) return;
+        var gameObjects = Object.FindObjectsOfType<GameObject>().ToList();
+        var comms = gameObjects.Find(o => o.name == "Comms");
+        var weapons = gameObjects.Find(o => o.name == "Weapons");
+        var dropship = gameObjects.Find(o => o.name == "Dropship");
+        var ramp = gameObjects.Find(o => o.name == "ramp");
+        
+        AdjustZPosition(comms, 2f);
+        AdjustZPosition(weapons, 2f);
+        AdjustZPosition(dropship, 2f);
+        AdjustZPosition(ramp, 1.9f);
     }
 
     public static void ApplyChanges(ShipStatus shipStatus)
@@ -134,14 +150,11 @@ public static class BetterPolus
 
         if (!_isRoomsFetched)
         {
-            Objects[EditableObjects.CommunicationsRoom] =
-                Object.FindObjectsOfType<GameObject>().ToList().Find(o => o.name == "Comms")!;
-            Objects[EditableObjects.DropshipRoom] =
-                Object.FindObjectsOfType<GameObject>().ToList().Find(o => o.name == "Dropship")!;
-            Objects[EditableObjects.OutsideRoom] =
-                Object.FindObjectsOfType<GameObject>().ToList().Find(o => o.name == "Outside")!;
-            Objects[EditableObjects.ScienceRoom] =
-                Object.FindObjectsOfType<GameObject>().ToList().Find(o => o.name == "Science")!;
+            var gameObjects = Object.FindObjectsOfType<GameObject>().ToList();
+            Objects[EditableObjects.CommunicationsRoom] = gameObjects.Find(o => o.name == "Comms")!;
+            Objects[EditableObjects.DropshipRoom] = gameObjects.Find(o => o.name == "Dropship")!;
+            Objects[EditableObjects.OutsideRoom] = gameObjects.Find(o => o.name == "Outside")!;
+            Objects[EditableObjects.ScienceRoom] = gameObjects.Find(o => o.name == "Science")!;
 
             _isRoomsFetched = IsRoomsFetched();
         }
@@ -164,6 +177,14 @@ public static class BetterPolus
 
             _isObjectsFetched = IsObjectsFetched();
         }
+    }
+
+    private static void AdjustZPosition(GameObject obj, float z)
+    {
+        if (!obj) return;
+        var pos = obj.transform.position;
+        pos.z = z;
+        obj.transform.position = pos;
     }
 
     private static void AdjustVents()

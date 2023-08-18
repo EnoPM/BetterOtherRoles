@@ -13,7 +13,6 @@ public static class DevConfig
     public static bool DisablePlayerRequirementToLaunch { get; set; }
     public static Guid CurrentGuid { get; set; }
     public static bool IsDingusRelease { get; set; }
-    private const string OfficialGuid = "unknown";
 
     static DevConfig()
     {
