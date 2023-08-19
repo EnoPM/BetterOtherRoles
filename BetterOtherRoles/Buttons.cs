@@ -86,11 +86,11 @@ namespace BetterOtherRoles
 
         private static void SetFirstCooldowns()
         {
-            vampireKillButton.Timer = vampireKillButton.MaxTimer;
-            ninjaButton.Timer = ninjaButton.MaxTimer;
-            witchSpellButton.Timer = witchSpellButton.MaxTimer;
-            arsonistButton.Timer = arsonistButton.MaxTimer;
-            warlockCurseButton.Timer = warlockCurseButton.MaxTimer;
+            vampireKillButton.Timer = CustomOptionHolder.vampireFirstCooldown.getFloat();
+            ninjaButton.Timer = CustomOptionHolder.ninjaFirstCooldown.getFloat();
+            witchSpellButton.Timer = CustomOptionHolder.witchFirstCooldown.getFloat();
+            arsonistButton.Timer = CustomOptionHolder.arsonistFirstCooldown.getFloat();
+            warlockCurseButton.Timer = CustomOptionHolder.warlockFirstCooldown.getFloat();
         }
 
         public static void setCustomButtonCooldowns() {

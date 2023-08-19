@@ -731,7 +731,7 @@ namespace BetterOtherRoles.Patches {
             BountyHunter.arrowUpdateTimer -= Time.fixedDeltaTime;
             BountyHunter.bountyUpdateTimer -= Time.fixedDeltaTime;
 
-            if (BountyHunter.bounty == null || BountyHunter.bountyUpdateTimer <= 0f) {
+            if (BountyHunter.bounty == null || BountyHunter.bountyUpdateTimer <= 0f || (BountyHunter.bounty != null && FirstKillShield.Enabled && BountyHunter.bounty == FirstKillShield.ShieldedPlayer)) {
                 // Set new bounty
                 BountyHunter.bounty = null;
                 BountyHunter.arrowUpdateTimer = 0f; // Force arrow to update

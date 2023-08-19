@@ -44,6 +44,7 @@ namespace BetterOtherRoles {
         public static CustomOption vampireKillDelay;
         public static CustomOption vampireCooldown;
         public static CustomOption vampireCanKillNearGarlics;
+        public static CustomOption vampireFirstCooldown;
 
         public static CustomOption eraserSpawnRate;
         public static CustomOption eraserCooldown;
@@ -63,6 +64,7 @@ namespace BetterOtherRoles {
 
         public static CustomOption arsonistSpawnRate;
         public static CustomOption arsonistCooldown;
+        public static CustomOption arsonistFirstCooldown;
         public static CustomOption arsonistDuration;
 
         public static CustomOption jackalSpawnRate;
@@ -86,6 +88,7 @@ namespace BetterOtherRoles {
 
         public static CustomOption witchSpawnRate;
         public static CustomOption witchCooldown;
+        public static CustomOption witchFirstCooldown;
         public static CustomOption witchAdditionalCooldown;
         public static CustomOption witchCanSpellAnyone;
         public static CustomOption witchSpellCastingDuration;
@@ -94,6 +97,7 @@ namespace BetterOtherRoles {
 
         public static CustomOption ninjaSpawnRate;
         public static CustomOption ninjaCooldown;
+        public static CustomOption ninjaFirstCooldown;
         public static CustomOption ninjaKnowsTargetLocation;
         public static CustomOption ninjaTraceTime;
         public static CustomOption ninjaTraceColorTime;
@@ -201,6 +205,7 @@ namespace BetterOtherRoles {
         
         public static CustomOption warlockSpawnRate;
         public static CustomOption warlockCooldown;
+        public static CustomOption warlockFirstCooldown;
         public static CustomOption warlockRootTime;
 
         public static CustomOption securityGuardSpawnRate;
@@ -429,7 +434,8 @@ namespace BetterOtherRoles {
             vampireKillDelay = CustomOption.Create(41, Types.Impostor, "Vampire Kill Delay", 10f, 1f, 20f, 1f, vampireSpawnRate, suffix: "s");
             vampireCooldown = CustomOption.Create(42, Types.Impostor, "Vampire Cooldown", 30f, 10f, 60f, 2.5f, vampireSpawnRate, suffix: "s");
             vampireCanKillNearGarlics = CustomOption.Create(43, Types.Impostor, "Vampire Can Kill Near Garlics", true, vampireSpawnRate);
-
+            vampireFirstCooldown = CustomOption.Create(5012, Types.Impostor, "Vampire first Cooldown", 15f, 10f, 60f, 2.5f, vampireSpawnRate, suffix: "s");
+            
             eraserSpawnRate = CustomOption.Create(230, Types.Impostor, cs(Eraser.color, "Eraser"), rates, null, true);
             eraserCooldown = CustomOption.Create(231, Types.Impostor, "Eraser Cooldown", 30f, 10f, 120f, 5f, eraserSpawnRate, suffix: "s");
             eraserCanEraseAnyone = CustomOption.Create(232, Types.Impostor, "Eraser Can Erase Anyone", false, eraserSpawnRate, suffix: "s");
@@ -445,6 +451,7 @@ namespace BetterOtherRoles {
             warlockSpawnRate = CustomOption.Create(270, Types.Impostor, cs(Cleaner.color, "Warlock"), rates, null, true);
             warlockCooldown = CustomOption.Create(271, Types.Impostor, "Warlock Cooldown", 30f, 10f, 60f, 2.5f, warlockSpawnRate, suffix: "s");
             warlockRootTime = CustomOption.Create(272, Types.Impostor, "Warlock Root Time", 5f, 0f, 15f, 1f, warlockSpawnRate, suffix: "s");
+            warlockFirstCooldown = CustomOption.Create(5016, Types.Impostor, "Warlock First Cooldown", 15f, 10f, 60f, 2.5f, warlockSpawnRate, suffix: "s");
 
             bountyHunterSpawnRate = CustomOption.Create(320, Types.Impostor, cs(BountyHunter.color, "Bounty Hunter"), rates, null, true);
             bountyHunterBountyDuration = CustomOption.Create(321, Types.Impostor, "Duration After Which Bounty Changes",  60f, 10f, 180f, 10f, bountyHunterSpawnRate, suffix: "s");
@@ -460,6 +467,7 @@ namespace BetterOtherRoles {
             witchSpellCastingDuration = CustomOption.Create(374, Types.Impostor, "Spell Casting Duration", 1f, 0f, 10f, 1f, witchSpawnRate, suffix: "s");
             witchTriggerBothCooldowns = CustomOption.Create(375, Types.Impostor, "Trigger Both Cooldowns", true, witchSpawnRate);
             witchVoteSavesTargets = CustomOption.Create(376, Types.Impostor, "Voting The Witch Saves All The Targets", true, witchSpawnRate);
+            witchFirstCooldown = CustomOption.Create(5014, Types.Impostor, "Witch First Spell Casting Cooldown", 15f, 10f, 120f, 5f, witchSpawnRate, suffix: "s");
 
             ninjaSpawnRate = CustomOption.Create(380, Types.Impostor, cs(Ninja.color, "Ninja"), rates, null, true);
             ninjaCooldown = CustomOption.Create(381, Types.Impostor, "Ninja Mark Cooldown", 30f, 10f, 120f, 5f, ninjaSpawnRate, suffix: "s");
@@ -467,6 +475,7 @@ namespace BetterOtherRoles {
             ninjaTraceTime = CustomOption.Create(383, Types.Impostor, "Trace Duration", 5f, 1f, 20f, 0.5f, ninjaSpawnRate, suffix: "s");
             ninjaTraceColorTime = CustomOption.Create(384, Types.Impostor, "Time Till Trace Color Has Faded", 2f, 0f, 20f, 0.5f, ninjaSpawnRate, suffix: "s");
             ninjaInvisibleDuration = CustomOption.Create(385, Types.Impostor, "Time The Ninja Is Invisible", 3f, 0f, 20f, 1f, ninjaSpawnRate, suffix: "s");
+            ninjaFirstCooldown = CustomOption.Create(5013, Types.Impostor, "Ninja First Mark Cooldown", 15f, 10f, 120f, 5f, ninjaSpawnRate, suffix: "s");
 
             bomberSpawnRate = CustomOption.Create(460, Types.Impostor, cs(Bomber.color, "Bomber"), rates, null, true);
             bomberBombDestructionTime = CustomOption.Create(461, Types.Impostor, "Bomb Destruction Time", 20f, 2.5f, 120f, 2.5f, bomberSpawnRate, suffix: "s");
@@ -497,6 +506,7 @@ namespace BetterOtherRoles {
             arsonistSpawnRate = CustomOption.Create(290, Types.Neutral, cs(Arsonist.color, "Arsonist"), rates, null, true);
             arsonistCooldown = CustomOption.Create(291, Types.Neutral, "Arsonist Cooldown", 12.5f, 2.5f, 60f, 2.5f, arsonistSpawnRate, suffix: "s");
             arsonistDuration = CustomOption.Create(292, Types.Neutral, "Arsonist Douse Duration", 3f, 1f, 10f, 1f, arsonistSpawnRate, suffix: "s");
+            arsonistFirstCooldown = CustomOption.Create(5015, Types.Neutral, "Arsonist First Cooldown", 12.5f, 2.5f, 60f, 2.5f, arsonistSpawnRate, suffix: "s");
 
             jackalSpawnRate = CustomOption.Create(220, Types.Neutral, cs(Jackal.color, "Jackal"), rates, null, true);
             jackalKillCooldown = CustomOption.Create(221, Types.Neutral, "Jackal/Sidekick Kill Cooldown", 30f, 10f, 60f, 2.5f, jackalSpawnRate, suffix: "s");

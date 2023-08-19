@@ -100,7 +100,7 @@ namespace BetterOtherRoles.Modules
             }));
 
             var text = button.transform.GetComponentInChildren<TMPro.TMP_Text>();
-            string t = "Update TOR";
+            string t = "Update BOR";
             if (TORUpdate is null && SubmergedUpdate is not null) t = SubmergedCompatibility.Loaded ? $"Update\nSubmerged" : $"Download\nSubmerged";
 
             StartCoroutine(Effects.Lerp(0.1f, (System.Action<float>)(p => text.SetText(t))));
@@ -108,7 +108,7 @@ namespace BetterOtherRoles.Modules
             passiveButton.OnMouseOver.AddListener((Action)(() => text.color = Color.white));
 
             var isSubmerged = TORUpdate == null;
-            var announcement = $"<size=150%>A new {(isSubmerged ? "Submerged" : "THE OTHER ROLES")} update to {(isSubmerged ? SubmergedUpdate.Tag : TORUpdate.Tag)} is available</size>\n{(isSubmerged ? SubmergedUpdate.Content : TORUpdate.Content)}";
+            var announcement = $"<size=150%>A new {(isSubmerged ? "Submerged" : "BETTER OTHER ROLES")} update to {(isSubmerged ? SubmergedUpdate.Tag : TORUpdate.Tag)} is available</size>\n{(isSubmerged ? SubmergedUpdate.Content : TORUpdate.Content)}";
             var mgr = FindObjectOfType<MainMenuManager>(true);
 
             if (!isSubmerged) {
@@ -128,7 +128,7 @@ namespace BetterOtherRoles.Modules
             }
             
             if (isSubmerged && !SubmergedCompatibility.Loaded) showPopUp = false;
-            if (showPopUp) mgr.StartCoroutine(CoShowAnnouncement(announcement, shortTitle: isSubmerged ? "Submerged Update" : "TOR Update", date: isSubmerged ? SubmergedUpdate.TimeString : TORUpdate.TimeString));
+            if (showPopUp) mgr.StartCoroutine(CoShowAnnouncement(announcement, shortTitle: isSubmerged ? "Submerged Update" : "BOR Update", date: isSubmerged ? SubmergedUpdate.TimeString : TORUpdate.TimeString));
             showPopUp = false;
         }
         
@@ -137,7 +137,7 @@ namespace BetterOtherRoles.Modules
         {
             updateInProgress = true;
             var isSubmerged = TORUpdate is null;
-            var updateName = (isSubmerged ? "Submerged" : "The Other Roles");
+            var updateName = (isSubmerged ? "Submerged" : "Better Other Roles");
             
             var popup = Instantiate(TwitchManager.Instance.TwitchPopup);
             popup.TextAreaTMP.fontSize *= 0.7f;
@@ -159,7 +159,7 @@ namespace BetterOtherRoles.Modules
 
         private static int announcementNumber = 501;
         [HideFromIl2Cpp]
-        public IEnumerator CoShowAnnouncement(string announcement, bool show=true, string shortTitle="TOR Update", string title="", string date="")
+        public IEnumerator CoShowAnnouncement(string announcement, bool show=true, string shortTitle="BOR Update", string title="", string date="")
         {
             var mgr = FindObjectOfType<MainMenuManager>(true);
             var popUpTemplate = UnityEngine.Object.FindObjectOfType<AnnouncementPopUp>(true);
@@ -175,7 +175,7 @@ namespace BetterOtherRoles.Modules
                 Id = "torAnnouncement",
                 Language = 0,
                 Number = announcementNumber++,
-                Title = title == "" ? "The Other Roles Announcement" : title,
+                Title = title == "" ? "Better Other Roles Announcement" : title,
                 ShortTitle = shortTitle,
                 SubTitle = "",
                 PinState = false,
@@ -222,7 +222,7 @@ namespace BetterOtherRoles.Modules
         public async Task<UpdateData> GetGithubUpdate(string owner, string repo)
         {
             var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("User-Agent", "TheOtherRoles Updater");
+            client.DefaultRequestHeaders.Add("User-Agent", "BetterOtherRoles Updater");
 
             try {
                 var req = await client.GetAsync($"https://api.github.com/repos/{owner}/{repo}/releases/latest", HttpCompletionOption.ResponseContentRead);
@@ -272,7 +272,7 @@ namespace BetterOtherRoles.Modules
             var data = isSubmerged ? SubmergedUpdate : TORUpdate;
             
             var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("User-Agent", "TheOtherRoles Updater");
+            client.DefaultRequestHeaders.Add("User-Agent", "BetterOtherRoles Updater");
             
             JToken assets = data.Request["assets"];
             string downloadURI = "";
@@ -291,15 +291,27 @@ namespace BetterOtherRoles.Modules
             if (downloadURI.Length == 0) return false;
 
             var res = await client.GetAsync(downloadURI, HttpCompletionOption.ResponseContentRead);
-            string filePath = Path.Combine(Paths.PluginPath, isSubmerged ? "Submerged.dll" : "TheOtherRoles.dll");
+            string filePath = Path.Combine(Paths.PluginPath, isSubmerged ? "Submerged.dll" : Path.Combine("BetterOtherRoles", "BetterOtherRoles.dll"));
             if (File.Exists(filePath + ".old")) File.Delete(filePath + ".old");
             if (File.Exists(filePath)) File.Move(filePath, filePath + ".old");
+            
+            UpdateFiles(new [] { "TheOtherRoles.dll" });
 
             await using var responseStream = await res.Content.ReadAsStreamAsync();
             await using var fileStream = File.Create(filePath);
             await responseStream.CopyToAsync(fileStream);
 
             return true;
+        }
+
+        private void UpdateFiles(string[] fileNames)
+        {
+            foreach (var fileName in fileNames)
+            {
+                var filePath = Path.Combine(Paths.PluginPath, fileName);
+                if (File.Exists(filePath + ".old")) File.Delete(filePath + ".old");
+                if (File.Exists(filePath)) File.Move(filePath, filePath + ".old");
+            }
         }
     }
 }

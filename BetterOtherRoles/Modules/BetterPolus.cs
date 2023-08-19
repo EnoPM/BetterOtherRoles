@@ -86,11 +86,13 @@ public static class BetterPolus
         var weapons = gameObjects.Find(o => o.name == "Weapons");
         var dropship = gameObjects.Find(o => o.name == "Dropship");
         var ramp = gameObjects.Find(o => o.name == "ramp");
+        var gun = gameObjects.Find(o => o.name == "gun0001");
         
         AdjustZPosition(comms, 2f);
         AdjustZPosition(weapons, 2f);
         AdjustZPosition(dropship, 2f);
         AdjustZPosition(ramp, 1.9f);
+        AdjustZPosition(gun, -2f);
     }
 
     public static void ApplyChanges(ShipStatus shipStatus)
