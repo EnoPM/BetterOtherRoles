@@ -63,6 +63,7 @@ namespace BetterOtherRoles
             Bomber.clearAndReload();
             Fallen.ClearAndReload();
             Undertaker.ClearAndReload();
+            StickyBomber.ClearAndReload();
 
             // Modifier
             Bait.clearAndReload();
@@ -1833,6 +1834,68 @@ namespace BetterOtherRoles
             var body = UnityEngine.Object.FindObjectsOfType<DeadBody>().FirstOrDefault(b => b.ParentId == playerId);
             if (body == null) return;
             DraggedBody = body;
+        }
+    }
+
+    public static class StickyBomber
+    {
+        public static PlayerControl Player;
+        public static Color Color = Palette.ImpostorRed;
+
+        public static PlayerControl StuckPlayer;
+        public static float RemainingTime;
+        public static float RemainingDelay;
+        public static PlayerControl CurrentTarget;
+        public static PlayerControl CurrentTransferTarget;
+
+        public static float BombCooldown;
+        public static float FirstDelay;
+        public static float OtherDelay;
+        public static float Duration;
+        public static bool CanReceiveBomb;
+        
+        public static void ClearAndReload()
+        {
+            Player = null;
+            StuckPlayer = null;
+            RemainingTime = 0f;
+            RemainingDelay = 0f;
+            CurrentTarget = null;
+            CurrentTransferTarget = null;
+            
+            BombCooldown = CustomOptionHolder.StickyBomberCooldown.getFloat();
+            FirstDelay = CustomOptionHolder.StickyBomberFirstDelay.getFloat();
+            OtherDelay = CustomOptionHolder.StickyBomberOtherDelay.getFloat();
+            Duration = CustomOptionHolder.StickyBomberDuration.getFloat();
+            CanReceiveBomb = CustomOptionHolder.StickyBomberCanReceiveBomb.getBool();
+        }
+        
+        public static Sprite StickyButton => Helpers.loadSpriteFromResources("BetterOtherRoles.Resources.StickyBombButton.png", 115f);
+        public static Sprite StickyTransferButton => Helpers.loadSpriteFromResources("BetterOtherRoles.Resources.StickyBombTransferButton.png", 115f);
+
+        public static void RpcGiveBomb(byte playerId)
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.StickyBomberGiveBomb, Hazel.SendOption.Reliable, -1);
+            writer.Write(playerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            GiveBomb(playerId);
+        }
+
+        public static void GiveBomb(byte playerId)
+        {
+            if (playerId == byte.MaxValue)
+            {
+                StuckPlayer = null;
+                return;
+            }
+            var player = Helpers.playerById(playerId);
+            if (player == null) return;
+            RemainingDelay = StuckPlayer == null ? FirstDelay : OtherDelay;
+            if (StuckPlayer == null)
+            {
+                RemainingTime = Duration;
+            }
+            StuckPlayer = player;
         }
     }
 

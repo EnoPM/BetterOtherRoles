@@ -16,7 +16,7 @@ public static class MedScanMinigameWalkToPadPatches
     [HarmonyPrefix]
     private static bool MoveNextPrefix(MedScanMinigame._WalkToPad_d__16 __instance)
     {
-        if (!RandomizeScanPlayerPosition.getBool()) return true;
+        if (!RandomizeScanPlayerPosition.getBool() || (ShipStatus.Instance && ShipStatus.Instance.Type != ShipStatus.MapType.Pb)) return true;
         var minigame = __instance.__4__this;
         minigame.StartCoroutine(WalkToPadEnumerator(minigame));
         
@@ -36,7 +36,9 @@ public static class MedScanMinigameWalkToPadPatches
         var myPhysics = PlayerControl.LocalPlayer.MyPhysics;
 
         Vector2 worldPos = ShipStatus.Instance.MedScanner.Position;
-        worldPos += new Vector2(UnityEngine.Random.Range(-panelSize.x, panelSize.x), UnityEngine.Random.Range(-panelSize.y, 0f));
+        var xRange = UnityEngine.Random.Range(-panelSize.x, panelSize.x);
+        var yRange = UnityEngine.Random.Range(-panelSize.y, 0f);
+        worldPos += new Vector2(xRange, yRange);
 
         Camera.main.GetComponent<FollowerCamera>().Locked = false;
         yield return myPhysics.WalkPlayerTo(worldPos, 0.001f, 1f);

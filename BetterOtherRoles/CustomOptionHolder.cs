@@ -25,6 +25,10 @@ namespace BetterOtherRoles {
         
         public static CustomOption EnableBetterPolus;
         public static CustomOption PolusReactorCountdown;
+        
+        public static CustomOption EnableBetterSkeld;
+        public static CustomOption BetterSkeldEnableAdmin;
+        public static CustomOption BetterSkeldEnableVitals;
 
         public static CustomOption enableCodenameHorsemode;
         public static CustomOption enableCodenameDisableHorses;
@@ -269,6 +273,13 @@ namespace BetterOtherRoles {
         public static CustomOption UndertakerSpeedModifier;
         public static CustomOption UndertakerDisableVent;
 
+        public static CustomOption StickyBomberSpawnRate;
+        public static CustomOption StickyBomberCooldown;
+        public static CustomOption StickyBomberFirstDelay;
+        public static CustomOption StickyBomberOtherDelay;
+        public static CustomOption StickyBomberDuration;
+        public static CustomOption StickyBomberCanReceiveBomb;
+
         public static CustomOption modifiersAreHidden;
 
         public static CustomOption modifierBait;
@@ -315,6 +326,7 @@ namespace BetterOtherRoles {
 
         public static CustomOption modifierShifter;
 
+        public static CustomOption RandomizePlayersInMeeting;
         public static CustomOption RandomizeWireTaskPositions;
         public static CustomOption RandomizeUploadTaskPosition;
 
@@ -418,6 +430,10 @@ namespace BetterOtherRoles {
             
             EnableBetterPolus = CustomOption.Create(5001, Types.General, "Better Polus", false, isHeader: true);
             PolusReactorCountdown = CustomOption.Create(5002, Types.General, "Polus Reactor Cooldown", 40f, 10f, 120f, 2.5f, isHeader: true, suffix: "s");
+            
+            EnableBetterSkeld = CustomOption.Create(5017, Types.General, "Better Skeld", false, isHeader: true);
+            BetterSkeldEnableAdmin = CustomOption.Create(5018, Types.General, "Enable Admin Table", false, EnableBetterSkeld);
+            BetterSkeldEnableVitals = CustomOption.Create(5019, Types.General, "Enable Vitals", false, EnableBetterSkeld);
 
             mafiaSpawnRate = CustomOption.Create(18, Types.Impostor, cs(Janitor.color, "Mafia"), rates, null, true);
             janitorCooldown = CustomOption.Create(19, Types.Impostor, "Janitor Cooldown", 30f, 10f, 60f, 2.5f, mafiaSpawnRate, suffix: "s");
@@ -490,6 +506,13 @@ namespace BetterOtherRoles {
                 "Speed modifier while dragging", 0f, -100f, 100f, 5f, UndertakerSpawnRate, suffix: "%");
             UndertakerDisableVent = CustomOption.Create(5011, Types.Impostor, "Disable vent while dragging", true, UndertakerSpawnRate);
 
+            StickyBomberSpawnRate = CustomOption.Create(5021, Types.Impostor, cs(StickyBomber.Color, "Sticky Bomber"), rates, null, true);
+            StickyBomberCooldown = CustomOption.Create(5022, Types.Impostor, "Sticky Bomb Cooldown", 15f, 2.5f, 30f, 2.5f, StickyBomberSpawnRate, suffix: "s");
+            StickyBomberFirstDelay = CustomOption.Create(5023, Types.Impostor, "Sticky Bomb First Delay", 5f, 0f, 20f, 1f, StickyBomberSpawnRate, suffix: "s");
+            StickyBomberOtherDelay = CustomOption.Create(5024, Types.Impostor, "Sticky Bomb Other Delay", 5f, 0f, 20f, 1f, StickyBomberSpawnRate, suffix: "s");
+            StickyBomberDuration = CustomOption.Create(5025, Types.Impostor, "Sticky Bomb Timer", 5f, 0f, 30f, 1f, StickyBomberSpawnRate, suffix: "s");
+            StickyBomberCanReceiveBomb = CustomOption.Create(5026, Types.Impostor, "Sticky Bomber Can Receive His Own Bomb", false, StickyBomberSpawnRate);
+            
             guesserSpawnRate = CustomOption.Create(310, Types.Neutral, cs(Guesser.color, "Guesser"), rates, null, true);
             guesserIsImpGuesserRate = CustomOption.Create(311, Types.Neutral, "Chance That The Guesser Is An Impostor", rates, guesserSpawnRate);
             guesserNumberOfShots = CustomOption.Create(312, Types.Neutral, "Guesser Number Of Shots", 2f, 1f, 15f, 1f, guesserSpawnRate);
@@ -752,6 +775,7 @@ namespace BetterOtherRoles {
             huntedShieldNumber = CustomOption.Create(3026, Types.HideNSeekRoles, cs(Color.gray, "Hunted Shield Number"), 3f, 1f, 15f, 1f);
 
             // Other options
+            RandomizePlayersInMeeting = CustomOption.Create(5020, Types.General, "Randomize Players Order In Meetings", false, isHeader: true);
             RandomizeWireTaskPositions = CustomOption.Create(5006, Types.General, "Randomize Wire Tasks Positions", false, isHeader: true);
             RandomizeUploadTaskPosition = CustomOption.Create(5007, Types.General, "Randomize Upload Task Positions", false);
             
@@ -770,12 +794,12 @@ namespace BetterOtherRoles {
 
 
             dynamicMap = CustomOption.Create(500, Types.General, "Play On A Random Map", false, null, true);
-            dynamicMapEnableSkeld = CustomOption.Create(501, Types.General, "Skeld", rates, dynamicMap, false);
-            dynamicMapEnableMira = CustomOption.Create(502, Types.General, "Mira", rates, dynamicMap, false);
-            dynamicMapEnablePolus = CustomOption.Create(503, Types.General, "Polus", rates, dynamicMap, false);
-            dynamicMapEnableAirShip = CustomOption.Create(504, Types.General, "Airship", rates, dynamicMap, false);
-            dynamicMapEnableSubmerged = CustomOption.Create(505, Types.General, "Submerged", rates, dynamicMap, false);
-            dynamicMapSeparateSettings = CustomOption.Create(509, Types.General, "Use Random Map Setting Presets", false, dynamicMap, false);
+            dynamicMapEnableSkeld = CustomOption.Create(501, Types.General, "Skeld", 0f, 0f, 100f, 1f, dynamicMap, suffix: "%");
+            dynamicMapEnableMira = CustomOption.Create(502, Types.General, "Mira", 0f, 0f, 100f, 1f, dynamicMap, suffix: "%");
+            dynamicMapEnablePolus = CustomOption.Create(503, Types.General, "Polus", 0f, 0f, 100f, 1f, dynamicMap, suffix: "%");
+            dynamicMapEnableAirShip = CustomOption.Create(504, Types.General, "Airship", 0f, 0f, 100f, 1f, dynamicMap, suffix: "%");
+            dynamicMapEnableSubmerged = CustomOption.Create(505, Types.General, "Submerged", 0f, 0f, 100f, 1f, dynamicMap, suffix: "%");
+            dynamicMapSeparateSettings = CustomOption.Create(509, Types.General, "Use Random Map Setting Presets", false, dynamicMap);
 
             blockedRolePairings.Add((byte)RoleId.Vampire, new [] { (byte)RoleId.Warlock});
             blockedRolePairings.Add((byte)RoleId.Warlock, new [] { (byte)RoleId.Vampire});

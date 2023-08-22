@@ -1530,7 +1530,6 @@ public class HudManagerUpdate
     }
 
     private static TMPro.TextMeshPro[] settingsTMPs = new TMPro.TextMeshPro[4];
-    private static GameObject settingsBackground;
 
     static PassiveButton toggleSettingsButton;
     static GameObject toggleSettingsButtonObject;

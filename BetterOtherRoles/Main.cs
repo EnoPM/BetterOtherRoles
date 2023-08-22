@@ -31,7 +31,7 @@ namespace BetterOtherRoles
     {
         public const string Name = "Better Other Roles";
         public const string Id = "betterohterroles.eno.pm";
-        public const string VersionString = "1.4.3";
+        public const string VersionString = "1.4.4";
 
         public static Version Version = Version.Parse(VersionString);
         internal static BepInEx.Logging.ManualLogSource Logger;
@@ -54,38 +54,6 @@ namespace BetterOtherRoles
         public static ConfigEntry<ushort> Port { get; set; }
         public static ConfigEntry<string> ShowPopUpVersion { get; set; }
 
-        public static Sprite ModStamp;
-
-        public static IRegionInfo[] defaultRegions;
-
-
-        // This is part of the Mini.RegionInstaller, Licensed under GPLv3
-        // file="RegionInstallPlugin.cs" company="miniduikboot">
-        public static void UpdateRegions() {
-            ServerManager serverManager = FastDestroyableSingleton<ServerManager>.Instance;
-            var regions = new IRegionInfo[] {
-                new StaticHttpRegionInfo("Custom", StringNames.NoTranslation, Ip.Value, new Il2CppReferenceArray<ServerInfo>(new ServerInfo[1] { new ServerInfo("Custom", Ip.Value, Port.Value, false) })).CastFast<IRegionInfo>()
-            };
-            
-            IRegionInfo currentRegion = serverManager.CurrentRegion;
-            Logger.LogInfo($"Adding {regions.Length} regions");
-            foreach (IRegionInfo region in regions) {
-                if (region == null) 
-                    Logger.LogError("Could not add region");
-                else {
-                    if (currentRegion != null && region.Name.Equals(currentRegion.Name, StringComparison.OrdinalIgnoreCase)) 
-                        currentRegion = region;               
-                    serverManager.AddOrUpdateRegion(region);
-                }
-            }
-
-            // AU remembers the previous region that was set, so we need to restore it
-            if (currentRegion != null) {
-                Logger.LogDebug("Resetting previous region");
-                serverManager.SetRegion(currentRegion);
-            }
-        }
-
         public override void Load() {
             Logger = Log;
             Instance = this;
@@ -100,14 +68,6 @@ namespace BetterOtherRoles
             EnableSoundEffects = Config.Bind("Custom", "Enable Sound Effects", true);
             EnableHorseMode = Config.Bind("Custom", "Enable Horse Mode", false);
             ShowPopUpVersion = Config.Bind("Custom", "Show PopUp", "0");
-            
-            Log.LogWarning($"Local options initialized");
-            
-            Ip = Config.Bind("Custom", "Custom Server IP", "127.0.0.1");
-            Port = Config.Bind("Custom", "Custom Server Port", (ushort)22023);
-            defaultRegions = ServerManager.DefaultRegions;
-
-            UpdateRegions();
 
             DebugMode = Config.Bind("Custom", "Enable Debug Mode", "false");
             Harmony.PatchAll();
@@ -122,7 +82,7 @@ namespace BetterOtherRoles
 
             EventUtility.Load();
             SubmergedCompatibility.Initialize();
-            AddComponent<ModUpdateBehaviour>();
+            //AddComponent<ModUpdateBehaviour>();
             Modules.MainMenuPatch.addSceneChangeCallbacks();
             
             AutoloadAttribute.Initialize();
@@ -184,7 +144,7 @@ namespace BetterOtherRoles
                 playerControl.NetTransform.enabled = false;
                 playerControl.SetName(RandomString(10));
                 playerControl.SetColor((byte) random.Next(Palette.PlayerColors.Length));
-                GameData.Instance.RpcSetTasks(playerControl.PlayerId, new byte[0]);
+                GameData.Instance.RpcSetTasks(playerControl.PlayerId, Array.Empty<byte>());
             }
 
             // Terminate round

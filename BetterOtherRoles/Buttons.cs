@@ -64,6 +64,8 @@ namespace BetterOtherRoles
         private static CustomButton hunterArrowButton;
         private static CustomButton huntedShieldButton;
         private static CustomButton undertakerDragButton;
+        public static CustomButton stickyBomberButton;
+        public static CustomButton stickyBomberTransferButton;
 
         public static Dictionary<byte, List<CustomButton>> deputyHandcuffedButtons = null;
         public static PoolablePlayer targetDisplay;
@@ -149,6 +151,9 @@ namespace BetterOtherRoles
             huntedShieldButton.MaxTimer = Hunted.shieldCooldown;
             defuseButton.MaxTimer = 0f;
             defuseButton.Timer = 0f;
+            stickyBomberButton.MaxTimer = StickyBomber.BombCooldown;
+            stickyBomberTransferButton.MaxTimer = 1f;
+            stickyBomberTransferButton.Timer = 0f;
 
             timeMasterShieldButton.EffectDuration = TimeMaster.shieldDuration;
             hackerButton.EffectDuration = Hacker.duration;
@@ -168,6 +173,7 @@ namespace BetterOtherRoles
             huntedShieldButton.EffectDuration = Hunted.shieldDuration;
             defuseButton.EffectDuration = Bomber.defuseDuration;
             bomberButton.EffectDuration = Bomber.destructionTime + Bomber.bombActiveAfter;
+            stickyBomberButton.EffectDuration = StickyBomber.Duration;
             // Already set the timer to the max, as the button is enabled during the game and not available at the start
             lightsOutButton.Timer = lightsOutButton.MaxTimer;
             zoomOutButton.MaxTimer = 0f;
@@ -2083,6 +2089,97 @@ namespace BetterOtherRoles
                 () => { }, // Action OnEffectEnds
                 false, // Bool mirror = false
                 "" // String buttonText = ""
+            );
+            
+            stickyBomberButton = new CustomButton(
+                () => {
+                    if (!StickyBomber.CurrentTarget) return;
+                    var murder = Helpers.checkMuderAttempt(StickyBomber.Player, StickyBomber.CurrentTarget);
+                    if (murder == MurderAttemptResult.PerformKill)
+                    {
+                        StickyBomber.RpcGiveBomb(StickyBomber.CurrentTarget.PlayerId);
+                        SoundEffectsManager.play("trapperTrap");
+                        stickyBomberButton.HasEffect = true;
+                        __instance.StartCoroutine(Effects.Lerp(StickyBomber.Duration,
+                            new Action<float>(
+                                p =>
+                                {
+                                    if (p != 1f) return;
+                                    if (StickyBomber.Player == null || StickyBomber.Player.Data.IsDead || StickyBomber.StuckPlayer == null || StickyBomber.StuckPlayer.Data.IsDead) return;
+                                    Helpers.checkMurderAttemptAndKill(StickyBomber.Player, StickyBomber.StuckPlayer, showAnimation: false);
+                                    var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
+                                    writer.Write(CachedPlayer.LocalPlayer.PlayerId);
+                                    writer.Write((byte)RPCProcedure.GhostInfoTypes.DeathReasonAndKiller);
+                                    writer.Write(StickyBomber.StuckPlayer.PlayerId);
+                                    writer.Write((byte)DeadPlayer.CustomDeathReason.StickyBomb);
+                                    writer.Write(StickyBomber.Player.PlayerId);
+                                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                                    GameHistory.overrideDeathReasonAndKiller(StickyBomber.StuckPlayer, DeadPlayer.CustomDeathReason.StickyBomb, killer: StickyBomber.Player);
+                                    StickyBomber.RpcGiveBomb(byte.MaxValue);
+                                })));
+                    } else if (murder == MurderAttemptResult.BlankKill)
+                    {
+                        stickyBomberButton.HasEffect = false;
+                        stickyBomberButton.Timer = 0.5f;
+                    }
+                    else
+                    {
+                        stickyBomberButton.HasEffect = false;
+                        stickyBomberButton.Timer = 0.5f;
+                    }
+                },
+                () => { return StickyBomber.Player != null && StickyBomber.Player == CachedPlayer.LocalPlayer.PlayerControl && !CachedPlayer.LocalPlayer.Data.IsDead; },
+                () => { return CachedPlayer.LocalPlayer.PlayerControl.CanMove && StickyBomber.CurrentTarget != null && StickyBomber.StuckPlayer == null; },
+                () => { stickyBomberButton.Timer = stickyBomberButton.MaxTimer; },
+                StickyBomber.StickyButton,
+                CustomButton.ButtonPositions.upperRowLeft,
+                __instance,
+                null,
+                true,
+                CustomOptionHolder.StickyBomberDuration.getFloat(),
+                () => {
+                    stickyBomberButton.Timer = stickyBomberButton.MaxTimer;
+                    stickyBomberButton.isEffectActive = false;
+                    stickyBomberButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
+                }
+            );
+            
+            stickyBomberTransferButton = new CustomButton(
+                () => {
+                    if (!StickyBomber.CurrentTransferTarget) return;
+                    if (Helpers.checkMuderAttempt(StickyBomber.Player, StickyBomber.CurrentTransferTarget, showShieldAnimation: false) == MurderAttemptResult.PerformKill)
+                    {
+                        if (StickyBomber.CurrentTransferTarget == StickyBomber.Player &&
+                            !StickyBomber.CanReceiveBomb)
+                        {
+                            Helpers.checkMurderAttemptAndKill(StickyBomber.Player, StickyBomber.StuckPlayer, showAnimation: false);
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
+                            writer.Write(CachedPlayer.LocalPlayer.PlayerId);
+                            writer.Write((byte)RPCProcedure.GhostInfoTypes.DeathReasonAndKiller);
+                            writer.Write(StickyBomber.StuckPlayer.PlayerId);
+                            writer.Write((byte)DeadPlayer.CustomDeathReason.StickyBomb);
+                            writer.Write(StickyBomber.Player.PlayerId);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                            GameHistory.overrideDeathReasonAndKiller(StickyBomber.StuckPlayer, DeadPlayer.CustomDeathReason.StickyBomb, killer: StickyBomber.Player);
+                            StickyBomber.RpcGiveBomb(byte.MaxValue);
+                        }
+                        else
+                        {
+                            StickyBomber.RpcGiveBomb(StickyBomber.CurrentTransferTarget.PlayerId);
+                            SoundEffectsManager.play("trapperTrap");
+                            stickyBomberButton.Timer = 1f;
+                        }
+                        
+                    }
+                },
+                () => { return StickyBomber.StuckPlayer != null && StickyBomber.StuckPlayer == CachedPlayer.LocalPlayer.PlayerControl && StickyBomber.RemainingDelay <= 0f && !CachedPlayer.LocalPlayer.Data.IsDead; },
+                () => { return CachedPlayer.LocalPlayer.PlayerControl.CanMove && StickyBomber.CurrentTransferTarget != null; },
+                () => {  },
+                StickyBomber.StickyTransferButton,
+                new Vector3(0.9f, -0.06f, 0),
+                __instance,
+                null,
+                mirror: true
             );
 
             // Set the default (or settings from the previous game) timers / durations when spawning the buttons

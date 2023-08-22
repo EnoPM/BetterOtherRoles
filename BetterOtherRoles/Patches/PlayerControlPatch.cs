@@ -13,6 +13,7 @@ using BetterOtherRoles.CustomGameModes;
 using static UnityEngine.GraphicsBuffer;
 using AmongUs.GameOptions;
 using BetterOtherRoles.Modules;
+using BetterOtherRoles.UI;
 using InnerNet;
 using Sentry.Internal.Extensions;
 
@@ -228,6 +229,34 @@ namespace BetterOtherRoles.Patches {
             Vampire.targetNearGarlic = targetNearGarlic;
             Vampire.currentTarget = target;
             setPlayerOutline(Vampire.currentTarget, Vampire.color);
+        }
+
+        private static void StickyBomberSetTarget()
+        {
+            if (StickyBomber.Player == null) return;
+            if (StickyBomber.Player == CachedPlayer.LocalPlayer.PlayerControl)
+            {
+                if (Spy.spy != null && Spy.impostorsCanKillAnyone) {
+                    StickyBomber.CurrentTarget = setTarget(false, true);
+                }
+                else {
+                    StickyBomber.CurrentTarget = setTarget(true, true, new List<PlayerControl>() { Spy.spy, Sidekick.wasTeamRed ? Sidekick.sidekick : null, Jackal.wasTeamRed ? Jackal.jackal : null });
+                }
+
+                if (StickyBomber.CurrentTarget)
+                {
+                    setPlayerOutline(StickyBomber.CurrentTarget, StickyBomber.Color);
+                }
+            }
+
+            if (StickyBomber.StuckPlayer == CachedPlayer.LocalPlayer.PlayerControl)
+            {
+                StickyBomber.CurrentTransferTarget = setTarget(false, true);
+                if (StickyBomber.CurrentTransferTarget)
+                {
+                    setPlayerOutline(StickyBomber.CurrentTransferTarget, StickyBomber.Color);
+                }
+            }
         }
 
         static void jackalSetTarget() {
@@ -712,6 +741,30 @@ namespace BetterOtherRoles.Patches {
             }
             if (numberOfTasks <= Snitch.taskCountForReveal) Snitch.isRevealed = true;
         }
+        
+        private static void StickyBomberUpdate()
+        {
+            if (StickyBomber.Player == null) return;
+            if (StickyBomber.RemainingDelay > 0f)
+            {
+                StickyBomber.RemainingDelay -= Time.fixedDeltaTime;
+            }
+
+            if (StickyBomber.RemainingTime > 0f)
+            {
+                StickyBomber.RemainingTime -= Time.fixedDeltaTime;
+            }
+
+            if (StickyBomber.StuckPlayer == CachedPlayer.LocalPlayer.PlayerControl && StickyBomber.RemainingDelay <= 0f)
+            {
+                UIManager.StickyBombPanel?.SetActive(true);
+                UIManager.StickyBombPanel?.UpdateTimer(StickyBomber.RemainingTime);
+            }
+            else
+            {
+                UIManager.StickyBombPanel?.SetActive(false);
+            }
+        }
 
         static void bountyHunterUpdate() {
             if (BountyHunter.bountyHunter == null || CachedPlayer.LocalPlayer.PlayerControl != BountyHunter.bountyHunter) return;
@@ -941,6 +994,7 @@ namespace BetterOtherRoles.Patches {
                     if (entry.Key.killerIfExisting != null && entry.Key.killerIfExisting.PlayerId == CachedPlayer.LocalPlayer.PlayerId) {
                         Helpers.handleVampireBiteOnBodyReport(); // Manually call Vampire handling, since the CmdReportDeadBody Prefix won't be called
                         Helpers.HandleUndertakerDropOnBodyReport();
+                        Helpers.HandleStickyBomberExplodeOnBodyReport();
                         RPCProcedure.uncheckedCmdReportDeadBody(entry.Key.killerIfExisting.PlayerId, entry.Key.player.PlayerId);
 
                         MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.UncheckedCmdReportDeadBody, Hazel.SendOption.Reliable, -1);
@@ -980,6 +1034,7 @@ namespace BetterOtherRoles.Patches {
                 HudManagerStartPatch.witchSpellButton.MaxTimer = (Witch.cooldown + Witch.currentCooldownAddition) * multiplier;
                 HudManagerStartPatch.ninjaButton.MaxTimer = Ninja.cooldown * multiplier;
                 HudManagerStartPatch.thiefKillButton.MaxTimer = Thief.cooldown * multiplier;
+                HudManagerStartPatch.stickyBomberButton.MaxTimer = StickyBomber.BombCooldown * multiplier;
             }
         }
 
@@ -1101,6 +1156,9 @@ namespace BetterOtherRoles.Patches {
                 UndertakerSetTarget();
                 UndertakerCanDropTarget();
                 UndertakerUpdate();
+                // StickyBomber
+                StickyBomberSetTarget();
+                StickyBomberUpdate();
                 // Eraser
                 eraserSetTarget();
                 // Engineer
@@ -1190,6 +1248,7 @@ namespace BetterOtherRoles.Patches {
             if (HideNSeek.isHideNSeekGM) return false;
             Helpers.handleVampireBiteOnBodyReport();
             Helpers.HandleUndertakerDropOnBodyReport();
+            Helpers.HandleStickyBomberExplodeOnBodyReport();
             return true;
         }
     }

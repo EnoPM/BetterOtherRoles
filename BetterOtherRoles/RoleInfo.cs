@@ -76,6 +76,7 @@ namespace BetterOtherRoles
         public static RoleInfo fallen = new RoleInfo("Fallen", Fallen.Color, "You are fallen",
             "A thief stole your role", RoleId.Fallen, true);
         public static RoleInfo undertaker = new RoleInfo("Undertaker", Undertaker.Color, "Drag bodies to hide them", "Drag bodies to hide them", RoleId.Undertaker);
+        public static RoleInfo stickyBomber = new RoleInfo("Sticky Bomber", StickyBomber.Color, "Stick bomb to crewmates", "Stick bomb to crewmates", RoleId.StickyBomber);
         
         public static RoleInfo hunter = new RoleInfo("Hunter", Palette.ImpostorRed, Helpers.cs(Palette.ImpostorRed, "Seek and kill everyone"), "Seek and kill everyone", RoleId.Impostor);
         public static RoleInfo hunted = new RoleInfo("Hunted", Color.white, "Hide", "Hide", RoleId.Crewmate);
@@ -155,6 +156,7 @@ namespace BetterOtherRoles
             shifter,
             undertaker,
             fallen,
+            stickyBomber,
         };
 
         public static List<RoleInfo> getRoleInfoForPlayer(PlayerControl p, bool showModifier = true) {
@@ -204,6 +206,7 @@ namespace BetterOtherRoles
             if (p == Ninja.ninja) infos.Add(ninja);
             if (p == Bomber.bomber) infos.Add(bomber);
             if (p == Undertaker.Player) infos.Add(undertaker);
+            if (p == StickyBomber.Player) infos.Add(stickyBomber);
             if (p == Detective.detective) infos.Add(detective);
             if (p == TimeMaster.timeMaster) infos.Add(timeMaster);
             if (p == Medic.medic) infos.Add(medic);
@@ -277,6 +280,8 @@ namespace BetterOtherRoles
                         roleName = roleName + Helpers.cs(Arsonist.color, $" ({CachedPlayer.AllPlayers.Count(x => { return x.PlayerControl != Arsonist.arsonist && !x.Data.IsDead && !x.Data.Disconnected && !Arsonist.dousedPlayers.Any(y => y.PlayerId == x.PlayerId); })} left)");
                     if (p == Jackal.fakeSidekick)
                         roleName = Helpers.cs(Sidekick.color, $" (fake SK)") + roleName;
+                    if (p == StickyBomber.StuckPlayer)
+                        roleName = Helpers.cs(StickyBomber.Color, "\ud83d\udca3 ") + roleName;
 
                     // Death Reason on Ghosts
                     if (p.Data.IsDead) {
@@ -322,6 +327,9 @@ namespace BetterOtherRoles
                                     break;
                                 case DeadPlayer.CustomDeathReason.Arson:
                                     deathReasonString = $" - burnt by {Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName)}";
+                                    break;
+                                case DeadPlayer.CustomDeathReason.StickyBomb:
+                                    deathReasonString = $" - exploded by {Helpers.cs(killerColor, deadPlayer.killerIfExisting.Data.PlayerName)}";
                                     break;
                             }
                             roleName = roleName + deathReasonString;

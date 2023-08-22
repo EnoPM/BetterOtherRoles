@@ -125,6 +125,21 @@ namespace BetterOtherRoles {
             return res;
         }
 
+        public static void HandleStickyBomberExplodeOnBodyReport()
+        {
+            if (StickyBomber.Player == null || StickyBomber.StuckPlayer == null) return;
+            Helpers.checkMurderAttemptAndKill(StickyBomber.Player, StickyBomber.StuckPlayer, showAnimation: false);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
+            writer.Write(CachedPlayer.LocalPlayer.PlayerId);
+            writer.Write((byte)RPCProcedure.GhostInfoTypes.DeathReasonAndKiller);
+            writer.Write(StickyBomber.StuckPlayer.PlayerId);
+            writer.Write((byte)DeadPlayer.CustomDeathReason.StickyBomb);
+            writer.Write(StickyBomber.Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            GameHistory.overrideDeathReasonAndKiller(StickyBomber.StuckPlayer, DeadPlayer.CustomDeathReason.StickyBomb, killer: StickyBomber.Player);
+            StickyBomber.RpcGiveBomb(byte.MaxValue);
+        }
+
         public static void handleVampireBiteOnBodyReport() {
             // Murder the bitten player and reset bitten (regardless whether the kill was successful or not)
             Helpers.checkMurderAttemptAndKill(Vampire.vampire, Vampire.bitten, true, false);

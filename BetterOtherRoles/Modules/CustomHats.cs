@@ -228,8 +228,7 @@ namespace BetterOtherRoles.Modules {
         [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.HandleAnimation))]
         private static class PlayerPhysicsHandleAnimationPatch {
             private static void Postfix(PlayerPhysics __instance) {
-                if (!CustomHatViewDatas.ContainsKey(__instance.myPlayer.cosmetics.hat.Hat.name)) return;
-                HatViewData viewData = CustomHatViewDatas[__instance.myPlayer.cosmetics.hat.Hat.name];
+                if (!CustomHatViewDatas.TryGetValue(__instance.myPlayer.cosmetics.hat.Hat.name, out var viewData)) return;
                 AnimationClip currentAnimation = __instance.Animations.Animator.GetCurrentAnimation();
                 if (currentAnimation == __instance.Animations.group.ClimbUpAnim || currentAnimation == __instance.Animations.group.ClimbDownAnim) return;
                 HatParent hp = __instance.myPlayer.cosmetics.hat;

@@ -233,6 +233,8 @@ namespace BetterOtherRoles.Patches {
                 if (Snitch.snitch != null && !Snitch.needsUpdate && Snitch.snitch.Data.IsDead && Snitch.text != null) {
                     UnityEngine.Object.Destroy(Snitch.text);
                 }
+                
+                GameEvents.TriggerVotingCompleted();
             }
         }
 
@@ -768,7 +770,8 @@ namespace BetterOtherRoles.Patches {
         }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Update))]
-        class MeetingHudUpdatePatch {
+        class MeetingHudUpdatePatch
+        {
             static void Postfix(MeetingHud __instance) {
                 // Deactivate skip Button if skipping on emergency meetings is disabled
                 if (target == null && blockSkippingInEmergencyMeetings)

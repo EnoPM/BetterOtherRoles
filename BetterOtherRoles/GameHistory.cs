@@ -17,6 +17,7 @@ namespace BetterOtherRoles {
             WitchExile,
             Bomb,
             Arson,
+            StickyBomb,
         };
 
         public PlayerControl player;

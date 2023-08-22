@@ -66,6 +66,7 @@ namespace BetterOtherRoles
         Bomber,
         Fallen,
         Undertaker,
+        StickyBomber,
         Crewmate,
         Impostor,
         // Modifier ---
@@ -153,6 +154,7 @@ namespace BetterOtherRoles
         ShareRoom,
         UndertakerDragBody,
         UndertakerDropBody,
+        StickyBomberGiveBomb,
 
         // Gamemode
         SetGuesserGm,
@@ -162,6 +164,7 @@ namespace BetterOtherRoles
         // Other functionality
         ShareTimer,
         ShareGhostInfo,
+        ShareMeetingRandomizerSeed,
     }
 
     public static class RPCProcedure {
@@ -375,8 +378,11 @@ namespace BetterOtherRoles
                     case RoleId.Undertaker:
                         Undertaker.Player = player;
                         break;
+                    case RoleId.StickyBomber:
+                        StickyBomber.Player = player;
+                        break;
                     }
-        }
+                }
         }
 
         public static void setModifier(byte modifierId, byte playerId, byte flag) {
@@ -731,6 +737,8 @@ namespace BetterOtherRoles
             if (player == Witch.witch) Witch.clearAndReload();
             if (player == Ninja.ninja) Ninja.clearAndReload();
             if (player == Bomber.bomber) Bomber.clearAndReload();
+            if (player == Undertaker.Player) Undertaker.ClearAndReload();
+            if (player == StickyBomber.Player) StickyBomber.ClearAndReload();
 
             // Other roles
             if (player == Jester.jester) Jester.clearAndReload();
@@ -1061,6 +1069,7 @@ namespace BetterOtherRoles
             if (target == Warlock.warlock) Warlock.warlock = thief;
             if (target == BountyHunter.bountyHunter) BountyHunter.bountyHunter = thief;
             if (target == Undertaker.Player) Undertaker.Player = thief;
+            if (target == StickyBomber.Player) StickyBomber.Player = thief;
             if (target == Witch.witch) {
                 Witch.witch = thief;
                 if (MeetingHud.Instance) 
@@ -1508,6 +1517,10 @@ namespace BetterOtherRoles
                     var y = reader.ReadSingle();
                     var z = reader.ReadSingle();
                     Undertaker.DropBody(new Vector3(x, y, z));
+                    break;
+                case (byte)CustomRPC.StickyBomberGiveBomb:
+                    var stuckPlayerId = reader.ReadByte();
+                    StickyBomber.GiveBomb(stuckPlayerId);
                     break;
             }
         }

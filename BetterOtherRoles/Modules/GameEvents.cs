@@ -1,4 +1,5 @@
 ﻿using BetterOtherRoles.Players;
+using JetBrains.Annotations;
 
 namespace BetterOtherRoles.Modules;
 
@@ -32,10 +33,21 @@ public static class GameEvents
 
     public static void TriggerEndGame() => OnGameEnded?.Invoke();
 
+    public static event MeetingStarted? OnMeetingStarted;
+
+    public delegate void MeetingStarted();
+
+    public static void TriggerMeetingStarted() => OnMeetingStarted?.Invoke();
+
 
     public static event MeetingEndedHandler? OnMeetingEnded;
 
     public delegate void MeetingEndedHandler(CachedPlayer? playerExiled);
 
     public static void TriggerMeetingEnded(CachedPlayer? playerExiled) => OnMeetingEnded?.Invoke(playerExiled);
+
+    public static event VotingCompleted? OnVotingCompleted;
+    public delegate void VotingCompleted();
+
+    public static void TriggerVotingCompleted() => OnVotingCompleted?.Invoke();
 }

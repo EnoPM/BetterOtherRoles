@@ -39,6 +39,11 @@ public class BetterUIBehaviour : MonoBehaviour
                 BetterOtherRolesPlugin.Logger.LogMessage($"{go.name}: {go.transform.position} < {go.transform.parent?.name}");
             }
         }
+
+        if (InputManager.GetKeyDown(KeyCode.F7))
+        {
+            UIManager.StickyBombPanel?.Toggle();
+        }
 #endif
     }
 }

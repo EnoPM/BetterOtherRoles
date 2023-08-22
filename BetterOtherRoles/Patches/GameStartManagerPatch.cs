@@ -232,11 +232,11 @@ namespace BetterOtherRoles.Patches {
                         // 5 = Submerged
                         byte chosenMapId = 0;
                         List<float> probabilities = new List<float>();
-                        probabilities.Add(CustomOptionHolder.dynamicMapEnableSkeld.getSelection() / 10f);
-                        probabilities.Add(CustomOptionHolder.dynamicMapEnableMira.getSelection() / 10f);
-                        probabilities.Add(CustomOptionHolder.dynamicMapEnablePolus.getSelection() / 10f);
-                        probabilities.Add(CustomOptionHolder.dynamicMapEnableAirShip.getSelection() / 10f);
-                        probabilities.Add(CustomOptionHolder.dynamicMapEnableSubmerged.getSelection() / 10f);
+                        probabilities.Add(CustomOptionHolder.dynamicMapEnableSkeld.getFloat() / 100f);
+                        probabilities.Add(CustomOptionHolder.dynamicMapEnableMira.getFloat() / 100f);
+                        probabilities.Add(CustomOptionHolder.dynamicMapEnablePolus.getFloat() / 100f);
+                        probabilities.Add(CustomOptionHolder.dynamicMapEnableAirShip.getFloat() / 100f);
+                        probabilities.Add(CustomOptionHolder.dynamicMapEnableSubmerged.getFloat() / 100f);
 
                         // if any map is at 100%, remove all maps that are not!
                         if (probabilities.Contains(1.0f)) {

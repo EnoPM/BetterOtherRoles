@@ -304,6 +304,7 @@ namespace BetterOtherRoles.Modules
             return true;
         }
 
+        [HideFromIl2Cpp]
         private void UpdateFiles(string[] fileNames)
         {
             foreach (var fileName in fileNames)

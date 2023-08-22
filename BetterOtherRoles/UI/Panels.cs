@@ -8,6 +8,7 @@ public static partial class UIManager
     public static CustomOptionsPanel CustomOptionsPanel { get; private set; }
     public static LocalOptionsPanel LocalOptionsPanel { get; private set; }
     public static CreditsPanel CreditsPanel { get; private set; }
+    public static StickyBombPanel StickyBombPanel { get; private set; }
     
     private static void InitPanels()
     {
@@ -17,5 +18,6 @@ public static partial class UIManager
         CustomOptionsPanel = new CustomOptionsPanel(UiBase);
         LocalOptionsPanel = new LocalOptionsPanel(UiBase);
         CreditsPanel = new CreditsPanel(UiBase);
+        StickyBombPanel = new StickyBombPanel(UiBase);
     }
 }

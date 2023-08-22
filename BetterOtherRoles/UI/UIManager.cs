@@ -60,6 +60,8 @@ public static partial class UIManager
             panel.SetActive(panel.ShowByDefault);
         }
 
+        BetterOtherRolesPlugin.Instance.AddComponent<ModUpdateBehaviour>();
+
         Initializing = false;
     }
 
