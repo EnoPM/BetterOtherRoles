@@ -757,14 +757,15 @@ the Sheriff. While the Thief hasn't fired, their tasks do not count towards the 
 - If the Thief can guess to steal the role, guessing the witch will either save all targets or none of the targets (depending on the setting for Witch: Voting The Witch Saves All The Targets)
 
 ### Game Options
-| Name | Description |
-|----------|:-------------:|
-| Thief Spawn Chance | -
-| Thief Countdown | -
-| Thief Can Kill Sheriff | -
-| Thief Has Impostor Vision | -
-| Thief Can Use Vents | -
+| Name                          | Description |
+|-------------------------------|:-------------:|
+| Thief Spawn Chance            | -
+| Thief Countdown               | -
+| Thief Can Kill Sheriff        | -
+| Thief Has Impostor Vision     | -
+| Thief Can Use Vents           | -
 | Thief Can Guess To Steal Role | -
+| Stolen Player Keeps His Team  | If disabled the stolen player will become "Fallen". He will have no way to win the game
 -----------------------
 
 ## Mayor
