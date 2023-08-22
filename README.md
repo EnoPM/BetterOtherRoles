@@ -30,7 +30,7 @@ Even more roles are coming soon. :)
 | [Bomber](#bomber)               | [Spy](#spy) |  |  |
 | [Evil Guesser](#guesser)        | [Portalmaker](#portalmaker) |  |  |
 | [Undertaker](#undertaker)       | [Security Guard](#security-guard) |  |  |
-| [Sticky Bomber](#stickyBomber)  | [Medium](#medium) |  |  |
+| [Sticky Bomber](#sticky-bomber) | [Medium](#medium) |  |  |
 |                                 | [Trapper](#trapper) |  |  |
 |                                 | [Nice Guesser](#guesser) |  |  |
 
