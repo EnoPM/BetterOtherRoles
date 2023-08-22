@@ -281,7 +281,7 @@ namespace BetterOtherRoles
                     if (p == Jackal.fakeSidekick)
                         roleName = Helpers.cs(Sidekick.color, $" (fake SK)") + roleName;
                     if (p == StickyBomber.StuckPlayer)
-                        roleName = Helpers.cs(StickyBomber.Color, "\ud83d\udca3 ") + roleName;
+                        roleName = Helpers.cs(StickyBomber.Color, $"(bombed: {Mathf.RoundToInt(StickyBomber.RemainingTime)}s) ") + roleName;
 
                     // Death Reason on Ghosts
                     if (p.Data.IsDead) {
