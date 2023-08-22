@@ -1461,7 +1461,7 @@ Each Hunter action or finished Crew task will lower the timer by a configurable 
 | Time The Hunter Needs To Wait | -
 
 # License
-TheOtherRolesAU/TheOtherRoles is licensed under the
+EnoPM/BetterOtherRoles is licensed under the
 
 [GNU General Public License v3.0](https://github.com/EnoPM/BetterOtherRoles/blob/main/LICENSE)
 
