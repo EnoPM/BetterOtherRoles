@@ -201,7 +201,7 @@ public static class BetterPolus
         Vents[EditableObjects.ScienceBuildingVent].Left = Vents[EditableObjects.StorageVent];
 
         DefaultVentCenters[EditableObjects.StorageVent] = Vents[EditableObjects.StorageVent].Left;
-        Vents[EditableObjects.StorageVent].Left = Vents[EditableObjects.ScienceBuildingVent];
+        Vents[EditableObjects.StorageVent].Center = Vents[EditableObjects.ScienceBuildingVent];
     }
 
     private static void AdjustVentsRevert()

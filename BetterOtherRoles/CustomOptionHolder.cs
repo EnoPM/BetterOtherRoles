@@ -510,7 +510,7 @@ namespace BetterOtherRoles {
             StickyBomberCooldown = CustomOption.Create(5022, Types.Impostor, "Sticky Bomb Cooldown", 15f, 2.5f, 30f, 2.5f, StickyBomberSpawnRate, suffix: "s");
             StickyBomberFirstDelay = CustomOption.Create(5023, Types.Impostor, "Sticky Bomb First Delay", 5f, 0f, 20f, 1f, StickyBomberSpawnRate, suffix: "s");
             StickyBomberOtherDelay = CustomOption.Create(5024, Types.Impostor, "Sticky Bomb Other Delay", 5f, 0f, 20f, 1f, StickyBomberSpawnRate, suffix: "s");
-            StickyBomberDuration = CustomOption.Create(5025, Types.Impostor, "Sticky Bomb Timer", 5f, 0f, 30f, 1f, StickyBomberSpawnRate, suffix: "s");
+            StickyBomberDuration = CustomOption.Create(5025, Types.Impostor, "Sticky Bomb Timer", 30f, 5f, 60f, 2.5f, StickyBomberSpawnRate, suffix: "s");
             StickyBomberCanReceiveBomb = CustomOption.Create(5026, Types.Impostor, "Sticky Bomber Can Receive His Own Bomb", false, StickyBomberSpawnRate);
             
             guesserSpawnRate = CustomOption.Create(310, Types.Neutral, cs(Guesser.color, "Guesser"), rates, null, true);

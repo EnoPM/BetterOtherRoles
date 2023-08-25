@@ -298,9 +298,14 @@ namespace BetterOtherRoles.Patches {
                 enabled = false;
             else if (Janitor.janitor != null && Janitor.janitor == CachedPlayer.LocalPlayer.PlayerControl)
                 enabled = false;
+            else if (StickyBomber.Player != null && StickyBomber.Player == CachedPlayer.LocalPlayer.PlayerControl)
+                enabled = false;
             
             if (enabled) __instance.KillButton.Show();
-            else __instance.KillButton.Hide();
+            else
+            {
+                __instance.KillButton.Hide();
+            }
 
             if (Deputy.handcuffedKnows.ContainsKey(CachedPlayer.LocalPlayer.PlayerId) && Deputy.handcuffedKnows[CachedPlayer.LocalPlayer.PlayerId] > 0) __instance.KillButton.Hide();
         }

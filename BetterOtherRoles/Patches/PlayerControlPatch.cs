@@ -744,7 +744,7 @@ namespace BetterOtherRoles.Patches {
         
         private static void StickyBomberUpdate()
         {
-            if (StickyBomber.Player == null) return;
+            if (StickyBomber.Player == null || AmongUsClient.Instance.GameState != InnerNetClient.GameStates.Started) return;
             if (StickyBomber.RemainingDelay > 0f)
             {
                 StickyBomber.RemainingDelay -= Time.fixedDeltaTime;

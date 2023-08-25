@@ -20,4 +20,12 @@ public static partial class UIManager
         CreditsPanel = new CreditsPanel(UiBase);
         StickyBombPanel = new StickyBombPanel(UiBase);
     }
+
+    public static void CloseAllPanels()
+    {
+        CustomOptionsPanel.SetActive(false);
+        LocalOptionsPanel.SetActive(false);
+        CreditsPanel.SetActive(false);
+        StickyBombPanel.SetActive(false);
+    }
 }

@@ -45,5 +45,12 @@ public static class CustomRegions
             {
                 new("Http-1", "https://au-as.duikbo.at", 443, false)
             })).CastFast<IRegionInfo>(),
+        new StaticHttpRegionInfo("<color=#C7B816FF>BOR [EU]</color>",
+            StringNames.NoTranslation,
+            "https://amongus-eu.eno.pm",
+            new Il2CppReferenceArray<ServerInfo>(new ServerInfo[1]
+            {
+                new("Http-1", "https://amongus-eu.eno.pm", 443, false)
+            })).CastFast<IRegionInfo>(),
     };
 }
