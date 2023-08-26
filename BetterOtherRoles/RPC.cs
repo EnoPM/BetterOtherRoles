@@ -1522,6 +1522,9 @@ namespace BetterOtherRoles
                     var stuckPlayerId = reader.ReadByte();
                     StickyBomber.GiveBomb(stuckPlayerId);
                     break;
+                case (byte)CustomRPC.ShareMeetingRandomizerSeed:
+                    MeetingRandomizer.SetSeed(reader.ReadInt32());
+                    break;
             }
         }
     }

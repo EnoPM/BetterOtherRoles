@@ -17,6 +17,11 @@ public static class MeetingRandomizer
         GameEvents.OnMeetingStarted += Start;
     }
 
+    public static void SetSeed(int seed)
+    {
+        _random = new Random(seed);
+    }
+
     private static void Start()
     {
         if (!CustomOptionHolder.RandomizePlayersInMeeting.getBool()) return;
@@ -48,6 +53,6 @@ public static class MeetingRandomizer
         var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareMeetingRandomizerSeed, Hazel.SendOption.Reliable, -1);
         writer.Write(seed);
         AmongUsClient.Instance.FinishRpcImmediately(writer);
-        _random = new Random(seed);
+        SetSeed(seed);
     }
 }
