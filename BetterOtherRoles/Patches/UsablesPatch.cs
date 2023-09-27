@@ -14,6 +14,31 @@ using BetterOtherRoles.CustomGameModes;
 using AmongUs.GameOptions;
 
 namespace BetterOtherRoles.Patches {
+    // HACK ¯\_(ツ)_/¯ but it works !
+    [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Awake))]
+    public static class VentStartPatch
+    {
+        public class VentKeybind: MonoBehaviour
+        {
+            private void Update()
+            {
+                if (FastDestroyableSingleton<HudManager>.Instance.ImpostorVentButton.enabled && Rewired.ReInput.players.GetPlayer(0).GetButtonDown("UseVent"))
+                {
+                    FastDestroyableSingleton<HudManager>.Instance.ImpostorVentButton.DoClick();
+                }
+            }
+        }
+
+        static VentStartPatch()
+        {
+            ClassInjector.RegisterTypeInIl2Cpp<VentKeybind>();
+        }
+
+        public static void Postfix()
+        {
+            new GameObject().AddComponent<VentKeybind>();
+        }
+    }
 
     [HarmonyPatch(typeof(Vent), nameof(Vent.CanUse))]
     public static class VentCanUsePatch
