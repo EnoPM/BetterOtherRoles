@@ -33,7 +33,7 @@ public static class DevConfig
         DisableEndGameConditions = true;
         DisablePlayerRequirementToLaunch = true;
         CurrentGuid = Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId;
-        Flags = new Dictionary<string, string> { { "UNLOCK_ALL_COSMETICS", "true" }, { "LOBBY_NAME_COLOR", "rainbow" } };
+        Flags = new Dictionary<string, string>();
 #endif
     }
 
