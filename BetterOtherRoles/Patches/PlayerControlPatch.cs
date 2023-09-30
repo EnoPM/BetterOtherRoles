@@ -427,7 +427,7 @@ namespace BetterOtherRoles.Patches {
         }
 
         static void impostorSetTarget() {
-            if (!CachedPlayer.LocalPlayer.Data.Role.IsImpostor ||!CachedPlayer.LocalPlayer.PlayerControl.CanMove || CachedPlayer.LocalPlayer.Data.IsDead) { // !isImpostor || !canMove || isDead
+            if (!CachedPlayer.LocalPlayer.Data.Role.IsImpostor || !CachedPlayer.LocalPlayer.PlayerControl.CanMove || CachedPlayer.LocalPlayer.Data.IsDead || (CachedPlayer.LocalPlayer.PlayerControl == Undertaker.Player && Undertaker.DraggedBody != null)) { // !isImpostor || !canMove || isDead
                 FastDestroyableSingleton<HudManager>.Instance.KillButton.SetTarget(null);
                 return;
             }
