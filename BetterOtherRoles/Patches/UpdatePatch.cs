@@ -284,9 +284,6 @@ namespace BetterOtherRoles.Patches {
             
             if(Undertaker.Player && CachedPlayer.LocalPlayer.PlayerControl == Undertaker.Player && Undertaker.DraggedBody != null) 
             {
-                __instance.KillButton.graphic.color = Palette.DisabledClear;
-                __instance.KillButton.buttonLabelText.color = Palette.DisabledClear;
-                __instance.KillButton.cooldownTimerText.color = Palette.DisabledClear;
                 __instance.KillButton.graphic.material.SetFloat(Shader.PropertyToID("_Desat"), 1f);
                 return;
             }
@@ -298,7 +295,7 @@ namespace BetterOtherRoles.Patches {
                 enabled = false;
             else if (Janitor.janitor != null && Janitor.janitor == CachedPlayer.LocalPlayer.PlayerControl)
                 enabled = false;
-            else if (StickyBomber.Player != null && StickyBomber.Player == CachedPlayer.LocalPlayer.PlayerControl)
+            else if (StickyBomber.Player != null && StickyBomber.Player == CachedPlayer.LocalPlayer.PlayerControl && !StickyBomber.AllowKillButton)
                 enabled = false;
             
             if (enabled) __instance.KillButton.Show();

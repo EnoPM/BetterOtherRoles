@@ -20,7 +20,7 @@ public class StickyBombPanel : WrappedPanel
     public override bool CanClickThroughPanel => true;
     public override Color BackgroundColor => UIPalette.Transparent;
     public override bool AlwaysOnTop => false;
-    public override Positions Position => Positions.BottomCenter;
+    public override Positions Position => Positions.MiddleLeft;
 
     private Text _label;
 
@@ -45,7 +45,7 @@ public class StickyBombPanel : WrappedPanel
         var img = image.GetComponent<Image>();
         img.color = Palette.EnabledColor;
         img.sprite = StickyBomber.StickyButton;
-        _label = UIFactory.CreateLabel(imageContainer, "Title", "You have a sticky bomb, it will explode in 10 seconds.", TextAnchor.MiddleCenter,
+        _label = UIFactory.CreateLabel(imageContainer, "Title", "", TextAnchor.MiddleCenter,
             Palette.ImpostorRed, true, 28);
         _label.fontStyle = FontStyle.Bold;
         UIFactory.SetLayoutElement(_label.gameObject, minWidth: MinWidth, flexibleWidth: 0, minHeight: 40,
@@ -55,6 +55,6 @@ public class StickyBombPanel : WrappedPanel
     public void UpdateTimer(float timer)
     {
         var seconds = Mathf.RoundToInt(timer);
-        _label.text = $"You have a sticky bomb, it will explode in {seconds} seconds.";
+        _label.text = $"You have a sticky bomb{(StickyBomber.ShowRemainingTime ? $", it will explode in {seconds} seconds.": ".")}";
     }
 }

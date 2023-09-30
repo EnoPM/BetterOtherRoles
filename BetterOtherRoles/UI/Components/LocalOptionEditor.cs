@@ -37,7 +37,6 @@ public class LocalOptionEditor
     
     private void OnToggleValueChanged(bool value)
     {
-        System.Console.WriteLine($"entry: {_entry != null}");
         if (_entry != null)
         {
             _entry.Value = value;

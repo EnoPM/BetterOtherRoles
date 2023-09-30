@@ -1,7 +1,9 @@
 using System;
 using HarmonyLib;
 using System.Linq;
+using BetterOtherRoles.Eno;
 using BetterOtherRoles.Players;
+using BetterOtherRoles.UI;
 using BetterOtherRoles.Utilities;
 
 namespace BetterOtherRoles.Modules {
@@ -84,8 +86,13 @@ namespace BetterOtherRoles.Modules {
         [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
         public static class EnableChat {
             public static void Postfix(HudManager __instance) {
-                if (!__instance.Chat.isActiveAndEnabled && (AmongUsClient.Instance.NetworkMode == NetworkModes.FreePlay || (CachedPlayer.LocalPlayer.PlayerControl.isLover() && Lovers.enableChat)))
+                if (!__instance.Chat.isActiveAndEnabled &&
+                    (AmongUsClient.Instance.NetworkMode == NetworkModes.FreePlay ||
+                     (CachedPlayer.LocalPlayer.PlayerControl.isLover() && Lovers.enableChat)))
+                {
                     __instance.Chat.SetVisible(true);
+                }
+                UIManager.VersionHandshakePanel?.UpdateChecks();
             }
         }
 

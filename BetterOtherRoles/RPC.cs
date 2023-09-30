@@ -15,6 +15,7 @@ using BetterOtherRoles.Utilities;
 using BetterOtherRoles.CustomGameModes;
 using AmongUs.Data;
 using AmongUs.GameOptions;
+using BetterOtherRoles.Eno;
 using BetterOtherRoles.Modules;
 using UnityEngine.UIElements;
 
@@ -423,15 +424,6 @@ namespace BetterOtherRoles
                     Shifter.shifter = player;
                     break;
             }
-        }
-
-        public static void versionHandshake(int major, int minor, int build, int revision, Guid guid, int clientId) {
-            System.Version ver;
-            if (revision < 0) 
-                ver = new System.Version(major, minor, build);
-            else 
-                ver = new System.Version(major, minor, build, revision);
-            GameStartManagerPatch.playerVersions[clientId] = new GameStartManagerPatch.PlayerVersion(ver, guid);
         }
 
         public static void useUncheckedVent(int ventId, byte playerId, byte isEnter) {
@@ -1269,23 +1261,7 @@ namespace BetterOtherRoles
                     RPCProcedure.setModifier(modifierId, pId, flag);
                     break;
                 case (byte)CustomRPC.VersionHandshake:
-                    byte major = reader.ReadByte();
-                    byte minor = reader.ReadByte();
-                    byte patch = reader.ReadByte();
-                    float timer = reader.ReadSingle();
-                    if (!AmongUsClient.Instance.AmHost && timer >= 0f) GameStartManagerPatch.timer = timer;
-                    int versionOwnerId = reader.ReadPackedInt32();
-                    byte revision = 0xFF;
-                    Guid guid;
-                    if (reader.Length - reader.Position >= 17) { // enough bytes left to read
-                        revision = reader.ReadByte();
-                        // GUID
-                        byte[] gbytes = reader.ReadBytes(16);
-                        guid = new Guid(gbytes);
-                    } else {
-                        guid = new Guid(new byte[16]);
-                    }
-                    RPCProcedure.versionHandshake(major, minor, patch, revision == 0xFF ? -1 : revision, guid, versionOwnerId);
+                    VersionHandshake.HandleRpcHandshake(reader);
                     break;
                 case (byte)CustomRPC.UseUncheckedVent:
                     int ventId = reader.ReadPackedInt32();

@@ -1853,6 +1853,10 @@ namespace BetterOtherRoles
         public static float OtherDelay;
         public static float Duration;
         public static bool CanReceiveBomb;
+        public static bool ShieldedPlayerCanReceiveBomb;
+        public static bool AllowKillButton;
+        public static bool TriggerBothCooldown;
+        public static bool ShowRemainingTime;
         
         public static void ClearAndReload()
         {
@@ -1868,6 +1872,10 @@ namespace BetterOtherRoles
             OtherDelay = CustomOptionHolder.StickyBomberOtherDelay.getFloat();
             Duration = CustomOptionHolder.StickyBomberDuration.getFloat();
             CanReceiveBomb = CustomOptionHolder.StickyBomberCanReceiveBomb.getBool();
+            ShieldedPlayerCanReceiveBomb = CustomOptionHolder.StickyBomberCanGiveBombToShielded.getBool();
+            AllowKillButton = CustomOptionHolder.StickyBomberEnableKillButton.getBool();
+            TriggerBothCooldown = CustomOptionHolder.StickyBomberTriggerAllCooldowns.getBool();
+            ShowRemainingTime = CustomOptionHolder.StickyBomberShowTimer.getBool();
         }
         
         public static Sprite StickyButton => Helpers.loadSpriteFromResources("BetterOtherRoles.Resources.StickyBombButton.png", 115f);
@@ -1886,6 +1894,12 @@ namespace BetterOtherRoles
             if (playerId == byte.MaxValue)
             {
                 StuckPlayer = null;
+                if (Player != PlayerControl.LocalPlayer) return;
+                HudManagerStartPatch.stickyBomberButton.isEffectActive = false;
+                HudManagerStartPatch.stickyBomberButton.Timer = HudManagerStartPatch.stickyBomberButton.MaxTimer;
+                if (!TriggerBothCooldown) return;
+                var killCooldown = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown;
+                HudManager.Instance.KillButton.SetCoolDown(killCooldown, killCooldown);
                 return;
             }
             var player = Helpers.playerById(playerId);

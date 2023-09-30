@@ -529,16 +529,21 @@ The player who ends up with the bomb when the timer reaches zero will die.
 **NOTE:**
 - When a meeting is triggered the player who has the bomb will die instantly even if there is time before the explosion.
 - If the Sticky Bomber cannot receive the bomb, the player who tries to give it to him will die instantly.
+- If the option "Shielded Players Can Receive Bomb" is enabled a shield player can receive the sticky bomb but won't die à the end of timer if their shield is active.
 
 ### Game Options
-| Name                           | Description |
-|--------------------------------|:-------------:|
-| Sticky Bomber Spawn Chance     | -
-| Bomb Cooldown                  | -
-| Bomb First Delay               | -
-| Bomb Other Delay               | -
-| Bomb Duration Before Explosion | -
-| Sticky Bomber Can Receive Bomb | -
+| Name                              | Description |
+|-----------------------------------|:-------------:|
+| Sticky Bomber Spawn Chance        | -
+| Bomb Cooldown                     | -
+| Bomb First Delay                  | -
+| Bomb Other Delay                  | -
+| Bomb Duration Before Explosion    | -
+| Display Remaining Time            | -
+| Sticky Bomber Can Receive Bomb    | -
+| Shielded Players Can Receive Bomb | -
+| Has Kill Button | -
+| Trigger Both Cooldown | -
 -----------------------
 
 ## Guesser

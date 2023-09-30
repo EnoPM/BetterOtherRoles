@@ -866,30 +866,6 @@ namespace BetterOtherRoles
                 }
             );
 
-            garlicButton = new CustomButton(
-                () => {
-                    Vampire.localPlacedGarlic = true;
-                    var pos = CachedPlayer.LocalPlayer.transform.position;
-                    byte[] buff = new byte[sizeof(float) * 2];
-                    Buffer.BlockCopy(BitConverter.GetBytes(pos.x), 0, buff, 0*sizeof(float), sizeof(float));
-                    Buffer.BlockCopy(BitConverter.GetBytes(pos.y), 0, buff, 1*sizeof(float), sizeof(float));
-
-                    MessageWriter writer = AmongUsClient.Instance.StartRpc(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlaceGarlic, Hazel.SendOption.Reliable);
-                    writer.WriteBytesAndSize(buff);
-                    writer.EndMessage();
-                    RPCProcedure.placeGarlic(buff);
-                    SoundEffectsManager.play("garlic");
-                },
-                () => { return !Vampire.localPlacedGarlic && !CachedPlayer.LocalPlayer.Data.IsDead && Vampire.garlicsActive && !HideNSeek.isHideNSeekGM; },
-                () => { return CachedPlayer.LocalPlayer.PlayerControl.CanMove && !Vampire.localPlacedGarlic; },
-                () => { },
-                Vampire.getGarlicButtonSprite(),
-                new Vector3(0, -0.06f, 0),
-                __instance,
-                "ActionPlaceGarlic",
-                true
-            );
-
             portalmakerPlacePortalButton = new CustomButton(
                 () => {
                     portalmakerPlacePortalButton.Timer = portalmakerPlacePortalButton.MaxTimer;
@@ -2103,7 +2079,7 @@ namespace BetterOtherRoles
             stickyBomberButton = new CustomButton(
                 () => {
                     if (!StickyBomber.CurrentTarget) return;
-                    var murder = Helpers.checkMuderAttempt(StickyBomber.Player, StickyBomber.CurrentTarget);
+                    var murder = Helpers.checkMuderAttempt(StickyBomber.Player, StickyBomber.CurrentTarget, ignoreShield: StickyBomber.ShieldedPlayerCanReceiveBomb);
                     if (murder == MurderAttemptResult.PerformKill)
                     {
                         StickyBomber.RpcGiveBomb(StickyBomber.CurrentTarget.PlayerId);
@@ -2115,16 +2091,21 @@ namespace BetterOtherRoles
                                 {
                                     if (p != 1f) return;
                                     if (StickyBomber.Player == null || StickyBomber.Player.Data.IsDead || StickyBomber.StuckPlayer == null || StickyBomber.StuckPlayer.Data.IsDead) return;
-                                    Helpers.checkMurderAttemptAndKill(StickyBomber.Player, StickyBomber.StuckPlayer, showAnimation: false);
-                                    var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
-                                    writer.Write(CachedPlayer.LocalPlayer.PlayerId);
-                                    writer.Write((byte)RPCProcedure.GhostInfoTypes.DeathReasonAndKiller);
-                                    writer.Write(StickyBomber.StuckPlayer.PlayerId);
-                                    writer.Write((byte)DeadPlayer.CustomDeathReason.StickyBomb);
-                                    writer.Write(StickyBomber.Player.PlayerId);
-                                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                                    GameHistory.overrideDeathReasonAndKiller(StickyBomber.StuckPlayer, DeadPlayer.CustomDeathReason.StickyBomb, killer: StickyBomber.Player);
+                                    var killAttempt = Helpers.checkMurderAttemptAndKill(StickyBomber.Player, StickyBomber.StuckPlayer, showAnimation: false);
+                                    if (killAttempt == MurderAttemptResult.PerformKill)
+                                    {
+                                        var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
+                                        writer.Write(CachedPlayer.LocalPlayer.PlayerId);
+                                        writer.Write((byte)RPCProcedure.GhostInfoTypes.DeathReasonAndKiller);
+                                        writer.Write(StickyBomber.StuckPlayer.PlayerId);
+                                        writer.Write((byte)DeadPlayer.CustomDeathReason.StickyBomb);
+                                        writer.Write(StickyBomber.Player.PlayerId);
+                                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                                        GameHistory.overrideDeathReasonAndKiller(StickyBomber.StuckPlayer, DeadPlayer.CustomDeathReason.StickyBomb, killer: StickyBomber.Player);
+
+                                    }
                                     StickyBomber.RpcGiveBomb(byte.MaxValue);
+                                    
                                 })));
                     } else if (murder == MurderAttemptResult.BlankKill)
                     {
@@ -2154,30 +2135,57 @@ namespace BetterOtherRoles
                 buttonText: "Stick Bomb"
             );
             
+            garlicButton = new CustomButton(
+                () => {
+                    Vampire.localPlacedGarlic = true;
+                    var pos = CachedPlayer.LocalPlayer.transform.position;
+                    byte[] buff = new byte[sizeof(float) * 2];
+                    Buffer.BlockCopy(BitConverter.GetBytes(pos.x), 0, buff, 0*sizeof(float), sizeof(float));
+                    Buffer.BlockCopy(BitConverter.GetBytes(pos.y), 0, buff, 1*sizeof(float), sizeof(float));
+
+                    MessageWriter writer = AmongUsClient.Instance.StartRpc(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.PlaceGarlic, Hazel.SendOption.Reliable);
+                    writer.WriteBytesAndSize(buff);
+                    writer.EndMessage();
+                    RPCProcedure.placeGarlic(buff);
+                    SoundEffectsManager.play("garlic");
+                },
+                () => { return !Vampire.localPlacedGarlic && !CachedPlayer.LocalPlayer.Data.IsDead && Vampire.garlicsActive && !HideNSeek.isHideNSeekGM; },
+                () => { return CachedPlayer.LocalPlayer.PlayerControl.CanMove && !Vampire.localPlacedGarlic; },
+                () => { },
+                Vampire.getGarlicButtonSprite(),
+                new Vector3(0, -0.06f, 0),
+                __instance,
+                "ActionPlaceGarlic",
+                true
+            );
+            
             stickyBomberTransferButton = new CustomButton(
                 () => {
                     if (!StickyBomber.CurrentTransferTarget) return;
-                    if (Helpers.checkMuderAttempt(StickyBomber.Player, StickyBomber.CurrentTransferTarget, showShieldAnimation: false) == MurderAttemptResult.PerformKill)
+                    var murderAttempt = Helpers.checkMuderAttempt(StickyBomber.Player, StickyBomber.CurrentTransferTarget, showShieldAnimation: false, ignoreShield: StickyBomber.ShieldedPlayerCanReceiveBomb);
+                    if (murderAttempt == MurderAttemptResult.PerformKill)
                     {
                         if (StickyBomber.CurrentTransferTarget == StickyBomber.Player &&
                             !StickyBomber.CanReceiveBomb)
                         {
-                            Helpers.checkMurderAttemptAndKill(StickyBomber.Player, StickyBomber.StuckPlayer, showAnimation: false);
-                            var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
-                            writer.Write(CachedPlayer.LocalPlayer.PlayerId);
-                            writer.Write((byte)RPCProcedure.GhostInfoTypes.DeathReasonAndKiller);
-                            writer.Write(StickyBomber.StuckPlayer.PlayerId);
-                            writer.Write((byte)DeadPlayer.CustomDeathReason.StickyBomb);
-                            writer.Write(StickyBomber.Player.PlayerId);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            GameHistory.overrideDeathReasonAndKiller(StickyBomber.StuckPlayer, DeadPlayer.CustomDeathReason.StickyBomb, killer: StickyBomber.Player);
+                            if (Helpers.checkMurderAttemptAndKill(StickyBomber.Player, StickyBomber.StuckPlayer, showAnimation: false) == MurderAttemptResult.PerformKill)
+                            {
+                                var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
+                                writer.Write(CachedPlayer.LocalPlayer.PlayerId);
+                                writer.Write((byte)RPCProcedure.GhostInfoTypes.DeathReasonAndKiller);
+                                writer.Write(StickyBomber.StuckPlayer.PlayerId);
+                                writer.Write((byte)DeadPlayer.CustomDeathReason.StickyBomb);
+                                writer.Write(StickyBomber.Player.PlayerId);
+                                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                                GameHistory.overrideDeathReasonAndKiller(StickyBomber.StuckPlayer, DeadPlayer.CustomDeathReason.StickyBomb, killer: StickyBomber.Player);
+                            }
                             StickyBomber.RpcGiveBomb(byte.MaxValue);
                         }
                         else
                         {
                             StickyBomber.RpcGiveBomb(StickyBomber.CurrentTransferTarget.PlayerId);
                             SoundEffectsManager.play("trapperTrap");
-                            stickyBomberButton.Timer = 1f;
+                            stickyBomberTransferButton.Timer = 0.5f;
                         }
                         
                     }

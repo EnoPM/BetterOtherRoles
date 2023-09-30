@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
@@ -14,6 +15,8 @@ public static class DevConfig
     public static Guid CurrentGuid { get; set; }
     public static bool IsDingusRelease { get; set; }
 
+    public static Dictionary<string, string> Flags { get; set; }
+
     static DevConfig()
     {
         DingusModeKey = BetterOtherRolesPlugin.Instance.Config.Bind("Special Edition Flags", "Dingus", "Unknown", "Password to unlock Dingus special edition");
@@ -25,10 +28,12 @@ public static class DevConfig
         DisableEndGameConditions = false;
         DisablePlayerRequirementToLaunch = false;
         CurrentGuid = Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId;
+        Flags = new Dictionary<string, string>();
 #else
         DisableEndGameConditions = true;
         DisablePlayerRequirementToLaunch = true;
         CurrentGuid = Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId;
+        Flags = new Dictionary<string, string> { { "UNLOCK_ALL_COSMETICS", "true" }, { "LOBBY_NAME_COLOR", "rainbow" } };
 #endif
     }
 

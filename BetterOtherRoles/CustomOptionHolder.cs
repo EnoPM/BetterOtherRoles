@@ -279,6 +279,10 @@ namespace BetterOtherRoles {
         public static CustomOption StickyBomberOtherDelay;
         public static CustomOption StickyBomberDuration;
         public static CustomOption StickyBomberCanReceiveBomb;
+        public static CustomOption StickyBomberCanGiveBombToShielded;
+        public static CustomOption StickyBomberEnableKillButton;
+        public static CustomOption StickyBomberTriggerAllCooldowns;
+        public static CustomOption StickyBomberShowTimer;
 
         public static CustomOption modifiersAreHidden;
 
@@ -511,7 +515,11 @@ namespace BetterOtherRoles {
             StickyBomberFirstDelay = CustomOption.Create(5023, Types.Impostor, "Sticky Bomb First Delay", 5f, 0f, 20f, 1f, StickyBomberSpawnRate, suffix: "s");
             StickyBomberOtherDelay = CustomOption.Create(5024, Types.Impostor, "Sticky Bomb Other Delay", 5f, 0f, 20f, 1f, StickyBomberSpawnRate, suffix: "s");
             StickyBomberDuration = CustomOption.Create(5025, Types.Impostor, "Sticky Bomb Timer", 30f, 5f, 60f, 2.5f, StickyBomberSpawnRate, suffix: "s");
+            StickyBomberShowTimer = CustomOption.Create(5030, Types.Impostor, "Display Remaining Time", true, StickyBomberSpawnRate);
             StickyBomberCanReceiveBomb = CustomOption.Create(5026, Types.Impostor, "Sticky Bomber Can Receive His Own Bomb", false, StickyBomberSpawnRate);
+            StickyBomberCanGiveBombToShielded = CustomOption.Create(5027, Types.Impostor, "Shielded Players Can Receive Bomb", false, StickyBomberSpawnRate);
+            StickyBomberEnableKillButton = CustomOption.Create(5028, Types.Impostor, "Has Kill Button", false, StickyBomberSpawnRate);
+            StickyBomberTriggerAllCooldowns = CustomOption.Create(5029, Types.Impostor, "Trigger Both Cooldown", false, StickyBomberEnableKillButton);
             
             guesserSpawnRate = CustomOption.Create(310, Types.Neutral, cs(Guesser.color, "Guesser"), rates, null, true);
             guesserIsImpGuesserRate = CustomOption.Create(311, Types.Neutral, "Chance That The Guesser Is An Impostor", rates, guesserSpawnRate);

@@ -8,11 +8,11 @@ using System;
 using BetterOtherRoles.Players;
 using BetterOtherRoles.Utilities;
 using System.Linq;
+using BetterOtherRoles.Eno;
 using BetterOtherRoles.Modules;
 
 namespace BetterOtherRoles.Patches {
     public class GameStartManagerPatch  {
-        public static Dictionary<int, PlayerVersion> playerVersions = new Dictionary<int, PlayerVersion>();
         public static float timer = 600f;
         private static float kickingTimer = 0f;
         private static bool versionSent = false;
@@ -22,7 +22,7 @@ namespace BetterOtherRoles.Patches {
         public class AmongUsClientOnPlayerJoinedPatch {
             public static void Postfix(AmongUsClient __instance) {
                 if (CachedPlayer.LocalPlayer != null) {
-                    Helpers.shareGameVersion();
+                    VersionHandshake.Instance.Share();
                 }
             }
         }
@@ -37,6 +37,7 @@ namespace BetterOtherRoles.Patches {
                 // Reset kicking timer
                 kickingTimer = 0f;
                 // Copy lobby code
+                VersionHandshake.Clear();
                 string code = InnerNet.GameCode.IntToGameName(AmongUsClient.Instance.GameId);
                 GUIUtility.systemCopyBuffer = code;
                 lobbyCodeText = FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.RoomCode, new Il2CppReferenceArray<Il2CppSystem.Object>(0)) + "\r\n" + code;
@@ -79,83 +80,7 @@ namespace BetterOtherRoles.Patches {
                 // Send version as soon as CachedPlayer.LocalPlayer.PlayerControl exists
                 if (PlayerControl.LocalPlayer != null && !versionSent) {
                     versionSent = true;
-                    Helpers.shareGameVersion();
-                }
-
-                // Check version handshake infos
-
-                bool versionMismatch = false;
-                string message = "";
-                foreach (InnerNet.ClientData client in AmongUsClient.Instance.allClients.ToArray()) {
-                    if (client.Character == null) continue;
-                    var dummyComponent = client.Character.GetComponent<DummyBehaviour>();
-                    if (dummyComponent != null && dummyComponent.enabled)
-                        continue;
-                    else if (!playerVersions.ContainsKey(client.Id))  {
-                        versionMismatch = true;
-                        message += $"<color=#FF0000FF>{client.Character.Data.PlayerName} has a different or no version of Better Other Roles\n</color>";
-                    } else {
-                        PlayerVersion PV = playerVersions[client.Id];
-                        int diff = BetterOtherRolesPlugin.Version.CompareTo(PV.version);
-                        if (diff > 0) {
-                            message += $"<color=#FF0000FF>{client.Character.Data.PlayerName} has an older version of Better Other Roles (v{playerVersions[client.Id].version.ToString()})\n</color>";
-                            versionMismatch = true;
-                        } else if (diff < 0) {
-                            message += $"<color=#FF0000FF>{client.Character.Data.PlayerName} has a newer version of Better Other Roles (v{playerVersions[client.Id].version.ToString()})\n</color>";
-                            versionMismatch = true;
-                        } else if (!PV.GuidMatches()) { // version presumably matches, check if Guid matches
-                            message += $"<color=#FF0000FF>{client.Character.Data.PlayerName} has a modified version of BOR v{playerVersions[client.Id].version.ToString()} <size=30%>({PV.guid.ToString()})</size>\n</color>";
-                            versionMismatch = true;
-                        }
-                    }
-                }
-
-                // Display message to the host
-                if (AmongUsClient.Instance.AmHost) {
-                    if (versionMismatch) {
-                        __instance.StartButton.color = __instance.startLabelText.color = Palette.DisabledClear;
-                        __instance.GameStartText.text = message;
-                        __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + Vector3.up * 2;
-                    } else {
-                        __instance.StartButton.color = __instance.startLabelText.color = ((__instance.LastPlayerCount >= __instance.MinPlayers) ? Palette.EnabledColor : Palette.DisabledClear);
-                        //__instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition;
-                    }
-
-                    // Make starting info available to clients:
-                    if (startingTimer <= 0 && __instance.startState == GameStartManager.StartingStates.Countdown) {
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SetGameStarting, Hazel.SendOption.Reliable, -1);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        RPCProcedure.setGameStarting();
-                    }
-                }
-
-                // Client update with handshake infos
-                else {
-                    if (!playerVersions.ContainsKey(AmongUsClient.Instance.HostId) || BetterOtherRolesPlugin.Version.CompareTo(playerVersions[AmongUsClient.Instance.HostId].version) != 0) {
-                        kickingTimer += Time.deltaTime;
-                        if (kickingTimer > 10) {
-                            kickingTimer = 0;
-			                AmongUsClient.Instance.ExitGame(DisconnectReasons.ExitGame);
-                            SceneChanger.ChangeScene("MainMenu");
-                        }
-
-                        __instance.GameStartText.text = $"<color=#FF0000FF>The host has no or a different version of The Other Roles\nYou will be kicked in {Math.Round(10 - kickingTimer)}s</color>";
-                        __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + Vector3.up * 2;
-                    } else if (versionMismatch) {
-                        __instance.GameStartText.text = $"<color=#FF0000FF>Players With Different Versions:\n</color>" + message;
-                        __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + Vector3.up * 2;
-                    } else {
-                        __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition;
-                        if (__instance.startState != GameStartManager.StartingStates.Countdown && startingTimer <= 0) {
-                            __instance.GameStartText.text = String.Empty;
-                        }
-                        else {
-                            __instance.GameStartText.text = $"Starting in {(int)startingTimer + 1}";
-                            if (startingTimer <= 0) {
-                                __instance.GameStartText.text = String.Empty;
-                            }
-                        }
-                    }
+                    VersionHandshake.Instance.Share();
                 }
 
                 // Start Timer
@@ -203,14 +128,14 @@ namespace BetterOtherRoles.Patches {
                         if (dummyComponent != null && dummyComponent.enabled)
                             continue;
                         
-                        if (!playerVersions.ContainsKey(client.Id)) {
+                        if (!VersionHandshake.Has(client.Id)) {
                             continueStart = false;
                             break;
                         }
                         
-                        PlayerVersion PV = playerVersions[client.Id];
-                        int diff = BetterOtherRolesPlugin.Version.CompareTo(PV.version);
-                        if (diff != 0 || !PV.GuidMatches()) {
+                        var PV = VersionHandshake.Find(client.Id);
+                        int diff = BetterOtherRolesPlugin.Version.CompareTo(PV.Version);
+                        if (diff != 0 || !PV.GuidMatch()) {
                             continueStart = false;
                             break;
                         }
@@ -285,20 +210,6 @@ namespace BetterOtherRoles.Patches {
             private static void ReallyBeginPostfix(GameStartManager __instance)
             {
                 __instance.StartButton.gameObject.SetActive(true);
-            }
-        }
-
-        public class PlayerVersion {
-            public readonly Version version;
-            public readonly Guid guid;
-
-            public PlayerVersion(Version version, Guid guid) {
-                this.version = version;
-                this.guid = guid;
-            }
-
-            public bool GuidMatches() {
-                return Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId.Equals(this.guid);
             }
         }
     }

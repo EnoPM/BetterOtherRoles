@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
@@ -384,7 +385,7 @@ namespace BetterOtherRoles {
             return roleCouldUse;
         }
 
-        public static MurderAttemptResult checkMuderAttempt(PlayerControl killer, PlayerControl target, bool blockRewind = false, bool ignoreBlank = false, bool ignoreIfKillerIsDead = false, bool showShieldAnimation = true) {
+        public static MurderAttemptResult checkMuderAttempt(PlayerControl killer, PlayerControl target, bool blockRewind = false, bool ignoreBlank = false, bool ignoreIfKillerIsDead = false, bool showShieldAnimation = true, bool ignoreShield = false) {
             var targetRole = RoleInfo.getRoleInfoForPlayer(target, false).FirstOrDefault();
 
             // Modified vanilla checks
@@ -395,7 +396,7 @@ namespace BetterOtherRoles {
             if (GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek) return MurderAttemptResult.PerformKill;
 
             // Handle first kill attempt
-            if (FirstKillShield.Enabled && FirstKillShield.ShieldedPlayer == target) return MurderAttemptResult.SuppressKill;
+            if (!ignoreShield && FirstKillShield.Enabled && FirstKillShield.ShieldedPlayer == target) return MurderAttemptResult.SuppressKill;
 
             // Handle blank shot
             if (!ignoreBlank && Pursuer.blankedList.Any(x => x.PlayerId == killer.PlayerId)) {
@@ -409,7 +410,7 @@ namespace BetterOtherRoles {
             }
 
             // Block impostor shielded kill
-            if (Medic.shielded != null && Medic.shielded == target) {
+            if (!ignoreShield && Medic.shielded != null && Medic.shielded == target) {
                 if (showShieldAnimation)
                 {
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(killer.NetId, (byte)CustomRPC.ShieldedMurderAttempt, Hazel.SendOption.Reliable, -1);
@@ -427,7 +428,7 @@ namespace BetterOtherRoles {
             }
 
             // Block Time Master with time shield kill
-            else if (TimeMaster.shieldActive && TimeMaster.timeMaster != null && TimeMaster.timeMaster == target) {
+            else if (!ignoreShield && TimeMaster.shieldActive && TimeMaster.timeMaster != null && TimeMaster.timeMaster == target) {
                 if (!blockRewind) { // Only rewind the attempt was not called because a meeting startet 
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(killer.NetId, (byte)CustomRPC.TimeMasterRewindTime, Hazel.SendOption.Reliable, -1);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -443,7 +444,7 @@ namespace BetterOtherRoles {
             }
 
             // Block hunted with time shield kill
-            else if (Hunted.timeshieldActive.Contains(target.PlayerId)) {
+            else if (!ignoreShield && Hunted.timeshieldActive.Contains(target.PlayerId)) {
                 MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(killer.NetId, (byte)CustomRPC.HuntedRewindTime, Hazel.SendOption.Reliable, -1);
                 writer.Write(target.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -469,19 +470,6 @@ namespace BetterOtherRoles {
                 RPCProcedure.uncheckedMurderPlayer(killer.PlayerId, target.PlayerId, showAnimation ? Byte.MaxValue : (byte)0);
             }
             return murder;            
-        }
-    
-        public static void shareGameVersion() {
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.VersionHandshake, Hazel.SendOption.Reliable, -1);
-            writer.Write((byte)BetterOtherRolesPlugin.Version.Major);
-            writer.Write((byte)BetterOtherRolesPlugin.Version.Minor);
-            writer.Write((byte)BetterOtherRolesPlugin.Version.Build);
-            writer.Write(AmongUsClient.Instance.AmHost ? Patches.GameStartManagerPatch.timer : -1f);
-            writer.WritePacked(AmongUsClient.Instance.ClientId);
-            writer.Write((byte)(BetterOtherRolesPlugin.Version.Revision < 0 ? 0xFF : BetterOtherRolesPlugin.Version.Revision));
-            writer.Write(Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId.ToByteArray());
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            RPCProcedure.versionHandshake(BetterOtherRolesPlugin.Version.Major, BetterOtherRolesPlugin.Version.Minor, BetterOtherRolesPlugin.Version.Build, BetterOtherRolesPlugin.Version.Revision, Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId, AmongUsClient.Instance.ClientId);
         }
 
         public static List<PlayerControl> getKillerTeamMembers(PlayerControl player) {
@@ -605,6 +593,47 @@ namespace BetterOtherRoles {
                 ? Undertaker.DraggedBody.transform.position
                 : Vector3.zero;
             Undertaker.DropBody(position);
+        }
+        
+        public static Color ColorFromHex(string hexColor)
+        {
+            if (hexColor.IndexOf('#') != -1) hexColor = hexColor.Replace("#", string.Empty);
+
+            var red = 0;
+            var green = 0;
+            var blue = 0;
+            var alpha = 255;
+
+            switch (hexColor.Length)
+            {
+                case 8:
+                    red = int.Parse(hexColor.AsSpan(0, 2), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture);
+                    green = int.Parse(hexColor.AsSpan(2, 2), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture);
+                    blue = int.Parse(hexColor.AsSpan(4, 2), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture);
+                    alpha = int.Parse(hexColor.AsSpan(6, 2), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture);
+                    break;
+                case 6:
+                    red = int.Parse(hexColor.AsSpan(0, 2), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture);
+                    green = int.Parse(hexColor.AsSpan(2, 2), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture);
+                    blue = int.Parse(hexColor.AsSpan(4, 2), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture);
+                    break;
+                case 3:
+                    red = int.Parse(
+                        hexColor[0] + hexColor[0].ToString(),
+                        NumberStyles.AllowHexSpecifier,
+                        CultureInfo.InvariantCulture);
+                    green = int.Parse(
+                        hexColor[1] + hexColor[1].ToString(),
+                        NumberStyles.AllowHexSpecifier,
+                        CultureInfo.InvariantCulture);
+                    blue = int.Parse(
+                        hexColor[2] + hexColor[2].ToString(),
+                        NumberStyles.AllowHexSpecifier,
+                        CultureInfo.InvariantCulture);
+                    break;
+            }
+
+            return new Color(red / 255f, green / 255f, blue / 255f, alpha / 255f);
         }
     }
     

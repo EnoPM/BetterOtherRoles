@@ -22,7 +22,7 @@
    
 	<ItemGroup>
 	  <Reference Include="UniverseLib.IL2CPP">
-	    <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us - BetterOtherRoles2\BepInEx\plugins\BetterOtherRoles\UniverseLib.IL2CPP.dll</HintPath>
+	    <HintPath>libs\UniverseLib.IL2CPP.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
     <Target Name="CopyPlugins" AfterTargets="AfterBuild">

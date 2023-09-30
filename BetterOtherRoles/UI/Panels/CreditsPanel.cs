@@ -67,6 +67,9 @@ Brybry
 
 <b>Undertaker integration:</b>
 Thilladon
+
+<b>Custom key binds:</b>
+Dadoum
 ");
         borCredits.alignment = TextAnchor.MiddleCenter;
 
