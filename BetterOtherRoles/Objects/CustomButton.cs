@@ -32,7 +32,7 @@ namespace BetterOtherRoles.Objects {
         public Sprite Sprite;
         public HudManager hudManager;
         public bool mirror;
-        public KeyCode? hotkey;
+        public string actionName;
         private string buttonText;
         public bool isHandcuffed = false;
         private static readonly int Desat = Shader.PropertyToID("_Desat");
@@ -47,7 +47,7 @@ namespace BetterOtherRoles.Objects {
             public static readonly Vector3 upperRowFarLeft = new Vector3(-3f, 1f, 0f);
         }
 
-        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, KeyCode? hotkey, bool HasEffect, float EffectDuration, Action OnEffectEnds, bool mirror = false, string buttonText = "")
+        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, string? actionName, bool HasEffect, float EffectDuration, Action OnEffectEnds, bool mirror = false, string buttonText = "")
         {
             this.hudManager = hudManager;
             this.OnClick = OnClick;
@@ -61,7 +61,7 @@ namespace BetterOtherRoles.Objects {
             this.OnEffectEnds = OnEffectEnds;
             this.Sprite = Sprite;
             this.mirror = mirror;
-            this.hotkey = hotkey;
+            this.actionName = actionName;
             this.buttonText = buttonText;
             Timer = 16.2f;
             buttons.Add(this);
@@ -78,8 +78,8 @@ namespace BetterOtherRoles.Objects {
             setActive(false);
         }
 
-        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, KeyCode? hotkey, bool mirror = false, string buttonText = "")
-        : this(OnClick, HasButton, CouldUse, OnMeetingEnds, Sprite, PositionOffset, hudManager, hotkey, false, 0f, () => {}, mirror, buttonText) { }
+        public CustomButton(Action OnClick, Func<bool> HasButton, Func<bool> CouldUse, Action OnMeetingEnds, Sprite Sprite, Vector3 PositionOffset, HudManager hudManager, string? actionName, bool mirror = false, string buttonText = "")
+        : this(OnClick, HasButton, CouldUse, OnMeetingEnds, Sprite, PositionOffset, hudManager, actionName, false, 0f, () => {}, mirror, buttonText) { }
 
         public void onClickEvent()
         {
@@ -193,16 +193,6 @@ namespace BetterOtherRoles.Objects {
                 actionButton.OverrideText(buttonText);
             }
             actionButtonLabelText.enabled = showButtonText; // Only show the text if it's a kill button
-            if (hudManager.UseButton != null) {
-                Vector3 pos = hudManager.UseButton.transform.localPosition;
-                if (mirror) {
-                    float aspect = Camera.main.aspect;
-                    float safeOrthographicSize = CameraSafeArea.GetSafeOrthographicSize(Camera.main);
-                    float xpos = 0.05f - safeOrthographicSize * aspect * 1.70f;
-                    pos = new Vector3(xpos, pos.y, pos.z);
-                }
-                actionButton.transform.localPosition = pos + PositionOffset;
-            }
             if (CouldUse()) {
                 actionButtonRenderer.color = actionButtonLabelText.color = Palette.EnabledColor;
                 actionButtonMat.SetFloat(Desat, 0f);
@@ -226,8 +216,8 @@ namespace BetterOtherRoles.Objects {
         
             actionButton.SetCoolDown(Timer, (HasEffect && isEffectActive) ? EffectDuration : MaxTimer);
 
-            // Trigger OnClickEvent if the hotkey is being pressed down
-            if (hotkey.HasValue && Input.GetKeyDown(hotkey.Value)) onClickEvent();
+            // Trigger OnClickEvent if the hotkey is being pressed down (Rewired)
+            if (!actionName.IsNullOrWhiteSpace() && Rewired.ReInput.players.GetPlayer(0).GetButtonDown(actionName)) onClickEvent();
 
             // Deputy disable the button and display Handcuffs instead...
             if (Deputy.handcuffedPlayers.Contains(localPlayer.PlayerId)) {

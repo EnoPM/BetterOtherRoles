@@ -21,9 +21,9 @@ namespace BetterOtherRoles.Patches {
         public static bool Prefix(Vent __instance, ref float __result, [HarmonyArgument(0)] GameData.PlayerInfo pc, [HarmonyArgument(1)] ref bool canUse, [HarmonyArgument(2)] ref bool couldUse) {
             if (GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek) return true;
             float num = float.MaxValue;
-            PlayerControl @object = pc.Object;
+            PlayerControl player = pc.Object;
 
-            bool roleCouldUse = @object.roleCanUseVents();
+            bool roleCouldUse = player.roleCanUseVents();
 
             if (__instance.name.StartsWith("SealedVent_")) {
                 canUse = couldUse = false;
@@ -45,10 +45,10 @@ namespace BetterOtherRoles.Patches {
                         return canUse = couldUse = false;                    
                     case 14: // Lower Central
                         __result = float.MaxValue;
-                        couldUse = roleCouldUse && !pc.IsDead && (@object.CanMove || @object.inVent);
+                        couldUse = roleCouldUse && !pc.IsDead && (player.CanMove || player.inVent);
                         canUse = couldUse;
                         if (canUse) {
-                            Vector3 center = @object.Collider.bounds.center;
+                            Vector3 center = player.Collider.bounds.center;
                             Vector3 position = __instance.transform.position;
                             __result = Vector2.Distance(center, position);
                             canUse &= __result <= __instance.UsableDistance;
@@ -71,14 +71,14 @@ namespace BetterOtherRoles.Patches {
                 }
             }
 
-            couldUse = (@object.inVent || roleCouldUse) && !pc.IsDead && (@object.CanMove || @object.inVent);
+            couldUse = (player.inVent || roleCouldUse) && !pc.IsDead && (player.CanMove || player.inVent);
             canUse = couldUse;
             if (canUse)
             {
-                Vector3 center = @object.Collider.bounds.center;
+                Vector3 center = player.Collider.bounds.center;
                 Vector3 position = __instance.transform.position;
                 num = Vector2.Distance(center, position);
-                canUse &= (num <= usableDistance && (!PhysicsHelpers.AnythingBetween(@object.Collider, center, position, Constants.ShipOnlyMask, false) || __instance.name.StartsWith("JackInTheBoxVent_")));
+                canUse &= (num <= usableDistance && (!PhysicsHelpers.AnythingBetween(player.Collider, center, position, Constants.ShipOnlyMask, false) || __instance.name.StartsWith("JackInTheBoxVent_")));
             }
             __result = num;
             return false;

@@ -198,7 +198,7 @@ namespace BetterOtherRoles
             Vector3 positionOffsetValue = positionOffset ?? button.PositionOffset;  // For non custom buttons, we can set these manually.
             positionOffsetValue.z = -0.1f;
             couldUse = couldUse ?? button.CouldUse;
-            CustomButton replacementHandcuffedButton = new CustomButton(() => { }, () => { return true; }, couldUse, () => { }, Deputy.getHandcuffedButtonSprite(), positionOffsetValue, button.hudManager, button.hotkey,
+            CustomButton replacementHandcuffedButton = new CustomButton(() => { }, () => { return true; }, couldUse, () => { }, Deputy.getHandcuffedButtonSprite(), positionOffsetValue, button.hudManager, button.actionName,
                 true, Deputy.handcuffDuration, () => { }, button.mirror);
             replacementHandcuffedButton.Timer = replacementHandcuffedButton.EffectDuration;
             replacementHandcuffedButton.actionButton.cooldownTimerText.color = new Color(0F, 0.8F, 0F);
@@ -342,7 +342,7 @@ namespace BetterOtherRoles
                 Engineer.getButtonSprite(),
                 CustomButton.ButtonPositions.upperRowRight,
                 __instance,
-                null
+                "ActionQuaternary"
             );
 
             // Janitor Clean
@@ -380,7 +380,7 @@ namespace BetterOtherRoles
                 Janitor.getButtonSprite(),
                 CustomButton.ButtonPositions.upperRowLeft,
                 __instance,
-                null
+                "ActionQuaternary"
             );
 
             // Sheriff Kill
@@ -418,7 +418,7 @@ namespace BetterOtherRoles
                 __instance.KillButton.graphic.sprite,
                 CustomButton.ButtonPositions.upperRowRight,
                 __instance,
-                null
+                "ActionSecondary"
             );
 
             // Deputy Handcuff
@@ -445,7 +445,7 @@ namespace BetterOtherRoles
                 Deputy.getButtonSprite(),
                 CustomButton.ButtonPositions.lowerRowRight,
                 __instance,
-                null
+                "ActionQuaternary"
             );
             // Deputy Handcuff button handcuff counter
             deputyButtonHandcuffsText = GameObject.Instantiate(deputyHandcuffButton.actionButton.cooldownTimerText, deputyHandcuffButton.actionButton.cooldownTimerText.transform.parent);
@@ -472,7 +472,7 @@ namespace BetterOtherRoles
                 TimeMaster.getButtonSprite(),
                 CustomButton.ButtonPositions.lowerRowRight,
                 __instance,
-                null, 
+                "ActionQuaternary", 
                 true,
                 TimeMaster.shieldDuration,
                 () => {
@@ -504,7 +504,7 @@ namespace BetterOtherRoles
                 Medic.getButtonSprite(),
                 CustomButton.ButtonPositions.lowerRowRight,
                 __instance,
-                null
+                "ActionQuaternary"
             );
 
             
@@ -523,7 +523,7 @@ namespace BetterOtherRoles
                 Shifter.getButtonSprite(),
                 new Vector3(0, 1f, 0),
                 __instance,
-                null,
+                "ActionModifier",
                 true
             );
 
@@ -562,7 +562,7 @@ namespace BetterOtherRoles
                 Morphling.getSampleSprite(),
                 CustomButton.ButtonPositions.upperRowLeft,
                 __instance,
-                null,
+                "ActionQuaternary",
                 true,
                 Morphling.duration,
                 () => {
@@ -595,7 +595,7 @@ namespace BetterOtherRoles
                 Camouflager.getButtonSprite(),
                 CustomButton.ButtonPositions.upperRowLeft,
                 __instance,
-                null,
+                "ActionQuaternary",
                 true,
                 Camouflager.duration,
                 () => {
@@ -620,7 +620,7 @@ namespace BetterOtherRoles
                 Hacker.getButtonSprite(),
                 CustomButton.ButtonPositions.upperRowRight,
                 __instance,
-                null,
+                "ActionQuaternary",
                 true,
                 0f,
                 () => { hackerButton.Timer = hackerButton.MaxTimer;}
@@ -650,7 +650,7 @@ namespace BetterOtherRoles
                Hacker.getAdminSprite(),
                CustomButton.ButtonPositions.lowerRowRight,
                __instance,
-               null,
+               "ActionSecondary",
                true,
                0f,
                () => { 
@@ -711,7 +711,7 @@ namespace BetterOtherRoles
                Hacker.getVitalsSprite(),
                CustomButton.ButtonPositions.lowerRowCenter,
                __instance,
-               null,
+               "ActionSecondary",
                true,
                0f,
                () => { 
@@ -748,7 +748,7 @@ namespace BetterOtherRoles
                 Tracker.getButtonSprite(),
                 CustomButton.ButtonPositions.lowerRowRight,
                 __instance,
-                null
+                "ActionQuaternary"
             );
 
             trackerTrackCorpsesButton = new CustomButton(
@@ -764,7 +764,7 @@ namespace BetterOtherRoles
                 Tracker.getTrackCorpsesButtonSprite(),
                 CustomButton.ButtonPositions.lowerRowCenter,
                 __instance,
-                null,
+                "ActionSecondary",
                 true,
                 Tracker.corpsesTrackingDuration,
                 () => {
@@ -849,7 +849,7 @@ namespace BetterOtherRoles
                 Vampire.getButtonSprite(),
                 CustomButton.ButtonPositions.upperRowLeft,
                 __instance,
-                null,
+                "ActionSecondary",
                 false,
                 0f,
                 () => {
@@ -877,7 +877,7 @@ namespace BetterOtherRoles
                 Vampire.getGarlicButtonSprite(),
                 new Vector3(0, -0.06f, 0),
                 __instance,
-                null,
+                "ActionPlaceGarlic",
                 true
             );
 
@@ -902,7 +902,7 @@ namespace BetterOtherRoles
                 Portalmaker.getPlacePortalButtonSprite(),
                 CustomButton.ButtonPositions.lowerRowRight,
                 __instance,
-                null
+                "ActionQuaternary"
             );
 
             usePortalButton = new CustomButton(
@@ -953,7 +953,7 @@ namespace BetterOtherRoles
                 Portalmaker.getUsePortalButtonSprite(),
                 new Vector3(0.9f, -0.06f, 0),
                 __instance,
-                null,
+                "ActionUsePortal",
                 mirror: true
             );
 
@@ -1027,7 +1027,7 @@ namespace BetterOtherRoles
                 Jackal.getSidekickButtonSprite(),
                 CustomButton.ButtonPositions.lowerRowCenter,
                 __instance,
-                null
+                "ActionQuaternary"
             );
 
             // Jackal Kill
@@ -1044,7 +1044,7 @@ namespace BetterOtherRoles
                 __instance.KillButton.graphic.sprite,
                 CustomButton.ButtonPositions.upperRowRight,
                 __instance,
-                null
+                "ActionSecondary"
             );
             
             // Sidekick Kill
@@ -1060,7 +1060,7 @@ namespace BetterOtherRoles
                 __instance.KillButton.graphic.sprite,
                 CustomButton.ButtonPositions.upperRowRight,
                 __instance,
-                null
+                "ActionSecondary"
             );
 
             // Eraser erase button
@@ -1081,7 +1081,7 @@ namespace BetterOtherRoles
                 Eraser.getButtonSprite(),
                 CustomButton.ButtonPositions.upperRowLeft,
                 __instance,
-                null
+                "ActionQuaternary"
             );
 
             placeJackInTheBoxButton = new CustomButton(
@@ -1105,7 +1105,7 @@ namespace BetterOtherRoles
                 Trickster.getPlaceBoxButtonSprite(),
                 CustomButton.ButtonPositions.upperRowLeft,
                 __instance,
-                null
+                "ActionQuaternary"
             );
             
             lightsOutButton = new CustomButton(
@@ -1125,7 +1125,7 @@ namespace BetterOtherRoles
                 Trickster.getLightsOutButtonSprite(),
                 CustomButton.ButtonPositions.upperRowLeft,
                 __instance,
-                null,
+                "ActionQuaternary",
                 true,
                 Trickster.lightsOutDuration,
                 () => {
@@ -1169,7 +1169,7 @@ namespace BetterOtherRoles
                 Cleaner.getButtonSprite(),
                 CustomButton.ButtonPositions.upperRowLeft,
                 __instance,
-                null
+                "ActionQuaternary"
             );
 
             // Warlock curse
@@ -1229,7 +1229,7 @@ namespace BetterOtherRoles
                 Warlock.getCurseButtonSprite(),
                 CustomButton.ButtonPositions.upperRowLeft,
                 __instance,
-                null
+                "ActionQuaternary"
             );
 
             // Security Guard button
@@ -1269,7 +1269,7 @@ namespace BetterOtherRoles
                 SecurityGuard.getPlaceCameraButtonSprite(),
                 CustomButton.ButtonPositions.lowerRowRight,
                 __instance,
-                null
+                "ActionQuaternary"
             );
             
             // Security Guard button screws counter
@@ -1325,7 +1325,7 @@ namespace BetterOtherRoles
                 SecurityGuard.getCamSprite(),
                 CustomButton.ButtonPositions.lowerRowRight,
                 __instance,
-                null,
+                "ActionSecondary",
                 true,
                 0f,
                 () => {
@@ -1382,7 +1382,7 @@ namespace BetterOtherRoles
                 Arsonist.getDouseSprite(),
                 CustomButton.ButtonPositions.lowerRowRight,
                 __instance,
-                null,
+                "ActionQuaternary",
                 true,
                 Arsonist.duration,
                 () => {
@@ -1439,7 +1439,7 @@ namespace BetterOtherRoles
                 Vulture.getButtonSprite(),
                 CustomButton.ButtonPositions.lowerRowCenter,
                 __instance,
-                null
+                "ActionQuaternary"
             );
 
             // Medium button
@@ -1468,7 +1468,7 @@ namespace BetterOtherRoles
                 Medium.getQuestionSprite(),
                 CustomButton.ButtonPositions.lowerRowRight,
                 __instance,
-                null,
+                "ActionQuaternary",
                 true,
                 Medium.duration,
                 () => {
@@ -1548,7 +1548,7 @@ namespace BetterOtherRoles
                 Pursuer.getTargetSprite(),
                 CustomButton.ButtonPositions.lowerRowRight,
                 __instance,
-                null
+                "ActionQuaternary"
             );
 
             // Pursuer button blanks left
@@ -1584,7 +1584,7 @@ namespace BetterOtherRoles
                 Witch.getButtonSprite(),
                 CustomButton.ButtonPositions.upperRowLeft,
                 __instance,
-                null,
+                "ActionQuaternary",
                 true,
                 Witch.spellCastingDuration,
                 () => {
@@ -1694,7 +1694,7 @@ namespace BetterOtherRoles
                 Ninja.getMarkButtonSprite(),
                 CustomButton.ButtonPositions.upperRowLeft,
                 __instance,
-                null                   
+                "ActionQuaternary"                   
             );
 
             mayorMeetingButton = new CustomButton(
@@ -1724,7 +1724,7 @@ namespace BetterOtherRoles
                Mayor.getMeetingSprite(),
                CustomButton.ButtonPositions.lowerRowRight,
                __instance,
-               null,
+               "ActionQuaternary",
                true,
                0f,
                () => {},
@@ -1759,7 +1759,7 @@ namespace BetterOtherRoles
                 Trapper.getButtonSprite(),
                 CustomButton.ButtonPositions.lowerRowRight,
                 __instance,
-                null
+                "ActionQuaternary"
             );
 
             // Bomber button
@@ -1788,7 +1788,7 @@ namespace BetterOtherRoles
                 Bomber.getButtonSprite(),
                 CustomButton.ButtonPositions.upperRowLeft,
                 __instance,
-                null,
+                "ActionQuaternary",
                 true,
                 Bomber.destructionTime,
                 () => {
@@ -1822,7 +1822,7 @@ namespace BetterOtherRoles
                 Bomb.getDefuseSprite(),
                 new Vector3(0f, 1f, 0),
                 __instance,
-                null,
+                "ActionDefuseBomb",
                 true,
                 Bomber.defuseDuration,
                 () => {
@@ -1880,7 +1880,7 @@ namespace BetterOtherRoles
                __instance.KillButton.graphic.sprite,
                CustomButton.ButtonPositions.upperRowRight,
                __instance,
-               null
+               "ActionSecondary"
                );
 
             // Trapper Charges
@@ -1903,7 +1903,7 @@ namespace BetterOtherRoles
                 Helpers.loadSpriteFromResources("BetterOtherRoles.Resources.MinusButton.png", 150f),  // Invisible button!
                 new Vector3(0.4f, 2.8f, 0),
                 __instance,
-                null
+                "ActionZoomOut"
                 );
             zoomOutButton.Timer = 0f;
 
@@ -1928,7 +1928,7 @@ namespace BetterOtherRoles
                 Hunter.getLightSprite(),
                 CustomButton.ButtonPositions.upperRowFarLeft,
                 __instance,
-                null,
+                "ActionQuaternary",
                 true,
                 Hunter.lightDuration,
                 () => {
@@ -2027,7 +2027,7 @@ namespace BetterOtherRoles
                 TimeMaster.getButtonSprite(),
                 CustomButton.ButtonPositions.lowerRowRight,
                 __instance,
-                null,
+                "ActionQuaternary",
                 true,
                 Hunted.shieldDuration,
                 () => {
@@ -2083,7 +2083,7 @@ namespace BetterOtherRoles
                 Undertaker.DragButtonSprite, // Sprite sprite,
                 CustomButton.ButtonPositions.upperRowLeft, // Vector3 PositionOffset
                 __instance, // HudManager hudManager
-                null, // String actionName,
+                "ActionQuaternary", // String actionName,
                 false, // bool HasEffect
                 0f, // Float EffectDuration
                 () => { }, // Action OnEffectEnds
@@ -2134,14 +2134,15 @@ namespace BetterOtherRoles
                 StickyBomber.StickyButton,
                 CustomButton.ButtonPositions.upperRowLeft,
                 __instance,
-                null,
+                "ActionQuaternary",
                 true,
                 CustomOptionHolder.StickyBomberDuration.getFloat(),
                 () => {
                     stickyBomberButton.Timer = stickyBomberButton.MaxTimer;
                     stickyBomberButton.isEffectActive = false;
                     stickyBomberButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
-                }
+                },
+                buttonText: "Stick Bomb"
             );
             
             stickyBomberTransferButton = new CustomButton(
@@ -2178,8 +2179,9 @@ namespace BetterOtherRoles
                 StickyBomber.StickyTransferButton,
                 new Vector3(0.9f, -0.06f, 0),
                 __instance,
-                null,
-                mirror: true
+                "ActionTransferBomb",
+                mirror: true,
+                buttonText: "Give bomb"
             );
 
             // Set the default (or settings from the previous game) timers / durations when spawning the buttons
