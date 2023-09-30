@@ -524,7 +524,7 @@ namespace BetterOtherRoles
                 Shifter.getButtonSprite(),
                 new Vector3(0, 1f, 0),
                 __instance,
-                null,
+                "ActionModifier",
                 true
             );
 
@@ -886,7 +886,7 @@ namespace BetterOtherRoles
                 Vampire.getGarlicButtonSprite(),
                 new Vector3(0, -0.06f, 0),
                 __instance,
-                null,
+                "ActionPlaceGarlic",
                 true
             );
 
@@ -962,7 +962,7 @@ namespace BetterOtherRoles
                 Portalmaker.getUsePortalButtonSprite(),
                 new Vector3(0.9f, -0.06f, 0),
                 __instance,
-                "UsePortal",
+                "ActionUsePortal",
                 mirror: true
             );
 
@@ -1703,7 +1703,7 @@ namespace BetterOtherRoles
                 Ninja.getMarkButtonSprite(),
                 CustomButton.ButtonPositions.upperRowLeft,
                 __instance,
-                "ActionQuaternary"                
+                "ActionQuaternary"
             );
 
             mayorMeetingButton = new CustomButton(
@@ -1831,7 +1831,7 @@ namespace BetterOtherRoles
                 Bomb.getDefuseSprite(),
                 new Vector3(0f, 1f, 0),
                 __instance,
-                "DefuseBomb",
+                "ActionDefuseBomb",
                 true,
                 Bomber.defuseDuration,
                 () => {
@@ -1912,7 +1912,7 @@ namespace BetterOtherRoles
                 Helpers.loadSpriteFromResources("BetterOtherRoles.Resources.MinusButton.png", 150f),  // Invisible button!
                 new Vector3(0.4f, 2.8f, 0),
                 __instance,
-                "ZoomOut"
+                "ActionZoomOut"
                 );
             zoomOutButton.Timer = 0f;
 
@@ -2143,14 +2143,15 @@ namespace BetterOtherRoles
                 StickyBomber.StickyButton,
                 CustomButton.ButtonPositions.upperRowLeft,
                 __instance,
-                null,
+                "ActionQuaternary",
                 true,
                 CustomOptionHolder.StickyBomberDuration.getFloat(),
                 () => {
                     stickyBomberButton.Timer = stickyBomberButton.MaxTimer;
                     stickyBomberButton.isEffectActive = false;
                     stickyBomberButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
-                }
+                },
+                buttonText: "Stick Bomb"
             );
             
             stickyBomberTransferButton = new CustomButton(
@@ -2187,8 +2188,9 @@ namespace BetterOtherRoles
                 StickyBomber.StickyTransferButton,
                 new Vector3(0.9f, -0.06f, 0),
                 __instance,
-                null,
-                mirror: true
+                "ActionTransferBomb",
+                mirror: true,
+                buttonText: "Give bomb"
             );
 
             // Set the default (or settings from the previous game) timers / durations when spawning the buttons

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <Version>1.4.5</Version>
+        <Version>1.4.6</Version>
         <Description>BetterOtherRoles</Description>
         <Authors>EnoPM</Authors>
 		<LangVersion>latest</LangVersion>
@@ -22,10 +22,10 @@
    
 	<ItemGroup>
 	  <Reference Include="UniverseLib.IL2CPP">
-	    <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us - BetterOtherRoles\BepInEx\plugins\BetterOtherRoles\UniverseLib.IL2CPP.dll</HintPath>
+	    <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us - BetterOtherRoles2\BepInEx\plugins\BetterOtherRoles\UniverseLib.IL2CPP.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
     <Target Name="CopyPlugins" AfterTargets="AfterBuild">
-        <Copy SourceFiles="$(TargetPath)" DestinationFolder="C:\Program Files (x86)\Steam\steamapps\common\Among Us - BetterOtherRoles\BepInEx\plugins\BetterOtherRoles" />
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="C:\Program Files (x86)\Steam\steamapps\common\Among Us - BetterOtherRoles2\BepInEx\plugins\BetterOtherRoles" />
     </Target>
 </Project>
