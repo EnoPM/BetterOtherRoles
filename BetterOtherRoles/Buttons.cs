@@ -200,6 +200,7 @@ namespace BetterOtherRoles
             couldUse = couldUse ?? button.CouldUse;
             CustomButton replacementHandcuffedButton = new CustomButton(() => { }, () => { return true; }, couldUse, () => { }, Deputy.getHandcuffedButtonSprite(), positionOffsetValue, button.hudManager, button.actionName,
                 true, Deputy.handcuffDuration, () => { }, button.mirror);
+            replacementHandcuffedButton.actionName = button.actionName;
             replacementHandcuffedButton.Timer = replacementHandcuffedButton.EffectDuration;
             replacementHandcuffedButton.actionButton.cooldownTimerText.color = new Color(0F, 0.8F, 0F);
             replacementHandcuffedButton.isEffectActive = true;
@@ -472,7 +473,7 @@ namespace BetterOtherRoles
                 TimeMaster.getButtonSprite(),
                 CustomButton.ButtonPositions.lowerRowRight,
                 __instance,
-                "ActionQuaternary", 
+                "ActionQuaternary",
                 true,
                 TimeMaster.shieldDuration,
                 () => {
@@ -752,11 +753,19 @@ namespace BetterOtherRoles
             );
 
             trackerTrackCorpsesButton = new CustomButton(
-                () => { Tracker.corpsesTrackingTimer = Tracker.corpsesTrackingDuration;
-                            SoundEffectsManager.play("trackerTrackCorpses"); },
-                () => { return Tracker.tracker != null && Tracker.tracker == CachedPlayer.LocalPlayer.PlayerControl && !CachedPlayer.LocalPlayer.Data.IsDead && Tracker.canTrackCorpses; },
+                () =>
+                {
+                    Tracker.corpsesTrackingTimer = Tracker.corpsesTrackingDuration;
+                    SoundEffectsManager.play("trackerTrackCorpses");
+                },
+                () =>
+                {
+                    return Tracker.tracker != null && Tracker.tracker == CachedPlayer.LocalPlayer.PlayerControl &&
+                           !CachedPlayer.LocalPlayer.Data.IsDead && Tracker.canTrackCorpses;
+                },
                 () => { return CachedPlayer.LocalPlayer.PlayerControl.CanMove; },
-                () => {
+                () =>
+                {
                     trackerTrackCorpsesButton.Timer = trackerTrackCorpsesButton.MaxTimer;
                     trackerTrackCorpsesButton.isEffectActive = false;
                     trackerTrackCorpsesButton.actionButton.cooldownTimerText.color = Palette.EnabledColor;
@@ -1694,7 +1703,7 @@ namespace BetterOtherRoles
                 Ninja.getMarkButtonSprite(),
                 CustomButton.ButtonPositions.upperRowLeft,
                 __instance,
-                "ActionQuaternary"                   
+                "ActionQuaternary"
             );
 
             mayorMeetingButton = new CustomButton(
@@ -1963,7 +1972,7 @@ namespace BetterOtherRoles
                Hacker.getAdminSprite(),
                CustomButton.ButtonPositions.lowerRowCenter,
                __instance,
-               null,
+               "HunterAdmin",
                true,
                Hunter.AdminDuration,
                () => {
@@ -1994,7 +2003,7 @@ namespace BetterOtherRoles
                 Hunter.getArrowSprite(),
                 CustomButton.ButtonPositions.upperRowLeft,
                 __instance,
-                null,
+                "HunterArrow",
                 true,
                 Hunter.ArrowDuration,
                 () => {
