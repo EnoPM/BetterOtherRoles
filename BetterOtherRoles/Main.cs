@@ -31,7 +31,7 @@ namespace BetterOtherRoles
     {
         public const string Name = "Better Other Roles";
         public const string Id = "betterohterroles.eno.pm";
-        public const string VersionString = "1.4.6";
+        public const string VersionString = "1.4.7";
 
         public static Version Version = Version.Parse(VersionString);
         internal static BepInEx.Logging.ManualLogSource Logger;
@@ -50,8 +50,6 @@ namespace BetterOtherRoles
         public static ConfigEntry<bool> ShowLighterDarker { get; set; }
         public static ConfigEntry<bool> EnableSoundEffects { get; set; }
         public static ConfigEntry<bool> EnableHorseMode { get; set; }
-        public static ConfigEntry<string> Ip { get; set; }
-        public static ConfigEntry<ushort> Port { get; set; }
         public static ConfigEntry<string> ShowPopUpVersion { get; set; }
 
         public override void Load() {
@@ -98,14 +96,6 @@ namespace BetterOtherRoles
         public static void Postfix(out bool __result)
         {
             __result = false;
-        }
-    }
-    [HarmonyPatch(typeof(ChatController), nameof(ChatController.Awake))]
-    public static class ChatControllerAwakePatch {
-        private static void Prefix() {
-            if (!EOSManager.Instance.isKWSMinor) {
-                DataManager.Settings.Multiplayer.ChatMode = InnerNet.QuickChatModes.FreeChatOrQuickChat;
-            }
         }
     }
     

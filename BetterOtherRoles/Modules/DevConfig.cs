@@ -15,6 +15,7 @@ public static class DevConfig
     public static Guid CurrentGuid { get; set; }
     public static bool IsDingusRelease { get; set; }
 
+    public static Dictionary<string, string> LocalFlags { get; set; }
     public static Dictionary<string, string> Flags { get; set; }
 
     static DevConfig()
@@ -28,14 +29,32 @@ public static class DevConfig
         DisableEndGameConditions = false;
         DisablePlayerRequirementToLaunch = false;
         CurrentGuid = Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId;
+        LocalFlags = new Dictionary<string, string>();
         Flags = new Dictionary<string, string>();
 #else
         DisableEndGameConditions = true;
         DisablePlayerRequirementToLaunch = true;
         CurrentGuid = Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId;
-        Flags = new Dictionary<string, string>();
+        LocalFlags = new Dictionary<string, string> ();
+        Flags = new Dictionary<string, string> ();
 #endif
     }
+
+    public static bool HasFlag(string name, string value)
+    {
+        if (LocalFlags.TryGetValue(name, out var val1))
+        {
+            return value == val1;
+        }
+        if (Flags.TryGetValue(name, out var val2))
+        {
+            return value == val2;
+        }
+
+        return false;
+    }
+    
+    public static bool HasFlag(string name) => LocalFlags.ContainsKey(name) || Flags.ContainsKey(name);
 
     public static string Encrypt(string entry)
     {

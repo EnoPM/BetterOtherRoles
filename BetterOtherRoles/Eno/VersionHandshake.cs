@@ -107,6 +107,6 @@ public class VersionHandshake
 
     public bool GuidMatch()
     {
-        return Flags.ContainsValue("NO_GUID_CHECK") || Instance.Flags.ContainsValue("NO_GUID_CHECK") || Guid.Equals(Instance.Guid);
+        return Flags.ContainsKey("NO_GUID_CHECK") || Instance.Flags.ContainsKey("NO_GUID_CHECK") || Guid.Equals(Instance.Guid);
     }
 }

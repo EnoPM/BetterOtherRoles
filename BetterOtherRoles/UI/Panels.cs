@@ -11,6 +11,7 @@ public static partial class UIManager
     public static CreditsPanel CreditsPanel { get; private set; }
     public static StickyBombPanel StickyBombPanel { get; private set; }
     public static VersionHandshakePanel VersionHandshakePanel { get; private set; }
+    public static UpdatePluginPanel UpdatePluginPanel { get; private set; }
     
     private static void InitPanels()
     {
@@ -22,6 +23,7 @@ public static partial class UIManager
         CreditsPanel = new CreditsPanel(UiBase);
         StickyBombPanel = new StickyBombPanel(UiBase);
         VersionHandshakePanel = new VersionHandshakePanel(UiBase);
+        UpdatePluginPanel = new UpdatePluginPanel(UiBase);
 
         _initialized = true;
     }

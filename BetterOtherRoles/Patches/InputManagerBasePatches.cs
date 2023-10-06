@@ -20,6 +20,7 @@ public static class InputManagerBasePatches
         __instance.userData.RegisterBind("ActionPlaceGarlic", "Place Garlic", KeyboardKeyCode.G);
         __instance.userData.RegisterBind("ActionDefuseBomb", "Defuse Bomb", KeyboardKeyCode.R);
         __instance.userData.RegisterBind("ActionTransferBomb", "Transfer sticky Bomb", KeyboardKeyCode.T);
+        __instance.userData.RegisterBind("ActionToggleUpdater", "Toggle mod updater", KeyboardKeyCode.U);
     }
     
     private static int RegisterBind(this UserData self, string name, string description, KeyboardKeyCode keycode, int elementIdentifierId = -1, int category = 0, InputActionType type = InputActionType.Button)

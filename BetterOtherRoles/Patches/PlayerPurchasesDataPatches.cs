@@ -10,7 +10,7 @@ public static class PlayerPurchasesDataPatches
     [HarmonyPrefix]
     private static bool GetPurchasePrefix(PlayerPurchasesData __instance, string itemKey, string bundleKey, out bool __result)
     {
-        if (DevConfig.Flags.ContainsKey("UNLOCK_ALL_COSMETICS"))
+        if (DevConfig.HasFlag("UNLOCK_ALL_COSMETICS"))
         {
             __result = true;
             return false;

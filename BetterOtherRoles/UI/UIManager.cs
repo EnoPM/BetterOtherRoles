@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using BetterOtherRoles.Eno;
 using BetterOtherRoles.Modules;
 using UnityEngine;
 using UniverseLib;
@@ -60,7 +61,7 @@ public static partial class UIManager
             panel.SetActive(panel.ShowByDefault);
         }
 
-        BetterOtherRolesPlugin.Instance.AddComponent<ModUpdateBehaviour>();
+        BetterOtherRolesPlugin.Instance.AddComponent<PluginUpdater>();
 
         Initializing = false;
     }
