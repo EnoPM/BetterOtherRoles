@@ -113,6 +113,10 @@ public class PluginUpdater : MonoBehaviour
             UIManager.UpdatePluginPanel?.RefreshDropdown(latestRelease);
             UIManager.UpdatePluginPanel?.SetActive(true);
         }
+        else
+        {
+            UIManager.UpdatePluginPanel?.RefreshDropdown();
+        }
         
         _busy = false;
     }
