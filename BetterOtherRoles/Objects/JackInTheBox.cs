@@ -40,7 +40,7 @@ namespace BetterOtherRoles.Objects {
         public JackInTheBox(Vector2 p) {
             gameObject = new GameObject("JackInTheBox"){layer = 11};
             gameObject.AddSubmergedComponent(SubmergedCompatibility.Classes.ElevatorMover);
-            Vector3 position = new Vector3(p.x, p.y,  p.y/1000f + 0.01f);
+            Vector3 position = new Vector3(p.x, p.y,  p.y / 1000 + 0.001f);
             position += (Vector3)CachedPlayer.LocalPlayer.PlayerControl.Collider.offset; // Add collider offset that DoMove moves the player up at a valid position
             // Create the marker
             gameObject.transform.position = position;

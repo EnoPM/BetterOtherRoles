@@ -51,7 +51,7 @@ public static class BetterPolus
     {
         UpdatedPositions[EditableObjects.DvdScreen] = new Vector3(26.635f, -15.92f, 1f);
         UpdatedPositions[EditableObjects.Vitals] = new Vector3(31.275f, -6.45f, 1f);
-        UpdatedPositions[EditableObjects.Wifi] = new Vector3(15.975f, 0.084f, -0.015f);
+        UpdatedPositions[EditableObjects.Wifi] = new Vector3(15.975f, 0.084f, 0.001f);
         UpdatedPositions[EditableObjects.NavTask] = new Vector3(11.07f, -15.298f, -0.015f);
         UpdatedPositions[EditableObjects.TempCold] = new Vector3(7.772f, -17.103f, -0.017f);
 
@@ -65,7 +65,6 @@ public static class BetterPolus
     {
         Clear();
         if (!ShipStatus.Instance) return;
-        AdjustRoomsZ();
         if (Enabled.getBool())
         {
             if (IsAdjustmentsDone) return;
@@ -76,23 +75,6 @@ public static class BetterPolus
             if (!IsAdjustmentsDone) return;
             RevertChanges(ShipStatus.Instance);
         }
-    }
-
-    private static void AdjustRoomsZ()
-    {
-        if (!ShipStatus.Instance || ShipStatus.Instance.Type != ShipStatus.MapType.Pb) return;
-        var gameObjects = Object.FindObjectsOfType<GameObject>().ToList();
-        var comms = gameObjects.Find(o => o.name == "Comms");
-        var weapons = gameObjects.Find(o => o.name == "Weapons");
-        var dropship = gameObjects.Find(o => o.name == "Dropship");
-        var ramp = gameObjects.Find(o => o.name == "ramp");
-        var gun = gameObjects.Find(o => o.name == "gun0001");
-        
-        AdjustZPosition(comms, 2f);
-        AdjustZPosition(weapons, 2f);
-        AdjustZPosition(dropship, 2f);
-        AdjustZPosition(ramp, 1.9f);
-        AdjustZPosition(gun, -2f);
     }
 
     public static void ApplyChanges(ShipStatus shipStatus)
@@ -179,14 +161,6 @@ public static class BetterPolus
 
             _isObjectsFetched = IsObjectsFetched();
         }
-    }
-
-    private static void AdjustZPosition(GameObject obj, float z)
-    {
-        if (!obj) return;
-        var pos = obj.transform.position;
-        pos.z = z;
-        obj.transform.position = pos;
     }
 
     private static void AdjustVents()

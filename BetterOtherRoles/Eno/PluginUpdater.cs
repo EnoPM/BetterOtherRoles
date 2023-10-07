@@ -255,5 +255,4 @@ public class GithubAsset
     
     [JsonPropertyName("browser_download_url")]
     public string DownloadUrl { get; set; }
-    
 }

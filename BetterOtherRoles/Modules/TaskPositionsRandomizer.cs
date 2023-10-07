@@ -70,6 +70,7 @@ public static class TaskPositionsRandomizer
     private static void MoveUpload(Console upload, List<Console> downloads)
     {
         if (BetterOtherRoles.Rnd.Next(downloads.Count + 1) == 1) return;
+        //var download = downloads.Find(d => d.Room == SystemTypes.Weapons);
         var download = downloads.GetOneRandom();
         var uploadObj = upload.gameObject;
         var downloadObj = download.gameObject;
@@ -88,6 +89,15 @@ public static class TaskPositionsRandomizer
 
         uploadObj.transform.position = downloadPos;
         downloadObj.transform.position = uploadPos;
+        
+        if (ShipStatus.Instance.Type == ShipStatus.MapType.Pb)
+        {
+            if (download.Room == SystemTypes.LifeSupp)
+            {
+                uploadPos.y -= 0.1f;
+                downloadObj.transform.position = uploadPos;
+            }
+        }
 
         uploadObj.GetComponent<SpriteRenderer>().sprite = downloadSprite;
         downloadObj.GetComponent<SpriteRenderer>().sprite = uploadSprite;
@@ -99,7 +109,7 @@ public static class TaskPositionsRandomizer
         {
             download.checkWalls = true;
         }
-
+        
         upload.onlySameRoom = false;
         download.onlySameRoom = false;
 

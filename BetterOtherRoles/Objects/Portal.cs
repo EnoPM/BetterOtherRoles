@@ -83,7 +83,13 @@ namespace BetterOtherRoles.Objects {
         public Portal(Vector2 p) {
             portalGameObject = new GameObject("Portal"){ layer = 11 };
             //Vector3 position = new Vector3(p.x, p.y, CachedPlayer.LocalPlayer.transform.position.z + 1f);
-            Vector3 position = new Vector3(p.x, p.y, p.y / 1000f + 0.01f);
+            var position = new Vector3(p.x, p.y, p.y / 1000 + 0.001f);
+            if (firstPortal == null && ShipStatus.Instance && ShipStatus.Instance.Type == ShipStatus.MapType.Pb &&
+                Math.Abs(position.x - 13.32f) < 0.01f && Math.Abs(position.y + 25.69f) < 0.01f)
+            {
+                position.x = 40.3f;
+                position.y = -6.7f;
+            }
 
             // Create the portal            
             portalGameObject.transform.position = position;
@@ -100,7 +106,7 @@ namespace BetterOtherRoles.Objects {
             animationFgRenderer.material = FastDestroyableSingleton<HatManager>.Instance.PlayerMaterial;
 
             // Only render the inactive portals for the Portalmaker
-            bool playerIsPortalmaker = CachedPlayer.LocalPlayer.PlayerControl == BetterOtherRoles.Portalmaker.portalmaker;
+            bool playerIsPortalmaker = CachedPlayer.LocalPlayer.PlayerControl == Portalmaker.portalmaker;
             portalGameObject.SetActive(playerIsPortalmaker);
             portalFgAnimationGameObject.SetActive(true);
 
