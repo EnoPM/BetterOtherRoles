@@ -1,6 +1,7 @@
 using System.Linq;
 using HarmonyLib;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using BetterOtherRoles.Objects;
@@ -1895,21 +1896,64 @@ namespace BetterOtherRoles
             {
                 StuckPlayer = null;
                 if (Player != PlayerControl.LocalPlayer) return;
-                HudManagerStartPatch.stickyBomberButton.isEffectActive = false;
+                HudManagerStartPatch.stickyBomberButton.HasEffect = false;
                 HudManagerStartPatch.stickyBomberButton.Timer = HudManagerStartPatch.stickyBomberButton.MaxTimer;
-                if (!TriggerBothCooldown) return;
-                var killCooldown = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown;
-                HudManager.Instance.KillButton.SetCoolDown(killCooldown, killCooldown);
                 return;
             }
+            
             var player = Helpers.playerById(playerId);
             if (player == null) return;
             RemainingDelay = StuckPlayer == null ? FirstDelay : OtherDelay;
             if (StuckPlayer == null)
             {
                 RemainingTime = Duration;
+                if (TriggerBothCooldown && Player == CachedPlayer.LocalPlayer.PlayerControl)
+                {
+                    Player.killTimer = Duration + 1f;
+                }
             }
             StuckPlayer = player;
+        }
+
+        public static IEnumerator CoCreateBomb()
+        {
+            var timer = 0f;
+            while (timer <= Duration)
+            {
+                timer += Time.deltaTime;
+                if (StuckPlayer && StuckPlayer.Data.IsDead)
+                {
+                    System.Console.WriteLine($"Stuck player is dead");
+                    RpcGiveBomb(byte.MaxValue);
+                    if (HudManagerStartPatch.stickyBomberButton != null)
+                    {
+                        HudManagerStartPatch.stickyBomberButton.HasEffect = false;
+                        HudManagerStartPatch.stickyBomberButton.Timer = 0.5f;
+                    }
+                    
+                    if (TriggerBothCooldown)
+                    {
+                        Player.killTimer = 0.5f;
+                    }
+                    break;
+                }
+                yield return new WaitForEndOfFrame();
+            }
+            if (!Player || !StuckPlayer) yield break;
+            var killAttempt = Helpers.checkMurderAttemptAndKill(Player, StuckPlayer, showAnimation: false);
+            if (killAttempt == MurderAttemptResult.PerformKill)
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
+                writer.Write(CachedPlayer.LocalPlayer.PlayerId);
+                writer.Write((byte)RPCProcedure.GhostInfoTypes.DeathReasonAndKiller);
+                writer.Write(StuckPlayer.PlayerId);
+                writer.Write((byte)DeadPlayer.CustomDeathReason.StickyBomb);
+                writer.Write(Player.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                GameHistory.overrideDeathReasonAndKiller(StuckPlayer, DeadPlayer.CustomDeathReason.StickyBomb, killer: StickyBomber.Player);
+
+            }
+            RpcGiveBomb(byte.MaxValue);
         }
     }
 

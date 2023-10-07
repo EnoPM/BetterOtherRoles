@@ -1398,6 +1398,14 @@ namespace BetterOtherRoles.Patches {
             // Witch Button Sync
             if (Witch.triggerBothCooldowns && Witch.witch != null && CachedPlayer.LocalPlayer.PlayerControl == Witch.witch && __instance == Witch.witch && HudManagerStartPatch.witchSpellButton != null)
                 HudManagerStartPatch.witchSpellButton.Timer = HudManagerStartPatch.witchSpellButton.MaxTimer;
+            
+            // Sticky Bomber Button Sync
+            if (StickyBomber.TriggerBothCooldown && StickyBomber.Player != null &&
+                CachedPlayer.LocalPlayer.PlayerControl == StickyBomber.Player && __instance == StickyBomber.Player &&
+                HudManagerStartPatch.stickyBomberButton != null)
+            {
+                HudManagerStartPatch.stickyBomberButton.Timer = HudManagerStartPatch.stickyBomberButton.MaxTimer;
+            }
 
             // Warlock Button Sync
             if (Warlock.warlock != null && CachedPlayer.LocalPlayer.PlayerControl == Warlock.warlock && __instance == Warlock.warlock && HudManagerStartPatch.warlockCurseButton != null) {

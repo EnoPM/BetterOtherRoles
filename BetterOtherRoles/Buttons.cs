@@ -6,6 +6,7 @@ using static BetterOtherRoles.BetterOtherRoles;
 using BetterOtherRoles.Objects;
 using System.Linq;
 using System.Collections.Generic;
+using BepInEx.Unity.IL2CPP.Utils;
 using BetterOtherRoles.Players;
 using BetterOtherRoles.Utilities;
 using BetterOtherRoles.CustomGameModes;
@@ -93,6 +94,7 @@ namespace BetterOtherRoles
             witchSpellButton.Timer = CustomOptionHolder.witchFirstCooldown.getFloat();
             arsonistButton.Timer = CustomOptionHolder.arsonistFirstCooldown.getFloat();
             warlockCurseButton.Timer = CustomOptionHolder.warlockFirstCooldown.getFloat();
+            stickyBomberButton.Timer = CustomOptionHolder.StickyBomberFirstCooldown.getFloat();
         }
 
         public static void setCustomButtonCooldowns() {
@@ -2085,28 +2087,7 @@ namespace BetterOtherRoles
                         StickyBomber.RpcGiveBomb(StickyBomber.CurrentTarget.PlayerId);
                         SoundEffectsManager.play("trapperTrap");
                         stickyBomberButton.HasEffect = true;
-                        __instance.StartCoroutine(Effects.Lerp(StickyBomber.Duration,
-                            new Action<float>(
-                                p =>
-                                {
-                                    if (p != 1f) return;
-                                    if (StickyBomber.Player == null || StickyBomber.Player.Data.IsDead || StickyBomber.StuckPlayer == null || StickyBomber.StuckPlayer.Data.IsDead) return;
-                                    var killAttempt = Helpers.checkMurderAttemptAndKill(StickyBomber.Player, StickyBomber.StuckPlayer, showAnimation: false);
-                                    if (killAttempt == MurderAttemptResult.PerformKill)
-                                    {
-                                        var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.ShareGhostInfo, Hazel.SendOption.Reliable, -1);
-                                        writer.Write(CachedPlayer.LocalPlayer.PlayerId);
-                                        writer.Write((byte)RPCProcedure.GhostInfoTypes.DeathReasonAndKiller);
-                                        writer.Write(StickyBomber.StuckPlayer.PlayerId);
-                                        writer.Write((byte)DeadPlayer.CustomDeathReason.StickyBomb);
-                                        writer.Write(StickyBomber.Player.PlayerId);
-                                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                                        GameHistory.overrideDeathReasonAndKiller(StickyBomber.StuckPlayer, DeadPlayer.CustomDeathReason.StickyBomb, killer: StickyBomber.Player);
-
-                                    }
-                                    StickyBomber.RpcGiveBomb(byte.MaxValue);
-                                    
-                                })));
+                        __instance.StartCoroutine(StickyBomber.CoCreateBomb());
                     } else if (murder == MurderAttemptResult.BlankKill)
                     {
                         stickyBomberButton.HasEffect = false;
