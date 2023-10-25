@@ -214,7 +214,7 @@ namespace BetterOtherRoles
                     GameData.Instance.GetPlayerById(player.PlayerId); // player.RemoveInfected(); (was removed in 2022.12.08, no idea if we ever need that part again, replaced by these 2 lines.) 
                     player.SetRole(RoleTypes.Crewmate);
 
-                    player.MurderPlayer(player);
+                    player.MurderPlayer(player, MurderResultFlags.Succeeded);
                     player.Data.IsDead = true;
                 }
             }
@@ -447,7 +447,7 @@ namespace BetterOtherRoles
             PlayerControl target = Helpers.playerById(targetId);
             if (source != null && target != null) {
                 if (showAnimation == 0) KillAnimationCoPerformKillPatch.hideNextAnimation = true;
-                source.MurderPlayer(target);
+                source.MurderPlayer(target, MurderResultFlags.Succeeded);
             }
         }
 
@@ -1007,8 +1007,6 @@ namespace BetterOtherRoles
                 string msg = $"{guesser.Data.PlayerName} guessed the role {roleInfo?.name ?? ""} for {guessedTarget.Data.PlayerName}!";
                 if (AmongUsClient.Instance.AmClient && FastDestroyableSingleton<HudManager>.Instance)
                     FastDestroyableSingleton<HudManager>.Instance.Chat.AddChat(guesser, msg);
-                if (msg.IndexOf("who", StringComparison.OrdinalIgnoreCase) >= 0)
-                    FastDestroyableSingleton<Assets.CoreScripts.Telemetry>.Instance.SendWho();
             }
         }
 

@@ -1,7 +1,6 @@
 using Hazel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Collections;
+using BepInEx.Unity.IL2CPP.Utils;
 using BetterOtherRoles.Players;
 using BetterOtherRoles.Utilities;
 using UnityEngine;
@@ -55,29 +54,38 @@ namespace BetterOtherRoles.Objects {
                 bomb.SetActive(true);
             }
             Bomber.bomb = this;
-            Color c = Color.white;
-            Color g = Color.red;
             backgroundRenderer.color = Color.white;
             Bomber.isActive = false;
 
-            FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(Bomber.bombActiveAfter, new Action<float>((x) => {
-                if (x == 1f && this != null) {
-                    bomb.SetActive(true);
-                    background.SetActive(true);
-                    SoundEffectsManager.playAtPosition("bombFuseBurning", p, Bomber.destructionTime, Bomber.hearRange, true);
-                    Bomber.isActive = true;
-
-                    FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(Bomber.destructionTime, new Action<float>((x) => { // can you feel the pain?
-                        Color combinedColor = Mathf.Clamp01(x) * g + Mathf.Clamp01(1 - x) * c;
-                        if (backgroundRenderer) backgroundRenderer.color = combinedColor;
-                        if (x == 1f && this != null) {
-                            explode(this);
-                        }
-                    })));
-                }
-            })));
-
+            FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(CoPlantBomb(backgroundRenderer, p));
         }
+        
+        private IEnumerator CoPlantBomb(SpriteRenderer backgroundRenderer, Vector2 p)
+        {
+            var timer = 0f;
+            while (timer < Bomber.bombActiveAfter)
+            {
+                timer += Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+            timer = 0f;
+            bomb.SetActive(true);
+            background.SetActive(true);
+            SoundEffectsManager.playAtPosition("bombFuseBurning", p, Bomber.destructionTime, Bomber.hearRange, true);
+            Bomber.isActive = true;
+            while (timer < Bomber.destructionTime)
+            {
+                timer += Time.deltaTime;
+                var x = timer / Bomber.destructionTime;
+                if (backgroundRenderer)
+                {
+                    backgroundRenderer.color = Mathf.Clamp01(x) * Color.red + Mathf.Clamp01(1 - x) * Color.white;
+                }
+                yield return new WaitForEndOfFrame();
+            }
+            if (bomb) explode(this);
+        }
+        
         public static void explode(Bomb b) {
             if (b == null) return;
             if (Bomber.bomber != null) {

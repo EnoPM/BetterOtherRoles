@@ -114,8 +114,11 @@ namespace BetterOtherRoles.Objects {
             else if (secondPortal == null) {
                 secondPortal = this;
             }
-            var lastRoom = FastDestroyableSingleton<HudManager>.Instance?.roomTracker.LastRoom.RoomId;
-            this.room = lastRoom != null ? DestroyableSingleton<TranslationController>.Instance.GetString((SystemTypes)lastRoom) : "Open Field";
+            var hudManager = HudManager.Instance;
+            var lastRoom = hudManager && hudManager.roomTracker && hudManager.roomTracker.LastRoom
+                ? HudManager.Instance.roomTracker.LastRoom.RoomId
+                : SystemTypes.Outside;
+            this.room = DestroyableSingleton<TranslationController>.Instance.GetString(lastRoom);
         }
 
         public static bool locationNearEntry(Vector2 p) {
