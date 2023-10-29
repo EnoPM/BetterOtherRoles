@@ -27,44 +27,46 @@ namespace BetterOtherRoles.Patches {
         private static PlayerVoteArea swapped2 = null;
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.CheckForEndVoting))]
-        class MeetingCalculateVotesPatch {
+        class MeetingCalculateVotesPatch
+        {
+            private static readonly List<byte> NonPlayerVotes = new() { 252, 254, byte.MaxValue };
             private static Dictionary<byte, int> CalculateVotes(MeetingHud __instance) {
-                Dictionary<byte, int> dictionary = new Dictionary<byte, int>();
-                for (int i = 0; i < __instance.playerStates.Length; i++) {
-                    PlayerVoteArea playerVoteArea = __instance.playerStates[i];
-                    if (playerVoteArea.VotedFor != 252 && playerVoteArea.VotedFor != 255 && playerVoteArea.VotedFor != 254) {
-                        PlayerControl player = Helpers.playerById((byte)playerVoteArea.TargetPlayerId);
-                        if (player == null || player.Data == null || player.Data.IsDead || player.Data.Disconnected) continue;
-
-                        int currentVotes;
-                        int additionalVotes = (Mayor.mayor != null && Mayor.mayor.PlayerId == playerVoteArea.TargetPlayerId && Mayor.voteTwice) ? 2 : 1; // Mayor vote
-                        if (dictionary.TryGetValue(playerVoteArea.VotedFor, out currentVotes))
-                            dictionary[playerVoteArea.VotedFor] = currentVotes + additionalVotes;
-                        else
-                            dictionary[playerVoteArea.VotedFor] = additionalVotes;
-                    }
-                }
-                // Swapper swap votes
-                if (Swapper.swapper != null && !Swapper.swapper.Data.IsDead) {
+                var votes = new Dictionary<byte, int>();
+                var hasSwapper = Swapper.swapper != null && !Swapper.swapper.Data.IsDead;
+                if (hasSwapper)
+                {
                     swapped1 = null;
                     swapped2 = null;
-                    foreach (PlayerVoteArea playerVoteArea in __instance.playerStates) {
-                        if (playerVoteArea.TargetPlayerId == Swapper.playerId1) swapped1 = playerVoteArea;
-                        if (playerVoteArea.TargetPlayerId == Swapper.playerId2) swapped2 = playerVoteArea;
-                    }
-
-                    if (swapped1 != null && swapped2 != null) {
-                        if (!dictionary.ContainsKey(swapped1.TargetPlayerId)) dictionary[swapped1.TargetPlayerId] = 0;
-                        if (!dictionary.ContainsKey(swapped2.TargetPlayerId)) dictionary[swapped2.TargetPlayerId] = 0;
-                        int tmp = dictionary[swapped1.TargetPlayerId];
-                        dictionary[swapped1.TargetPlayerId] = dictionary[swapped2.TargetPlayerId];
-                        dictionary[swapped2.TargetPlayerId] = tmp;
+                }
+                foreach (var playerState in __instance.playerStates)
+                {
+                    if (NonPlayerVotes.Contains(playerState.VotedFor)) continue;
+                    var amMayorEnabled = Mayor.mayor != null && Mayor.mayor.PlayerId == playerState.TargetPlayerId &&
+                                         Mayor.voteTwice;
+                    var voteCount = amMayorEnabled ? 2 : 1;
+                    votes[playerState.VotedFor] =
+                        !votes.TryGetValue(playerState.VotedFor, out var num) ? voteCount : num + voteCount;
+                    if (hasSwapper)
+                    {
+                        if (playerState.TargetPlayerId == Swapper.playerId1)
+                        {
+                            swapped1 = playerState;
+                        }
+                        if (playerState.TargetPlayerId == Swapper.playerId2)
+                        {
+                            swapped2 = playerState;
+                        }
                     }
                 }
+                if (swapped1 != null && swapped2 != null)
+                {
+                    var swapped1VotesCount = votes.TryGetValue(swapped1.TargetPlayerId, out var voteCount1) ? voteCount1 : 0;
+                    var swapped2ValueVotesCount = votes.TryGetValue(swapped2.TargetPlayerId, out var voteCount2) ? voteCount2 : 0;
+                    votes[swapped1.TargetPlayerId] = swapped2ValueVotesCount;
+                    votes[swapped2.TargetPlayerId] = swapped1VotesCount;
+                }
 
-
-
-                return dictionary;
+                return votes;
             }
 
 
@@ -140,16 +142,30 @@ namespace BetterOtherRoles.Patches {
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.BloopAVoteIcon))]
         class MeetingHudBloopAVoteIconPatch {
             public static bool Prefix(MeetingHud __instance, [HarmonyArgument(0)]GameData.PlayerInfo voterPlayer, [HarmonyArgument(1)]int index, [HarmonyArgument(2)]Transform parent) {
-                SpriteRenderer spriteRenderer = UnityEngine.Object.Instantiate<SpriteRenderer>(__instance.PlayerVotePrefab);
-                int cId = voterPlayer.DefaultOutfit.ColorId;
-                if (!(!GameOptionsManager.Instance.currentNormalGameOptions.AnonymousVotes || (CachedPlayer.LocalPlayer.Data.IsDead && TORMapOptions.ghostsSeeVotes) || Mayor.mayor != null && CachedPlayer.LocalPlayer.PlayerControl == Mayor.mayor && Mayor.canSeeVoteColors && TasksHandler.taskInfo(CachedPlayer.LocalPlayer.Data).Item1 >= Mayor.tasksNeededToSeeVoteColors))
-                    voterPlayer.Object.SetColor(6);                    
-                voterPlayer.Object.SetPlayerMaterialColors(spriteRenderer);
-                spriteRenderer.transform.SetParent(parent);
-                spriteRenderer.transform.localScale = Vector3.zero;
-                __instance.StartCoroutine(Effects.Bloop((float)index * 0.3f, spriteRenderer.transform, 1f, 0.5f));
+                var spriteRenderer = UnityEngine.Object.Instantiate<SpriteRenderer>(__instance.PlayerVotePrefab);
+                var showVoteColors = !GameManager.Instance.LogicOptions.GetAnonymousVotes() ||
+                                     (CachedPlayer.LocalPlayer.Data.IsDead && TORMapOptions.ghostsSeeVotes) || 
+                                     (Mayor.mayor != null && Mayor.mayor == CachedPlayer.LocalPlayer.PlayerControl && Mayor.canSeeVoteColors && TasksHandler.taskInfo(CachedPlayer.LocalPlayer.Data).Item1 >= Mayor.tasksNeededToSeeVoteColors);
+                if (showVoteColors)
+                {
+                    PlayerMaterial.SetColors(voterPlayer.DefaultOutfit.ColorId, spriteRenderer);
+                }
+                else
+                {
+                    PlayerMaterial.SetColors(Palette.DisabledGrey, spriteRenderer);
+                }
+
+                var transform = spriteRenderer.transform;
+                transform.SetParent(parent);
+                transform.localScale = Vector3.zero;
+                var component = parent.GetComponent<PlayerVoteArea>();
+                if (component != null)
+                {
+                    spriteRenderer.material.SetInt(PlayerMaterial.MaskLayer, component.MaskLayer);
+                }
+
+                __instance.StartCoroutine(Effects.Bloop(index * 0.3f, transform));
                 parent.GetComponent<VoteSpreader>().AddVote(spriteRenderer);
-                voterPlayer.Object.SetColor(cId);
                 return false;
             }
         } 
