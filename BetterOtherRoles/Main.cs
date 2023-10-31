@@ -19,6 +19,7 @@ using BetterOtherRoles.Utilities;
 using Il2CppSystem.Security.Cryptography;
 using Il2CppSystem.Text;
 using AmongUs.Data;
+using BetterOtherRoles.Modules.CustomHats;
 using BetterOtherRoles.UI;
 using BetterOtherRoles.Utilities.Attributes;
 
@@ -31,7 +32,7 @@ namespace BetterOtherRoles
     {
         public const string Name = "Better Other Roles";
         public const string Id = "betterohterroles.eno.pm";
-        public const string VersionString = "1.5.1";
+        public const string VersionString = "1.5.2";
 
         public static Version Version = Version.Parse(VersionString);
         internal static BepInEx.Logging.ManualLogSource Logger;
@@ -72,6 +73,7 @@ namespace BetterOtherRoles
             
             CustomOptionHolder.Load();
             CustomColors.Load();
+            CustomHatManager.LoadHats();
             if (BepInExUpdater.UpdateRequired)
             {
                 AddComponent<BepInExUpdater>();
