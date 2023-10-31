@@ -77,7 +77,6 @@ namespace BetterOtherRoles.Utilities {
         private static string defaultHat = "default";
         public static void meetingEndsUpdate() {
             if (!isEnabled) return;
-            PlayerControl.LocalPlayer.RpcSetHat(CustomHatLoader.horseHatProductIds[Rnd.Next(CustomHatLoader.horseHatProductIds.Count)]);
         }
 
 

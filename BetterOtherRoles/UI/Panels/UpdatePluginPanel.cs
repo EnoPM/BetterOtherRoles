@@ -100,7 +100,6 @@ public class UpdatePluginPanel : WrappedPanel
 
     public void SetProgressInfosText(string text)
     {
-        System.Console.WriteLine($"SetProgressInfosText: {text}");
         _progressInfos.text = text;
     }
 
@@ -114,6 +113,8 @@ public class UpdatePluginPanel : WrappedPanel
     private void OnDownloadButtonClick()
     {
         if (_selectedRelease == null) return;
+        var isCompatible = _selectedRelease.Version.Major == BetterOtherRolesPlugin.Version.Major && _selectedRelease.Version.Minor == BetterOtherRolesPlugin.Version.Minor;
+        if (!isCompatible) return;
         PluginUpdater.Instance.StartDownloadRelease(_selectedRelease);
     }
 
@@ -125,13 +126,20 @@ public class UpdatePluginPanel : WrappedPanel
     private void RefreshSelectedRelease()
     {
         if (_selectedRelease == null) return;
+        var isCompatible = _selectedRelease.Version.Major == BetterOtherRolesPlugin.Version.Major && _selectedRelease.Version.Minor == BetterOtherRolesPlugin.Version.Minor;
         var isUpgrade = _selectedRelease.IsNewer(BetterOtherRolesPlugin.Version);
         var isReinstall = !isUpgrade && _selectedRelease.Version == BetterOtherRolesPlugin.Version;
         var updateType = isUpgrade ? "Upgrade" : isReinstall ? "Reinstall" : "Downgrade";
         var updateTypeColor = isUpgrade ? Color.green : isReinstall ? UIPalette.Info : UIPalette.Warning;
         var updateTypeArrow = isUpgrade ? "\u25b2" : isReinstall ? "=" : "\u25bc";
         _releaseName.text = $"{Helpers.cs(updateTypeColor, updateType)}: {Helpers.cs(Color.yellow, $"v{BetterOtherRolesPlugin.VersionString}")} {Helpers.cs(updateTypeColor, updateTypeArrow)} {_selectedRelease.Tag}";
-        if (isUpgrade)
+        if (!isCompatible)
+        {
+            _releaseDescription.text = _selectedRelease.Description;
+            _downloadButton.ButtonText.text = "Unsupported game version";
+            _downloadButton.Component.SetColorsAuto(UIPalette.Danger);
+        }
+        else if (isUpgrade)
         {
             var releases = _githubReleases.Values.Where(r => r.IsNewer(BetterOtherRolesPlugin.Version) && !r.IsNewer(_selectedRelease.Version));
             _releaseDescription.text = string.Join("\n", releases.Select(r => r.Description));
@@ -191,7 +199,6 @@ public class UpdatePluginPanel : WrappedPanel
                 }
             }
         }
-        System.Console.WriteLine(JsonSerializer.Serialize(_githubReleases.Keys.ToArray()));
         _dropdownObject = UIFactory.CreateDropdown(
             _titleContainer, 
             "VersionSelector", 
