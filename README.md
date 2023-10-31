@@ -38,12 +38,16 @@ The [Role Assignment](#role-assignment) sections explains how the roles are bein
 
 # Releases
 | Among Us - Version| Mod Version | Link |
-|----------|----------|-----------------|
-| 2023.07.12s| v1.4.4   | [Download](https://github.com/EnoPM/BetterOtherRoles/releases/download/v1.4.4/BetterOtherRoles.v1.4.4.zip)
+|----------|-------------|-----------------|
+| 2023.10.24| v1.5.1      | [Download](https://github.com/EnoPM/BetterOtherRoles/releases/download/v1.5.1/BetterOtherRoles.v1.5.1.zip)
+| 2023.07.12s| v1.4.4      | [Download](https://github.com/EnoPM/BetterOtherRoles/releases/download/v1.4.4/BetterOtherRoles.v1.4.4.zip)
 
 # Changelog
 <details>
   <summary>Click to show the Changelog</summary>
+
+**Version 1.5.x**
+- Updated to Among Us version 2023.10.24
   
 **Version 1.4.x**
 - Updated to Among Us version 2023.07.12
