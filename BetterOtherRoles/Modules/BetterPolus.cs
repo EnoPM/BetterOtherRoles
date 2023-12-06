@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using AmongUsSpecimen.ModOptions;
+using BetterOtherRoles.Options;
 using BetterOtherRoles.Utilities.Attributes;
 using UnityEngine;
 
@@ -8,8 +10,8 @@ namespace BetterOtherRoles.Modules;
 [Autoload]
 public static class BetterPolus
 {
-    public static CustomOption Enabled => CustomOptionHolder.EnableBetterPolus;
-    public static CustomOption ReactorCountdown = CustomOptionHolder.PolusReactorCountdown;
+    public static ModBoolOption Enabled => CustomOptionHolder.EnableBetterPolus;
+    public static ModFloatOption ReactorCountdown = CustomOptionHolder.PolusReactorCountdown;
 
     private static readonly Dictionary<EditableObjects, GameObject> Objects = new();
     private static readonly Dictionary<EditableObjects, Console> Consoles = new();
@@ -65,7 +67,7 @@ public static class BetterPolus
     {
         Clear();
         if (!ShipStatus.Instance) return;
-        if (Enabled.getBool())
+        if (Enabled.GetBool())
         {
             if (IsAdjustmentsDone) return;
             ApplyChanges(ShipStatus.Instance);
@@ -79,7 +81,7 @@ public static class BetterPolus
 
     public static void ApplyChanges(ShipStatus shipStatus)
     {
-        if (!Enabled.getBool() || shipStatus.Type != ShipStatus.MapType.Pb || IsAdjustmentsDone) return;
+        if (!Enabled.GetBool() || shipStatus.Type != ShipStatus.MapType.Pb || IsAdjustmentsDone) return;
         FindPolusObjects();
         AdjustPolus();
         IsAdjustmentsDone = true;

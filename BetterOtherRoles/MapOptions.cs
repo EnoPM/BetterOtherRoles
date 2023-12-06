@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using BetterOtherRoles.Options;
 using BetterOtherRoles.UI;
 using UnityEngine;
 
@@ -24,9 +25,7 @@ namespace BetterOtherRoles{
             get => _gameMode;
             set
             {
-                var oldValue = _gameMode;
                 _gameMode = value;
-                UIManager.CustomOptionsPanel?.CheckForUpdate(oldValue, _gameMode);
             }
         }
         private static CustomGamemodes _gameMode = CustomGamemodes.Classic;
@@ -43,11 +42,11 @@ namespace BetterOtherRoles{
             ventsToSeal = new List<Vent>();
             playerIcons = new Dictionary<byte, PoolablePlayer>(); ;
 
-            maxNumberOfMeetings = Mathf.RoundToInt(CustomOptionHolder.maxNumberOfMeetings.getSelection());
-            blockSkippingInEmergencyMeetings = CustomOptionHolder.blockSkippingInEmergencyMeetings.getBool();
-            noVoteIsSelfVote = CustomOptionHolder.noVoteIsSelfVote.getBool();
-            hidePlayerNames = CustomOptionHolder.hidePlayerNames.getBool();
-            allowParallelMedBayScans = CustomOptionHolder.allowParallelMedBayScans.getBool();
+            maxNumberOfMeetings = Mathf.RoundToInt(CustomOptionHolder.MaxNumberOfMeetings.GetInt());
+            blockSkippingInEmergencyMeetings = CustomOptionHolder.BlockSkippingInEmergencyMeetings.GetBool();
+            noVoteIsSelfVote = CustomOptionHolder.NoVoteIsSelfVote.GetBool();
+            hidePlayerNames = CustomOptionHolder.HidePlayerNames.GetBool();
+            allowParallelMedBayScans = CustomOptionHolder.AllowParallelMedBayScans.GetBool();
         }
 
         public static void reloadPluginOptions() {

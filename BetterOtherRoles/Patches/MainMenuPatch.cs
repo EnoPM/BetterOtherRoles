@@ -68,7 +68,6 @@ namespace BetterOtherRoles.Modules {
                 // find "HostLocalGameButton"
                 var template = GameObject.FindObjectOfType<HostLocalGameButton>();
                 var gameButton = template.transform.FindChild("CreateGameButton");
-                var gameButtonPassiveButton = gameButton.GetComponentInChildren<PassiveButton>();
 
                 var guesserButton = GameObject.Instantiate<Transform>(gameButton, gameButton.parent);
                 guesserButton.transform.localPosition += new Vector3(0f, -0.5f);
@@ -81,20 +80,8 @@ namespace BetterOtherRoles.Modules {
                     template.OnClick();
                 }));
 
-                var HideNSeekButton = GameObject.Instantiate<Transform>(gameButton, gameButton.parent);
-                HideNSeekButton.transform.localPosition += new Vector3(1.7f, -0.5f);
-                var HideNSeekButtonText = HideNSeekButton.GetComponentInChildren<TMPro.TextMeshPro>();
-                var HideNSeekButtonPassiveButton = HideNSeekButton.GetComponentInChildren<PassiveButton>();
-                
-                HideNSeekButtonPassiveButton.OnClick = new Button.ButtonClickedEvent();
-                HideNSeekButtonPassiveButton.OnClick.AddListener((System.Action)(() => {
-                    TORMapOptions.gameMode = CustomGamemodes.HideNSeek;
-                    template.OnClick();
-                }));
-
                 template.StartCoroutine(Effects.Lerp(0.1f, new System.Action<float>((p) => {
                     guesserButtonText.SetText("TOR Guesser");
-                    HideNSeekButtonText.SetText("TOR Hide N Seek");
                  })));
             }));
         }

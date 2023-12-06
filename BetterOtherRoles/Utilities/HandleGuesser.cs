@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using BetterOtherRoles.CustomGameModes;
+using BetterOtherRoles.Options;
+using BetterOtherRoles.Roles;
 using UnityEngine;
 
 namespace BetterOtherRoles.Utilities {
@@ -39,15 +41,15 @@ namespace BetterOtherRoles.Utilities {
             GuesserGM.clearAndReload();
             isGuesserGm = TORMapOptions.gameMode == CustomGamemodes.Guesser;
             if (isGuesserGm) {
-                guesserCantGuessSnitch = CustomOptionHolder.guesserGamemodeCantGuessSnitchIfTaksDone.getBool();
-                hasMultipleShotsPerMeeting = CustomOptionHolder.guesserGamemodeHasMultipleShotsPerMeeting.getBool();
-                killsThroughShield = CustomOptionHolder.guesserGamemodeKillsThroughShield.getBool();
-                evilGuesserCanGuessSpy = CustomOptionHolder.guesserGamemodeEvilCanKillSpy.getBool();
+                guesserCantGuessSnitch = CustomOptionHolder.GuesserModeCantGuessSnitchIfTasksDone.GetBool();
+                hasMultipleShotsPerMeeting = CustomOptionHolder.GuesserModeMultipleShotsPerMeeting.GetBool();
+                killsThroughShield = CustomOptionHolder.GuesserModeKillsThroughShield.GetBool();
+                evilGuesserCanGuessSpy = CustomOptionHolder.GuesserModeEvilCanKillSpy.GetBool();
             } else {
-                guesserCantGuessSnitch = CustomOptionHolder.guesserCantGuessSnitchIfTaksDone.getBool();
-                hasMultipleShotsPerMeeting = CustomOptionHolder.guesserHasMultipleShotsPerMeeting.getBool();
-                killsThroughShield = CustomOptionHolder.guesserKillsThroughShield.getBool();
-                evilGuesserCanGuessSpy = CustomOptionHolder.guesserEvilCanKillSpy.getBool();
+                guesserCantGuessSnitch = CustomOptionHolder.GuesserCantGuessSnitchIfTasksDone.GetBool();
+                hasMultipleShotsPerMeeting = CustomOptionHolder.GuesserHasMultipleShotsPerMeeting.GetBool();
+                killsThroughShield = CustomOptionHolder.GuesserKillsThroughShield.GetBool();
+                evilGuesserCanGuessSpy = CustomOptionHolder.GuesserEvilCanKillSpy.GetBool();
             }
 
         }

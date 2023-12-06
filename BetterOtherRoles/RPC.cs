@@ -15,8 +15,10 @@ using BetterOtherRoles.Utilities;
 using BetterOtherRoles.CustomGameModes;
 using AmongUs.Data;
 using AmongUs.GameOptions;
-using BetterOtherRoles.Eno;
+using BetterOtherRoles.Modifiers;
 using BetterOtherRoles.Modules;
+using BetterOtherRoles.Options;
+using BetterOtherRoles.Roles;
 using UnityEngine.UIElements;
 
 namespace BetterOtherRoles
@@ -191,19 +193,6 @@ namespace BetterOtherRoles
             EventUtility.clearAndReload();
         }
 
-    public static void HandleShareOptions(byte numberOfOptions, MessageReader reader) {            
-            try {
-                for (int i = 0; i < numberOfOptions; i++) {
-                    uint optionId = reader.ReadPackedUInt32();
-                    uint selection = reader.ReadPackedUInt32();
-                    CustomOption option = CustomOption.options.First(option => option.id == (int)optionId);
-                    option.updateSelection((int)selection);
-                }
-            } catch (Exception e) {
-                BetterOtherRolesPlugin.Logger.LogError("Error while deserializing options: " + e.Message);
-            }
-        }
-
         public static void forceEnd() {
             if (AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started) return;
             foreach (PlayerControl player in CachedPlayer.AllPlayers)
@@ -235,7 +224,7 @@ namespace BetterOtherRoles
                     } catch (Exception e) {
                         BetterOtherRolesPlugin.Logger.LogError("Error while deserializing roles: " + e.Message);
                     }
-            }
+                }
             
         }
 
@@ -1079,7 +1068,7 @@ namespace BetterOtherRoles
             if (Thief.thief == PlayerControl.LocalPlayer) CustomButton.ResetAllCooldowns();
             Thief.clearAndReload();
             Thief.formerThief = thief;  // After clearAndReload, else it would get reset...
-            if (!CustomOptionHolder.StolenPlayerKeepsHisTeam.getBool())
+            if (!CustomOptionHolder.ThiefStolenPlayerKeepsHisTeam.GetBool())
             {
                 Fallen.ClearAndReload();
                 Fallen.Player = target;
@@ -1105,41 +1094,6 @@ namespace BetterOtherRoles
             PlayerControl target = Helpers.playerById(playerId);
             if (target == null) return;
             new GuesserGM(target);
-        }
-
-        public static void shareTimer(float punish) {
-            HideNSeek.timer -= punish;
-        }
-
-        public static void huntedShield(byte playerId) {
-            if (!Hunted.timeshieldActive.Contains(playerId)) Hunted.timeshieldActive.Add(playerId);
-            FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(Hunted.shieldDuration, new Action<float>((p) => {
-                if (p == 1f) Hunted.timeshieldActive.Remove(playerId);
-            })));
-        }
-
-        public static void huntedRewindTime(byte playerId) {
-            Hunted.timeshieldActive.Remove(playerId); // Shield is no longer active when rewinding
-            SoundEffectsManager.stop("timemasterShield");  // Shield sound stopped when rewinding
-            if (playerId == CachedPlayer.LocalPlayer.PlayerControl.PlayerId) {
-                resetHuntedRewindButton();
-            }
-            FastDestroyableSingleton<HudManager>.Instance.FullScreen.color = new Color(0f, 0.5f, 0.8f, 0.3f);
-            FastDestroyableSingleton<HudManager>.Instance.FullScreen.enabled = true;
-            FastDestroyableSingleton<HudManager>.Instance.FullScreen.gameObject.SetActive(true);
-            FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(Hunted.shieldRewindTime, new Action<float>((p) => {
-                if (p == 1f) FastDestroyableSingleton<HudManager>.Instance.FullScreen.enabled = false;
-            })));
-
-            if (!CachedPlayer.LocalPlayer.Data.Role.IsImpostor) return; // only rewind hunter
-
-            TimeMaster.isRewinding = true;
-
-            if (MapBehaviour.Instance)
-                MapBehaviour.Instance.Close();
-            if (Minigame.Instance)
-                Minigame.Instance.ForceClose();
-            CachedPlayer.LocalPlayer.PlayerControl.moveable = false;
         }
 
         public enum GhostInfoTypes {
@@ -1238,9 +1192,6 @@ namespace BetterOtherRoles
                 case (byte)CustomRPC.ResetVaribles:
                     RPCProcedure.resetVariables();
                     break;
-                case (byte)CustomRPC.ShareOptions:
-                    RPCProcedure.HandleShareOptions(reader.ReadByte(), reader);
-                    break;
                 case (byte)CustomRPC.ForceEnd:
                     RPCProcedure.forceEnd();
                     break; 
@@ -1257,9 +1208,6 @@ namespace BetterOtherRoles
                     byte pId = reader.ReadByte();
                     byte flag = reader.ReadByte();
                     RPCProcedure.setModifier(modifierId, pId, flag);
-                    break;
-                case (byte)CustomRPC.VersionHandshake:
-                    VersionHandshake.HandleRpcHandshake(reader);
                     break;
                 case (byte)CustomRPC.UseUncheckedVent:
                     int ventId = reader.ReadPackedInt32();
@@ -1459,18 +1407,6 @@ namespace BetterOtherRoles
                 case (byte)CustomRPC.SetGuesserGm:
                     byte guesserGm = reader.ReadByte();
                     RPCProcedure.setGuesserGm(guesserGm);
-                    break;
-                case (byte)CustomRPC.ShareTimer:
-                    float punish = reader.ReadSingle();
-                    RPCProcedure.shareTimer(punish);
-                    break;
-                case (byte)CustomRPC.HuntedShield:
-                    byte huntedPlayer = reader.ReadByte();
-                    RPCProcedure.huntedShield(huntedPlayer);
-                    break;
-                case (byte)CustomRPC.HuntedRewindTime:
-                    byte rewindPlayer = reader.ReadByte();
-                    RPCProcedure.huntedRewindTime(rewindPlayer);
                     break;
                 case (byte)CustomRPC.ShareGhostInfo:
                     RPCProcedure.receiveGhostInfo(reader.ReadByte(), reader);

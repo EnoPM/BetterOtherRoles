@@ -5,7 +5,9 @@ using System.Linq;
 using static BetterOtherRoles.BetterOtherRoles;
 using BetterOtherRoles.Objects;
 using System;
+using BetterOtherRoles.Modifiers;
 using BetterOtherRoles.Players;
+using BetterOtherRoles.Roles;
 using BetterOtherRoles.Utilities;
 using UnityEngine;
 

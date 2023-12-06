@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using BetterOtherRoles.Players;
+using BetterOtherRoles.Roles;
 using BetterOtherRoles.Utilities;
 using UnityEngine;
 

@@ -1,5 +1,7 @@
 using HarmonyLib;
 using System;
+using BetterOtherRoles.Modifiers;
+using BetterOtherRoles.Roles;
 using BetterOtherRoles.Utilities;
 
 namespace BetterOtherRoles {

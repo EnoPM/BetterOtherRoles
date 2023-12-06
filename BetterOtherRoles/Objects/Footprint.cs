@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using BetterOtherRoles.Roles;
 using BetterOtherRoles.Utilities;
 using UnityEngine;
 
@@ -23,8 +24,8 @@ namespace BetterOtherRoles.Objects
         private static Sprite _footprintSprite;
         private static Sprite FootprintSprite => _footprintSprite ??= Helpers.loadSpriteFromResources("BetterOtherRoles.Resources.Footprint.png", 600f);
 
-        private static bool AnonymousFootprints => BetterOtherRoles.Detective.anonymousFootprints;
-        private static float FootprintDuration => BetterOtherRoles.Detective.footprintDuration;
+        private static bool AnonymousFootprints => Detective.anonymousFootprints;
+        private static float FootprintDuration => Detective.footprintDuration;
         
         private class Footprint
         {

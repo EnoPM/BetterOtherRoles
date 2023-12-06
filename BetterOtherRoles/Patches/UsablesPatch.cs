@@ -12,6 +12,9 @@ using BetterOtherRoles.Utilities;
 using BetterOtherRoles.Objects;
 using BetterOtherRoles.CustomGameModes;
 using AmongUs.GameOptions;
+using BetterOtherRoles.Modifiers;
+using BetterOtherRoles.Options;
+using BetterOtherRoles.Roles;
 
 namespace BetterOtherRoles.Patches {
 
@@ -106,7 +109,7 @@ namespace BetterOtherRoles.Patches {
             if (Trapper.playersOnMap.Contains(CachedPlayer.LocalPlayer.PlayerControl)) return false;
 
             if (Undertaker.Player == CachedPlayer.LocalPlayer.PlayerControl &&
-                CustomOptionHolder.UndertakerDisableVent.getBool() && Undertaker.DraggedBody != null)
+                CustomOptionHolder.UndertakerDisableVent.GetBool() && Undertaker.DraggedBody != null)
             {
                 return false;
             }
@@ -630,8 +633,8 @@ namespace BetterOtherRoles.Patches {
 
 
             isLightsOut = CachedPlayer.LocalPlayer.PlayerControl.myTasks.ToArray().Any(x => x.name.Contains("FixLightsTask"));
-            bool ignoreNightVision = CustomOptionHolder.camsNoNightVisionIfImpVision.getBool() && Helpers.hasImpVision(GameData.Instance.GetPlayerById(CachedPlayer.LocalPlayer.PlayerId)) || CachedPlayer.LocalPlayer.Data.IsDead;
-            bool nightVisionEnabled = CustomOptionHolder.camsNightVision.getBool();
+            bool ignoreNightVision = CustomOptionHolder.CamsNoNightVisionIfImpVision.GetBool() && Helpers.hasImpVision(GameData.Instance.GetPlayerById(CachedPlayer.LocalPlayer.PlayerId)) || CachedPlayer.LocalPlayer.Data.IsDead;
+            bool nightVisionEnabled = CustomOptionHolder.CamsNightVision.GetBool();
 
             if (isLightsOut && !nightVisionIsActive && nightVisionEnabled && !ignoreNightVision) {  // only update when something changed!
                 foreach (PlayerControl pc in CachedPlayer.AllPlayers) {
@@ -716,8 +719,6 @@ namespace BetterOtherRoles.Patches {
     [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.ShowSabotageMap))]
     class ShowSabotageMapPatch {
         static bool Prefix(MapBehaviour __instance) {
-            if (HideNSeek.isHideNSeekGM)
-                return HideNSeek.canSabotage;
             return true;
         }
     }

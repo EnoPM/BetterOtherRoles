@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using System;
-using BetterOtherRoles;
-using BetterOtherRoles.CustomGameModes;
+using BetterOtherRoles.Modifiers;
 using BetterOtherRoles.Modules;
 using BetterOtherRoles.Players;
 using BetterOtherRoles.Utilities;
@@ -51,8 +50,7 @@ namespace BetterOtherRoles.Patches
                 if (AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started)
                 {
                     string gameModeText = $"";
-                    if (HideNSeek.isHideNSeekGM) gameModeText = $"Hide 'N Seek";
-                    else if (HandleGuesser.isGuesserGm) gameModeText = $"Guesser";
+                    if (HandleGuesser.isGuesserGm) gameModeText = $"Guesser";
                     if (gameModeText != "") gameModeText = " - " + Helpers.cs(Color.yellow, gameModeText);
                     var needEol = gameModeText != string.Empty || DevConfig.IsDingusRelease;
                     __instance.text.text =
@@ -76,8 +74,7 @@ namespace BetterOtherRoles.Patches
                 else
                 {
                     string gameModeText = $"";
-                    if (TORMapOptions.gameMode == CustomGamemodes.HideNSeek) gameModeText = $"Hide 'N Seek";
-                    else if (TORMapOptions.gameMode == CustomGamemodes.Guesser) gameModeText = $"Guesser";
+                    if (TORMapOptions.gameMode == CustomGamemodes.Guesser) gameModeText = $"Guesser";
                     if (gameModeText != "") gameModeText = Helpers.cs(Color.yellow, gameModeText) + "\n";
 
                     __instance.text.text =

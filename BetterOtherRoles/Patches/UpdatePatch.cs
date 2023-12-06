@@ -9,7 +9,9 @@ using BetterOtherRoles.Players;
 using BetterOtherRoles.Utilities;
 using BetterOtherRoles.CustomGameModes;
 using AmongUs.GameOptions;
+using BetterOtherRoles.Modifiers;
 using BetterOtherRoles.Modules;
+using BetterOtherRoles.Roles;
 
 namespace BetterOtherRoles.Patches {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
@@ -248,7 +250,6 @@ namespace BetterOtherRoles.Patches {
             Trickster.lightsOutTimer -= dt;
             Tracker.corpsesTrackingTimer -= dt;
             Ninja.invisibleTimer -= dt;
-            HideNSeek.timer -= dt;
             foreach (byte key in Deputy.handcuffedKnows.Keys)
                 Deputy.handcuffedKnows[key] -= dt;
         }
@@ -326,7 +327,7 @@ namespace BetterOtherRoles.Patches {
         }
 
         static void updateSabotageButton(HudManager __instance) {
-            if (MeetingHud.Instance || TORMapOptions.gameMode == CustomGamemodes.HideNSeek) __instance.SabotageButton.Hide();
+            if (MeetingHud.Instance) __instance.SabotageButton.Hide();
         }
 
         static void updateMapButton(HudManager __instance) {

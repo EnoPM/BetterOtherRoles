@@ -9,6 +9,7 @@ using static BetterOtherRoles.BetterOtherRoles;
 using System.Linq;
 using InnerNet;
 using BetterOtherRoles.Modules;
+using BetterOtherRoles.Options;
 
 namespace BetterOtherRoles.Utilities {
     public static class EventUtility {
@@ -42,8 +43,8 @@ namespace BetterOtherRoles.Utilities {
         public static void clearAndReload() {
             eventQueue = new List<EventTypes>();
             eventInvert = false;
-            if (canBeEnabled && CustomOptionHolder.enableCodenameDisableHorses != null)
-                disableHorses = CustomOptionHolder.enableCodenameDisableHorses.getBool();
+            if (canBeEnabled && CustomOptionHolder.EnableCodenameDisableHorses != null)
+                disableHorses = CustomOptionHolder.EnableCodenameDisableHorses.GetBool();
         }
 
         public static void Update() {
@@ -66,7 +67,7 @@ namespace BetterOtherRoles.Utilities {
         public static bool isEventDate => DateTime.Today.Date == enabled;
 
         public static bool canBeEnabled => DateTime.Today.Date > enabled && DateTime.Today.Date <= enabled.AddDays(7); // One Week after the EVENT
-        public static bool isEnabled => isEventDate || canBeEnabled && CustomOptionHolder.enableCodenameHorsemode != null && CustomOptionHolder.enableCodenameHorsemode.getBool();
+        public static bool isEnabled => isEventDate || canBeEnabled && CustomOptionHolder.EnableCodenameHorseMode != null && CustomOptionHolder.EnableCodenameHorseMode.GetBool();
 
         public static void AddToQueue(EventTypes newEvent) {
             if (!isEnabled || eventQueue == null || eventQueue.Contains(newEvent)) return;

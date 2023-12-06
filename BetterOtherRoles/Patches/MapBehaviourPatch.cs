@@ -5,6 +5,7 @@ using System.Linq;
 using BetterOtherRoles.Modules;
 using BetterOtherRoles.Objects;
 using BetterOtherRoles.Players;
+using BetterOtherRoles.Roles;
 using BetterOtherRoles.UI;
 using BetterOtherRoles.Utilities;
 using UnityEngine;
@@ -73,7 +74,6 @@ namespace BetterOtherRoles.Patches {
                     }
                 }
 			}
-            UIManager.CustomOptionsPanel?.SetActive(false);
         }
 	}
 }

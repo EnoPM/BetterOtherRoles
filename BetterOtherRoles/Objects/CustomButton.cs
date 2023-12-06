@@ -2,6 +2,7 @@ using Il2CppSystem.Runtime.ExceptionServices;
 using System;
 using System.Collections.Generic;
 using BetterOtherRoles.Players;
+using BetterOtherRoles.Roles;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

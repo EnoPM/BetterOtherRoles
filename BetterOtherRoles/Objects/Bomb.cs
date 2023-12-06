@@ -2,6 +2,7 @@ using Hazel;
 using System.Collections;
 using BepInEx.Unity.IL2CPP.Utils;
 using BetterOtherRoles.Players;
+using BetterOtherRoles.Roles;
 using BetterOtherRoles.Utilities;
 using UnityEngine;
 

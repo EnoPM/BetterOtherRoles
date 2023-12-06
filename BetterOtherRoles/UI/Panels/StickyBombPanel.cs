@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using BetterOtherRoles.Roles;
+using UnityEngine;
 using UnityEngine.UI;
 using UniverseLib.UI;
 

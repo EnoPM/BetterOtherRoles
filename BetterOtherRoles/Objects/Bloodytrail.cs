@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using BetterOtherRoles.Roles;
 using BetterOtherRoles.Utilities;
 using UnityEngine;
 using static BetterOtherRoles.BetterOtherRoles;

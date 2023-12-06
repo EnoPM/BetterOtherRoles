@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using BetterOtherRoles.Options;
 using UnityEngine;
 
 namespace BetterOtherRoles.CustomGameModes {
@@ -7,7 +8,7 @@ namespace BetterOtherRoles.CustomGameModes {
         public static Color color = new Color32(255, 255, 0, byte.MaxValue);
 
         public PlayerControl guesser = null;
-        public int shots = Mathf.RoundToInt(CustomOptionHolder.guesserGamemodeNumberOfShots.getFloat());
+        public int shots = Mathf.RoundToInt(CustomOptionHolder.GuesserModeNumberOfShots.GetFloat());
         public GuesserGM(PlayerControl player) {
             guesser = player;
             guessers.Add(this);
@@ -25,7 +26,7 @@ namespace BetterOtherRoles.CustomGameModes {
             var g = guessers.FindLast(x => x.guesser.PlayerId == playerId);
             if (g == null) return;
             g.guesser = null;
-            g.shots = Mathf.RoundToInt(CustomOptionHolder.guesserGamemodeNumberOfShots.getFloat());
+            g.shots = Mathf.RoundToInt(CustomOptionHolder.GuesserModeNumberOfShots.GetFloat());
 
             guessers.Remove(g);
         }

@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-using System;
+using BetterOtherRoles.Modifiers;
 
 namespace BetterOtherRoles.Patches {
     [HarmonyPatch]

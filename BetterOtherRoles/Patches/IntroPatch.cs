@@ -8,7 +8,10 @@ using Hazel;
 using BetterOtherRoles.Players;
 using BetterOtherRoles.Utilities;
 using BetterOtherRoles.CustomGameModes;
+using BetterOtherRoles.Modifiers;
 using BetterOtherRoles.Modules;
+using BetterOtherRoles.Options;
+using BetterOtherRoles.Roles;
 
 namespace BetterOtherRoles.Patches {
     [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]
@@ -45,19 +48,6 @@ namespace BetterOtherRoles.Patches {
                         player.transform.localScale = Vector3.one * 0.2f;
                         player.setSemiTransparent(true);
                         player.gameObject.SetActive(true);
-                    } else if (HideNSeek.isHideNSeekGM) {
-                        if (HideNSeek.isHunted() && p.Data.Role.IsImpostor) {
-                            player.transform.localPosition = bottomLeft + new Vector3(-0.25f, 0.4f, 0) + Vector3.right * playerCounter++ * 0.6f;
-                            player.transform.localScale = Vector3.one * 0.3f;
-                            player.cosmetics.nameText.text += $"{Helpers.cs(Color.red, " (Hunter)")}";
-                            player.gameObject.SetActive(true);
-                        } else if (!p.Data.Role.IsImpostor) {
-                            player.transform.localPosition = bottomLeft + new Vector3(-0.35f, -0.25f, 0) + Vector3.right * hideNSeekCounter++ * 0.35f;
-                            player.transform.localScale = Vector3.one * 0.2f;
-                            player.setSemiTransparent(true);
-                            player.gameObject.SetActive(true);
-                        }
-
                     } else {   //  This can be done for all players not just for the bounty hunter as it was before. Allows the thief to have the correct position and scaling
                         player.transform.localPosition = bottomLeft;
                         player.transform.localScale = Vector3.one * 0.4f;
@@ -82,7 +72,7 @@ namespace BetterOtherRoles.Patches {
             SoundEffectsManager.Load();
 
             // First kill
-            if (AmongUsClient.Instance.AmHost && FirstKillShield.Enabled && FirstKillShield.FirstKilledPlayerName != string.Empty && !HideNSeek.isHideNSeekGM) {
+            if (AmongUsClient.Instance.AmHost && FirstKillShield.Enabled && FirstKillShield.FirstKilledPlayerName != string.Empty) {
                 PlayerControl target = PlayerControl.AllPlayerControls.ToArray().ToList().FirstOrDefault(x => x.Data.PlayerName.Equals(FirstKillShield.FirstKilledPlayerName));
                 if (target != null) {
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.SetFirstKill, Hazel.SendOption.Reliable, -1);
@@ -94,51 +84,6 @@ namespace BetterOtherRoles.Patches {
             FirstKillShield.FirstKilledPlayerName = string.Empty;
 
             EventUtility.gameStartsUpdate();
-
-            if (HideNSeek.isHideNSeekGM) {
-                foreach (PlayerControl player in HideNSeek.getHunters()) {
-                    player.moveable = false;
-                    player.NetTransform.Halt();
-                    HideNSeek.timer = HideNSeek.hunterWaitingTime;
-                    FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(HideNSeek.hunterWaitingTime, new Action<float>((p) => {
-                        if (p == 1f) {
-                            player.moveable = true;
-                            HideNSeek.timer = CustomOptionHolder.hideNSeekTimer.getFloat() * 60;
-                            HideNSeek.isWaitingTimer = false;
-                        }
-                    })));
-                    player.MyPhysics.SetBodyType(PlayerBodyTypes.Seeker);
-                }
-
-                if (HideNSeek.polusVent == null && GameOptionsManager.Instance.currentNormalGameOptions.MapId == 2) {
-                    var list = GameObject.FindObjectsOfType<Vent>().ToList();
-                    var adminVent = list.FirstOrDefault(x => x.gameObject.name == "AdminVent");
-                    var bathroomVent = list.FirstOrDefault(x => x.gameObject.name == "BathroomVent");
-                    HideNSeek.polusVent = UnityEngine.Object.Instantiate<Vent>(adminVent);
-                    HideNSeek.polusVent.gameObject.AddSubmergedComponent(SubmergedCompatibility.Classes.ElevatorMover);
-                    HideNSeek.polusVent.transform.position = new Vector3(36.55068f, -21.5168f, -0.0215168f);
-                    HideNSeek.polusVent.Left = adminVent;
-                    HideNSeek.polusVent.Right = bathroomVent;
-                    HideNSeek.polusVent.Center = null;
-                    HideNSeek.polusVent.Id = MapUtilities.CachedShipStatus.AllVents.Select(x => x.Id).Max() + 1; // Make sure we have a unique id
-                    var allVentsList = MapUtilities.CachedShipStatus.AllVents.ToList();
-                    allVentsList.Add(HideNSeek.polusVent);
-                    MapUtilities.CachedShipStatus.AllVents = allVentsList.ToArray();
-                    HideNSeek.polusVent.gameObject.SetActive(true);
-                    HideNSeek.polusVent.name = "newVent_" + HideNSeek.polusVent.Id;
-
-                    adminVent.Center = HideNSeek.polusVent;
-                    bathroomVent.Center = HideNSeek.polusVent;
-                }
-
-                ShipStatusPatch.originalNumCrewVisionOption = GameOptionsManager.Instance.currentNormalGameOptions.CrewLightMod;
-                ShipStatusPatch.originalNumImpVisionOption = GameOptionsManager.Instance.currentNormalGameOptions.ImpostorLightMod;
-                ShipStatusPatch.originalNumKillCooldownOption = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown;
-
-                GameOptionsManager.Instance.currentNormalGameOptions.ImpostorLightMod = CustomOptionHolder.hideNSeekHunterVision.getFloat();
-                GameOptionsManager.Instance.currentNormalGameOptions.CrewLightMod = CustomOptionHolder.hideNSeekHuntedVision.getFloat();
-                GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown = CustomOptionHolder.hideNSeekKillCooldown.getFloat();
-            }
         }
     }
 
@@ -235,7 +180,7 @@ namespace BetterOtherRoles.Patches {
                 }
             }
             public static bool Prefix(IntroCutscene __instance) {
-                if (!CustomOptionHolder.activateRoles.getBool()) return true;
+                if (!CustomOptionHolder.ActivateRoles.GetBool()) return true;
                 seed = Rnd.Next(5000);
                 FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(1f, new Action<float>((p) => {
                     SetRoleTexts(__instance);

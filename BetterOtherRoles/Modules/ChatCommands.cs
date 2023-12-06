@@ -1,9 +1,8 @@
-using System;
 using HarmonyLib;
 using System.Linq;
-using BetterOtherRoles.Eno;
+using BetterOtherRoles.Modifiers;
 using BetterOtherRoles.Players;
-using BetterOtherRoles.UI;
+using BetterOtherRoles.Roles;
 using BetterOtherRoles.Utilities;
 
 namespace BetterOtherRoles.Modules {
@@ -20,7 +19,6 @@ namespace BetterOtherRoles.Modules {
                 {
                     __instance.Chat.SetVisible(true);
                 }
-                UIManager.VersionHandshakePanel?.UpdateChecks();
             }
         }
 

@@ -10,10 +10,6 @@ public class BetterUIBehaviour : MonoBehaviour
 {
     private void Update()
     {
-        if (InputManager.GetKeyDown(KeyCode.F2))
-        {
-            UIManager.CustomOptionsPanel?.Toggle();
-        }
 #if DEBUG
         if (InputManager.GetKeyDown(KeyCode.F3))
         {

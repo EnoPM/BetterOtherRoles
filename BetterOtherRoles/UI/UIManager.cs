@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BetterOtherRoles.Eno;
 using BetterOtherRoles.Modules;
 using UnityEngine;
 using UniverseLib;
 using UniverseLib.Config;
 using UniverseLib.UI;
-using xCloud;
 
 namespace BetterOtherRoles.UI;
 
@@ -60,8 +58,6 @@ public static partial class UIManager
         {
             panel.SetActive(panel.ShowByDefault);
         }
-
-        BetterOtherRolesPlugin.Instance.AddComponent<PluginUpdater>();
 
         Initializing = false;
     }

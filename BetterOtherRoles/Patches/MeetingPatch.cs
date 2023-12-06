@@ -6,8 +6,11 @@ using static BetterOtherRoles.BetterOtherRoles;
 using static BetterOtherRoles.TORMapOptions;
 using BetterOtherRoles.Objects;
 using System;
+using BetterOtherRoles.Modifiers;
 using BetterOtherRoles.Modules;
+using BetterOtherRoles.Options;
 using BetterOtherRoles.Players;
+using BetterOtherRoles.Roles;
 using BetterOtherRoles.UI;
 using BetterOtherRoles.Utilities;
 using UnityEngine;
@@ -427,15 +430,15 @@ namespace BetterOtherRoles.Patches {
                 if (roleData.neutralSettings.ContainsKey((byte)roleInfo.roleId) && roleData.neutralSettings[(byte)roleInfo.roleId] == 0) continue;
                 else if (roleData.impSettings.ContainsKey((byte)roleInfo.roleId) && roleData.impSettings[(byte)roleInfo.roleId] == 0) continue;
                 else if (roleData.crewSettings.ContainsKey((byte)roleInfo.roleId) && roleData.crewSettings[(byte)roleInfo.roleId] == 0) continue;
-                else if (new List<RoleId>() { RoleId.Janitor, RoleId.Godfather, RoleId.Mafioso }.Contains(roleInfo.roleId) && CustomOptionHolder.mafiaSpawnRate.getSelection() == 0) continue;
-                else if (roleInfo.roleId == RoleId.Sidekick && (!CustomOptionHolder.jackalCanCreateSidekick.getBool() || CustomOptionHolder.jackalSpawnRate.getSelection() == 0)) continue;
-                if (roleInfo.roleId == RoleId.Deputy && (CustomOptionHolder.deputySpawnRate.getSelection() == 0 || CustomOptionHolder.sheriffSpawnRate.getSelection() == 0)) continue;
-                if (roleInfo.roleId == RoleId.Pursuer && CustomOptionHolder.lawyerSpawnRate.getSelection() == 0) continue;
+                else if (new List<RoleId>() { RoleId.Janitor, RoleId.Godfather, RoleId.Mafioso }.Contains(roleInfo.roleId) && CustomOptionHolder.MafiaSpawnRate.CurrentSelection == 0) continue;
+                else if (roleInfo.roleId == RoleId.Sidekick && (!CustomOptionHolder.JackalCanCreateSidekick.GetBool() || CustomOptionHolder.JackalSpawnRate.CurrentSelection == 0)) continue;
+                if (roleInfo.roleId == RoleId.Deputy && (CustomOptionHolder.DeputySpawnRate.CurrentSelection == 0 || CustomOptionHolder.SheriffSpawnRate.CurrentSelection == 0)) continue;
+                if (roleInfo.roleId == RoleId.Pursuer && CustomOptionHolder.LawyerSpawnRate.CurrentSelection == 0) continue;
                 if (roleInfo.roleId == RoleId.Spy && roleData.impostors.Count <= 1) continue;
-                if (roleInfo.roleId == RoleId.Prosecutor && (CustomOptionHolder.lawyerIsProsecutorChance.getSelection() == 0 || CustomOptionHolder.lawyerSpawnRate.getSelection() == 0)) continue;
-                if (roleInfo.roleId == RoleId.Lawyer && (CustomOptionHolder.lawyerIsProsecutorChance.getSelection() == 10 || CustomOptionHolder.lawyerSpawnRate.getSelection() == 0)) continue;
+                if (roleInfo.roleId == RoleId.Prosecutor && (CustomOptionHolder.LawyerIsProsecutorChance.CurrentSelection == 0 || CustomOptionHolder.LawyerSpawnRate.CurrentSelection == 0)) continue;
+                if (roleInfo.roleId == RoleId.Lawyer && (CustomOptionHolder.LawyerIsProsecutorChance.CurrentSelection == 10 || CustomOptionHolder.LawyerSpawnRate.CurrentSelection == 0)) continue;
                 if (roleInfo.roleId == RoleId.Fallen) continue;
-                if (roleInfo.roleId == RoleId.Sheriff && CustomOptionHolder.sheriffSpawnRate.getSelection() == 0) continue;
+                if (roleInfo.roleId == RoleId.Sheriff && CustomOptionHolder.SheriffSpawnRate.CurrentSelection == 0) continue;
                 if (Snitch.snitch != null && HandleGuesser.guesserCantGuessSnitch) {
                     var (playerCompleted, playerTotal) = TasksHandler.taskInfo(Snitch.snitch.Data);
                     int numberOfLeftTasks = playerTotal - playerCompleted;
@@ -781,7 +784,6 @@ namespace BetterOtherRoles.Patches {
                 SoundEffectsManager.stopAll();
 
                 // Close In-Game Settings Display if open
-                UIManager.CustomOptionsPanel?.SetActive(false);
             }
         }
 

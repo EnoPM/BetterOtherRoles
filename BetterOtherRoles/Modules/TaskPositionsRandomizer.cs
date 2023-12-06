@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using AmongUsSpecimen.ModOptions;
+using BetterOtherRoles.Options;
 using BetterOtherRoles.Utilities.Attributes;
 using BetterOtherRoles.Utilities.Extensions;
 using UnityEngine;
@@ -9,8 +11,8 @@ namespace BetterOtherRoles.Modules;
 [Autoload]
 public static class TaskPositionsRandomizer
 {
-    private static CustomOption RandomizeWireTaskPositions => CustomOptionHolder.RandomizeWireTaskPositions;
-    private static CustomOption RandomizeUploadTaskPosition => CustomOptionHolder.RandomizeUploadTaskPosition;
+    private static ModBoolOption RandomizeWireTaskPositions => CustomOptionHolder.RandomizeWireTaskPositions;
+    private static ModBoolOption RandomizeUploadTaskPosition => CustomOptionHolder.RandomizeUploadTaskPosition;
 
     static TaskPositionsRandomizer()
     {
@@ -22,7 +24,7 @@ public static class TaskPositionsRandomizer
         RelocatedWires.Clear();
         RelocatedDownloads.Clear();
         var consoles = ShipStatus.Instance.AllConsoles.ToList();
-        if (RandomizeWireTaskPositions.getBool())
+        if (RandomizeWireTaskPositions.GetBool())
         {
             var wires = consoles.FindAll(o => o.name.StartsWith("panel_electrical"));
             if (wires.Count > 0)
@@ -31,7 +33,7 @@ public static class TaskPositionsRandomizer
             }
         }
 
-        if (RandomizeUploadTaskPosition.getBool())
+        if (RandomizeUploadTaskPosition.GetBool())
         {
             var upload = consoles.Find(o => o.name == "panel_datahome");
             var downloads = consoles.FindAll(o => o.name == "panel_data");

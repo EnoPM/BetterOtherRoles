@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using BetterOtherRoles.Players;
 using System;
+using BetterOtherRoles.Options;
+using BetterOtherRoles.Roles;
 
 namespace BetterOtherRoles.Patches {
     [HarmonyPatch]
@@ -72,7 +74,7 @@ namespace BetterOtherRoles.Patches {
         [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.Update))]
         public static void showOrHideAbilityButtonPostfix(AbilityButton __instance) {
             bool isHideNSeek = GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek;
-            if (CachedPlayer.LocalPlayer.Data.IsDead && (CustomOptionHolder.finishTasksBeforeHauntingOrZoomingOut.getBool() || isHideNSeek)) {
+            if (CachedPlayer.LocalPlayer.Data.IsDead && (CustomOptionHolder.FinishTasksBeforeHauntingOrZoomingOut.GetBool() || isHideNSeek)) {
                 // player has haunt button.
                 var (playerCompleted, playerTotal) = TasksHandler.taskInfo(CachedPlayer.LocalPlayer.Data);
                 int numberOfLeftTasks = playerTotal - playerCompleted;

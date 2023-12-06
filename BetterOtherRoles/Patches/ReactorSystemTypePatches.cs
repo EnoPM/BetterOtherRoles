@@ -18,7 +18,7 @@ public static class ReactorSystemTypePatches
         {
             __instance.Countdown = ShipStatus.Instance.Type != ShipStatus.MapType.Pb
                 ? __instance.ReactorDuration
-                : BetterPolus.ReactorCountdown.getFloat();
+                : BetterPolus.ReactorCountdown.GetFloat();
             __instance.UserConsolePairs.Clear();
         }
         else if (self == 16)

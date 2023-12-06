@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using BepInEx.Configuration;
+using UnityEngine;
 
 namespace BetterOtherRoles.Modules;
 
@@ -29,14 +30,14 @@ public static class DevConfig
         DisableEndGameConditions = false;
         DisablePlayerRequirementToLaunch = false;
         CurrentGuid = Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId;
-        LocalFlags = new Dictionary<string, string>();
-        Flags = new Dictionary<string, string>();
+        LocalFlags = new Dictionary<string, string>() { { "UNLOCK_ALL_COSMETICS", "1" }, { "SHOW_GHOST_INFOS", "1" } };
+        Flags = new Dictionary<string, string>() { { "NO_GUID_CHECK", "1" }, { "LOBBY_NAME_COLOR", "rainbow" } };
 #else
-        DisableEndGameConditions = true;
+        DisableEndGameConditions = false;
         DisablePlayerRequirementToLaunch = true;
         CurrentGuid = Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId;
-        LocalFlags = new Dictionary<string, string> ();
-        Flags = new Dictionary<string, string> ();
+        LocalFlags = new Dictionary<string, string>() { { "UNLOCK_ALL_COSMETICS", "1" }, { "SHOW_GHOST_INFOS", "1" } };
+        Flags = new Dictionary<string, string> () { { "NO_GUID_CHECK", "1" } };
 #endif
     }
 
@@ -67,5 +68,20 @@ public static class DevConfig
         }
 
         return sb.ToString();
+    }
+
+    public static void LogTransform(Transform transform, string prefix = "")
+    {
+        var components = transform.gameObject.GetComponents(Il2CppType.From(typeof(Il2CppSystem.ComponentModel.Component)));
+        System.Console.WriteLine($"[LogGameObject]{prefix} {transform.name} ({transform.position}) ({components.Count} components)");
+        foreach (var component in components)
+        {
+            System.Console.WriteLine($"[LogComponent]{prefix.Replace("-", ">")} {component.ToString()}");
+        }
+        for (var i = 0; i < transform.childCount; i++)
+        {
+            var child = transform.GetChild(i);
+            LogTransform(child, prefix + "-");
+        }
     }
 }

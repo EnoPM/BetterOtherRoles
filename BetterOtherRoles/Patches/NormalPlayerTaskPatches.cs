@@ -69,19 +69,19 @@ public static class NormalPlayerTaskPatches
 
     private static SystemTypes GetChartCourse(NormalPlayerTask task)
     {
-        if (!BetterPolus.Enabled.getBool()) return task.StartAt;
+        if (!BetterPolus.Enabled.GetBool()) return task.StartAt;
         return SystemTypes.Comms;
     }
 
     private static SystemTypes GetRebootWifi(NormalPlayerTask task)
     {
-        if (!BetterPolus.Enabled.getBool()) return task.StartAt;
+        if (!BetterPolus.Enabled.GetBool()) return task.StartAt;
         return SystemTypes.Dropship;
     }
 
     private static SystemTypes GetRecordTemperature(NormalPlayerTask task)
     {
-        if (!BetterPolus.Enabled.getBool()) return task.StartAt;
+        if (!BetterPolus.Enabled.GetBool()) return task.StartAt;
         return SystemTypes.Outside;
     }
 

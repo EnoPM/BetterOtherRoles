@@ -15,6 +15,8 @@ using System.Threading.Tasks;
 using System.Net;
 using BetterOtherRoles.CustomGameModes;
 using AmongUs.GameOptions;
+using BetterOtherRoles.Modifiers;
+using BetterOtherRoles.Roles;
 using Innersloth.Assets;
 
 namespace BetterOtherRoles {
@@ -28,7 +30,6 @@ namespace BetterOtherRoles {
     public enum CustomGamemodes {
         Classic,
         Guesser,
-        HideNSeek
     }
     public static class Helpers
     {
@@ -444,12 +445,7 @@ namespace BetterOtherRoles {
             }
 
             // Block hunted with time shield kill
-            else if (!ignoreShield && Hunted.timeshieldActive.Contains(target.PlayerId)) {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(killer.NetId, (byte)CustomRPC.HuntedRewindTime, Hazel.SendOption.Reliable, -1);
-                writer.Write(target.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.huntedRewindTime(target.PlayerId);
-
+            else if (!ignoreShield) {
                 return MurderAttemptResult.SuppressKill;
             }
 

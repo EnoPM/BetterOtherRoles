@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
-using System.Threading;
 using BepInEx.Unity.IL2CPP.Utils;
+using BetterOtherRoles.Options;
 using BetterOtherRoles.Utilities.Attributes;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -12,9 +12,9 @@ namespace BetterOtherRoles.Modules;
 [Autoload]
 public static class BetterSkeld
 {
-    private static bool Enabled => CustomOptionHolder.EnableBetterSkeld.getBool();
-    private static bool EnableAdmin => CustomOptionHolder.BetterSkeldEnableAdmin.getBool();
-    private static bool EnableVitals => CustomOptionHolder.BetterSkeldEnableVitals.getBool();
+    private static bool Enabled => CustomOptionHolder.EnableBetterSkeld.GetBool();
+    private static bool EnableAdmin => CustomOptionHolder.BetterSkeldEnableAdmin.GetBool();
+    private static bool EnableVitals => CustomOptionHolder.BetterSkeldEnableVitals.GetBool();
 
     static BetterSkeld()
     {

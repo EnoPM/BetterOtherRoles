@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Linq;
+using AmongUsSpecimen.ModOptions;
 using BepInEx.Unity.IL2CPP.Utils;
 using BetterOtherRoles.Modules;
+using BetterOtherRoles.Options;
 using HarmonyLib;
 using UnityEngine;
 
@@ -10,13 +12,13 @@ namespace BetterOtherRoles.Patches;
 [HarmonyPatch(typeof(MedScanMinigame._WalkToPad_d__16))]
 public static class MedScanMinigameWalkToPadPatches
 {
-    private static CustomOption RandomizeScanPlayerPosition => CustomOptionHolder.RandomizePositionDuringScan;
+    private static ModBoolOption RandomizeScanPlayerPosition => CustomOptionHolder.RandomizePositionDuringScan;
     
     [HarmonyPatch(nameof(MedScanMinigame._WalkToPad_d__16.MoveNext))]
     [HarmonyPrefix]
     private static bool MoveNextPrefix(MedScanMinigame._WalkToPad_d__16 __instance)
     {
-        if (!RandomizeScanPlayerPosition.getBool() || (ShipStatus.Instance && ShipStatus.Instance.Type != ShipStatus.MapType.Pb)) return true;
+        if (!RandomizeScanPlayerPosition.GetBool() || (ShipStatus.Instance && ShipStatus.Instance.Type != ShipStatus.MapType.Pb)) return true;
         var minigame = __instance.__4__this;
         minigame.StartCoroutine(WalkToPadEnumerator(minigame));
         

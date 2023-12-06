@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using BetterOtherRoles.Options;
 using BetterOtherRoles.Players;
 using BetterOtherRoles.Utilities.Attributes;
 
@@ -24,7 +25,7 @@ public static class MeetingRandomizer
 
     private static void Start()
     {
-        if (!CustomOptionHolder.RandomizePlayersInMeeting.getBool()) return;
+        if (!CustomOptionHolder.RandomizePlayersInMeeting.GetBool()) return;
         var meetingHud = MeetingHud.Instance;
         if (!meetingHud) return;
         var alivePlayers = meetingHud.playerStates

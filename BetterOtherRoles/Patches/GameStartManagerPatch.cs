@@ -1,43 +1,29 @@
-  
 using HarmonyLib;
 using UnityEngine;
-using System.Reflection;
 using System.Collections.Generic;
 using Hazel;
-using System;
 using BetterOtherRoles.Players;
 using BetterOtherRoles.Utilities;
 using System.Linq;
-using BetterOtherRoles.Eno;
+using AmongUsSpecimen;
 using BetterOtherRoles.Modules;
+using BetterOtherRoles.Options;
 
 namespace BetterOtherRoles.Patches {
     public class GameStartManagerPatch  {
         public static float timer = 600f;
         private static float kickingTimer = 0f;
-        private static bool versionSent = false;
         private static string lobbyCodeText = "";
-
-        [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnPlayerJoined))]
-        public class AmongUsClientOnPlayerJoinedPatch {
-            public static void Postfix(AmongUsClient __instance) {
-                if (CachedPlayer.LocalPlayer != null) {
-                    VersionHandshake.Instance.Share();
-                }
-            }
-        }
 
         [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.Start))]
         public class GameStartManagerStartPatch {
             public static void Postfix(GameStartManager __instance) {
                 // Trigger version refresh
-                versionSent = false;
                 // Reset lobby countdown timer
                 timer = 600f; 
                 // Reset kicking timer
                 kickingTimer = 0f;
                 // Copy lobby code
-                VersionHandshake.Clear();
                 string code = InnerNet.GameCode.IntToGameName(AmongUsClient.Instance.GameId);
                 GUIUtility.systemCopyBuffer = code;
                 lobbyCodeText = FastDestroyableSingleton<TranslationController>.Instance.GetString(StringNames.RoomCode, new Il2CppReferenceArray<Il2CppSystem.Object>(0)) + "\r\n" + code;
@@ -77,12 +63,6 @@ namespace BetterOtherRoles.Patches {
             }
 
             public static void Postfix(GameStartManager __instance) {
-                // Send version as soon as CachedPlayer.LocalPlayer.PlayerControl exists
-                if (PlayerControl.LocalPlayer != null && !versionSent) {
-                    versionSent = true;
-                    VersionHandshake.Instance.Share();
-                }
-
                 // Start Timer
                 if (startingTimer > 0) {
                     startingTimer -= Time.deltaTime;
@@ -122,46 +102,29 @@ namespace BetterOtherRoles.Patches {
                 }
 
                 if (AmongUsClient.Instance.AmHost) {
-                    foreach (InnerNet.ClientData client in AmongUsClient.Instance.allClients.GetFastEnumerator()) {
-                        if (client.Character == null) continue;
-                        var dummyComponent = client.Character.GetComponent<DummyBehaviour>();
-                        if (dummyComponent != null && dummyComponent.enabled)
-                            continue;
-                        
-                        if (!VersionHandshake.Has(client.Id)) {
-                            continueStart = false;
-                            break;
-                        }
-                        
-                        var PV = VersionHandshake.Find(client.Id);
-                        int diff = BetterOtherRolesPlugin.Version.CompareTo(PV.Version);
-                        if (diff != 0 || !PV.GuidMatch()) {
-                            continueStart = false;
-                            break;
-                        }
-                    }
-                    if (continueStart && TORMapOptions.gameMode == CustomGamemodes.HideNSeek) {
-                        byte mapId = (byte) CustomOptionHolder.hideNSeekMap.getSelection();
-                        if (mapId >= 3) mapId++;
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.DynamicMapOption, Hazel.SendOption.Reliable, -1);
-                        writer.Write(mapId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        RPCProcedure.dynamicMapOption(mapId);
-                    }            
-                    else if (CustomOptionHolder.dynamicMap.getBool() && continueStart) {
+                    if (CustomOptionHolder.RandomMap.GetBool() && continueStart) {
                         // 0 = Skeld
                         // 1 = Mira HQ
                         // 2 = Polus
-                        // 3 = Dleks - deactivated
-                        // 4 = Airship
-                        // 5 = Submerged
+                        // 3 = Airship
+                        // 4 = The Fungle
                         byte chosenMapId = 0;
-                        List<float> probabilities = new List<float>();
-                        probabilities.Add(CustomOptionHolder.dynamicMapEnableSkeld.getFloat() / 100f);
-                        probabilities.Add(CustomOptionHolder.dynamicMapEnableMira.getFloat() / 100f);
-                        probabilities.Add(CustomOptionHolder.dynamicMapEnablePolus.getFloat() / 100f);
-                        probabilities.Add(CustomOptionHolder.dynamicMapEnableAirShip.getFloat() / 100f);
-                        probabilities.Add(CustomOptionHolder.dynamicMapEnableSubmerged.getFloat() / 100f);
+                        var maps = new List<CustomOptionHolder.RandomMapModOptionMap>
+                        {
+                            CustomOptionHolder.TheSkeldMap,
+                            CustomOptionHolder.PolusMap,
+                            CustomOptionHolder.MiraHqMap,
+                            CustomOptionHolder.AirshipMap,
+                            CustomOptionHolder.TheFungleMap
+                        };
+                        var probabilities = new List<float>
+                        {
+                            CustomOptionHolder.TheSkeldMap.Percentage.GetFloat() / 100f,
+                            CustomOptionHolder.PolusMap.Percentage.GetFloat() / 100f,
+                            CustomOptionHolder.MiraHqMap.Percentage.GetFloat() / 100f,
+                            CustomOptionHolder.AirshipMap.Percentage.GetFloat() / 100f,
+                            CustomOptionHolder.TheFungleMap.Percentage.GetFloat() / 100f
+                        };
 
                         // if any map is at 100%, remove all maps that are not!
                         if (probabilities.Contains(1.0f)) {
@@ -186,12 +149,14 @@ namespace BetterOtherRoles.Patches {
                         }
 
                         // Translate chosen map to presets page and use that maps random map preset page
-                        if (CustomOptionHolder.dynamicMapSeparateSettings.getBool()) {
-                            CustomOptionHolder.presetSelection.updateSelection(chosenMapId + 2);
+                        var chosenMap = maps.Count > chosenMapId ? maps[chosenMapId] : null;
+                        if (chosenMap != null && chosenMap.ShouldUseSpecificPreset.GetBool())
+                        {
+                            CoreOptions.PresetSelection.CurrentSelection = chosenMap.PresetName.CurrentSelection;
                         }
                         if (chosenMapId >= 3) chosenMapId++;  // Skip dlekS
                                                               
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.DynamicMapOption, Hazel.SendOption.Reliable, -1);
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.DynamicMapOption, Hazel.SendOption.Reliable, -1);
                         writer.Write(chosenMapId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         RPCProcedure.dynamicMapOption(chosenMapId);

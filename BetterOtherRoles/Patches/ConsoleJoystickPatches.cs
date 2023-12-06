@@ -10,7 +10,6 @@ public static class ConsoleJoystickPatches
     [HarmonyPrefix]
     private static bool HandleHUDPrefix(ConsoleJoystick __instance)
     {
-        System.Console.WriteLine($"HandleHUDPrefix");
         if (PlayerControl.LocalPlayer)
         {
             var canMove = PlayerControl.LocalPlayer.CanMove;

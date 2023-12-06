@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using BetterOtherRoles.Options;
+using BetterOtherRoles.Roles;
 using BetterOtherRoles.Utilities;
 using UnityEngine;
 
@@ -31,7 +33,7 @@ namespace BetterOtherRoles.Objects {
             timeRemaining = duration;
 
             // display the ninjas color in the trace
-            float colorDuration = CustomOptionHolder.ninjaTraceColorTime.getFloat();
+            float colorDuration = CustomOptionHolder.NinjaTraceColorTime.GetFloat();
             FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(colorDuration, new Action<float>((p) => {
                 Color c = Palette.PlayerColors[(int)Ninja.ninja.Data.DefaultOutfit.ColorId];
                 if (Helpers.isLighterColor(Ninja.ninja.Data.DefaultOutfit.ColorId)) c = Color.white;

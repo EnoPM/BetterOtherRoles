@@ -18,7 +18,10 @@ using BetterOtherRoles.Players;
 using BetterOtherRoles.Utilities;
 using Il2CppSystem.Security.Cryptography;
 using Il2CppSystem.Text;
-using AmongUs.Data;
+using AmongUsSpecimen;
+using AmongUsSpecimen.Cosmetics;
+using AmongUsSpecimen.Updater;
+using AmongUsSpecimen.VersionCheck;
 using BetterOtherRoles.Modules.CustomHats;
 using BetterOtherRoles.UI;
 using BetterOtherRoles.Utilities.Attributes;
@@ -26,13 +29,17 @@ using BetterOtherRoles.Utilities.Attributes;
 namespace BetterOtherRoles
 {
     [BepInPlugin(Id, Name, VersionString)]
+    [BepInDependency(Specimen.Guid)]
     [BepInDependency(SubmergedCompatibility.SUBMERGED_GUID, BepInDependency.DependencyFlags.SoftDependency)]
+    [ModUpdater("EnoPM/BetterOtherRoles", VersionString, "BetterOtherRoles.dll", "BetterOtherRoles")]
+    [VersionHandshake(Name, VersionString)]
+    [CustomCosmetics("EnoPM/BetterOtherHats", "CustomHats.json")]
     [BepInProcess("Among Us.exe")]
     public class BetterOtherRolesPlugin : BasePlugin
     {
         public const string Name = "Better Other Roles";
         public const string Id = "betterohterroles.eno.pm";
-        public const string VersionString = "1.5.2";
+        public const string VersionString = "1.6.0";
 
         public static Version Version = Version.Parse(VersionString);
         internal static BepInEx.Logging.ManualLogSource Logger;
@@ -71,7 +78,6 @@ namespace BetterOtherRoles
             DebugMode = Config.Bind("Custom", "Enable Debug Mode", "false");
             Harmony.PatchAll();
             
-            CustomOptionHolder.Load();
             CustomColors.Load();
             CustomHatManager.LoadHats();
             if (BepInExUpdater.UpdateRequired)

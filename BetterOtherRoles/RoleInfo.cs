@@ -6,6 +6,9 @@ using static BetterOtherRoles.BetterOtherRoles;
 using UnityEngine;
 using BetterOtherRoles.Utilities;
 using BetterOtherRoles.CustomGameModes;
+using BetterOtherRoles.Modifiers;
+using BetterOtherRoles.Options;
+using BetterOtherRoles.Roles;
 
 namespace BetterOtherRoles
 {
@@ -166,7 +169,7 @@ namespace BetterOtherRoles
             // Modifier
             if (showModifier) {
                 // after dead modifier
-                if (!CustomOptionHolder.modifiersAreHidden.getBool() || PlayerControl.LocalPlayer.Data.IsDead || AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Ended)
+                if (!CustomOptionHolder.ModifiersAreHidden.GetBool() || PlayerControl.LocalPlayer.Data.IsDead || AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Ended)
                 {
                     if (Bait.bait.Any(x => x.PlayerId == p.PlayerId)) infos.Add(bait);
                     if (Bloody.bloody.Any(x => x.PlayerId == p.PlayerId)) infos.Add(bloody);
@@ -235,9 +238,9 @@ namespace BetterOtherRoles
             // Default roles (just impostor, just crewmate, or hunter / hunted for hide n seek
             if (infos.Count == count) {
                 if (p.Data.Role.IsImpostor)
-                    infos.Add(TORMapOptions.gameMode == CustomGamemodes.HideNSeek ? RoleInfo.hunter : RoleInfo.impostor);
+                    infos.Add(impostor);
                 else
-                    infos.Add(TORMapOptions.gameMode == CustomGamemodes.HideNSeek ? RoleInfo.hunted : RoleInfo.crewmate);
+                    infos.Add(crewmate);
             }
 
             return infos;

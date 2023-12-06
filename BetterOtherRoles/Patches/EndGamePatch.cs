@@ -9,7 +9,9 @@ using System.Text;
 using BetterOtherRoles.Players;
 using BetterOtherRoles.Utilities;
 using BetterOtherRoles.CustomGameModes;
+using BetterOtherRoles.Modifiers;
 using BetterOtherRoles.Modules;
+using BetterOtherRoles.Roles;
 
 namespace BetterOtherRoles.Patches {
     enum CustomGameOverReason {
@@ -227,10 +229,9 @@ namespace BetterOtherRoles.Patches {
                 AdditionalTempData.additionalWinConditions.Add(WinCondition.AdditionalAlivePursuerWin);
             }
 
-            AdditionalTempData.timer = ((float)(DateTime.UtcNow - HideNSeek.startTime).TotalMilliseconds) / 1000;
+            AdditionalTempData.timer = 0f;
 
             // Reset Settings
-            if (TORMapOptions.gameMode == CustomGamemodes.HideNSeek) ShipStatusPatch.resetVanillaSettings();
             RPCProcedure.resetVariables();
             EventUtility.gameEndsUpdate();
         }
@@ -334,18 +335,13 @@ namespace BetterOtherRoles.Patches {
                 }
             }
 
-            if (TORMapOptions.showRoleSummary || HideNSeek.isHideNSeekGM) {
+            if (TORMapOptions.showRoleSummary) {
                 var position = Camera.main.ViewportToWorldPoint(new Vector3(0f, 1f, Camera.main.nearClipPlane));
                 GameObject roleSummary = UnityEngine.Object.Instantiate(__instance.WinText.gameObject);
                 roleSummary.transform.position = new Vector3(__instance.Navigation.ExitButton.transform.position.x + 0.1f, position.y - 0.1f, -214f); 
                 roleSummary.transform.localScale = new Vector3(1f, 1f, 1f);
 
                 var roleSummaryText = new StringBuilder();
-                if (HideNSeek.isHideNSeekGM) {
-                    int minutes = (int)AdditionalTempData.timer / 60;
-                    int seconds = (int)AdditionalTempData.timer % 60;
-                    roleSummaryText.AppendLine($"<color=#FAD934FF>Time: {minutes:00}:{seconds:00}</color> \n");
-                }
                 roleSummaryText.AppendLine("Players and roles at the end of the game:");
                 foreach(var data in AdditionalTempData.playerRoles) {
                     //var roles = string.Join(" ", data.Roles.Select(x => Helpers.cs(x.color, x.name)));
@@ -456,7 +452,6 @@ namespace BetterOtherRoles.Patches {
         }
 
         private static bool CheckAndEndGameForTaskWin(ShipStatus __instance) {
-            if (HideNSeek.isHideNSeekGM && !HideNSeek.taskWinPossible) return false;
             var totalTasks = 0;
             var completedTasks = 0;
             foreach (var player in PlayerControl.AllPlayerControls)
@@ -505,8 +500,6 @@ namespace BetterOtherRoles.Patches {
         }
 
         private static bool CheckAndEndGameForImpostorWin(ShipStatus __instance, PlayerStatistics statistics) {
-            if (HideNSeek.isHideNSeekGM) 
-                if ((0 != statistics.TotalAlive - statistics.TeamImpostorsAlive)) return false;
 
             if (statistics.TeamImpostorsAlive >= statistics.TotalAlive - statistics.TeamImpostorsAlive && statistics.TeamJackalAlive == 0 && !(statistics.TeamImpostorHasAliveLover && statistics.TeamLoversAlive == 2)) {
                 //__instance.enabled = false;
@@ -529,11 +522,6 @@ namespace BetterOtherRoles.Patches {
         }
 
         private static bool CheckAndEndGameForCrewmateWin(ShipStatus __instance, PlayerStatistics statistics) {
-            if (HideNSeek.isHideNSeekGM && HideNSeek.timer <= 0 && !HideNSeek.isWaitingTimer) {
-                //__instance.enabled = false;
-                GameManager.Instance.RpcEndGame(GameOverReason.HumansByVote, false);
-                return true;
-            }
             if (statistics.TeamImpostorsAlive == 0 && statistics.TeamJackalAlive == 0) {
                 //__instance.enabled = false;
                 GameManager.Instance.RpcEndGame(GameOverReason.HumansByVote, false);
