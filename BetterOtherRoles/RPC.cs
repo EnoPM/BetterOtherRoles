@@ -19,7 +19,6 @@ using BetterOtherRoles.Modifiers;
 using BetterOtherRoles.Modules;
 using BetterOtherRoles.Options;
 using BetterOtherRoles.Roles;
-using UnityEngine.UIElements;
 
 namespace BetterOtherRoles
 {

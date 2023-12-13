@@ -22,7 +22,6 @@ using AmongUsSpecimen;
 using AmongUsSpecimen.Cosmetics;
 using AmongUsSpecimen.Updater;
 using AmongUsSpecimen.VersionCheck;
-using BetterOtherRoles.Modules.CustomHats;
 using BetterOtherRoles.UI;
 using BetterOtherRoles.Utilities.Attributes;
 
@@ -79,7 +78,6 @@ namespace BetterOtherRoles
             Harmony.PatchAll();
             
             CustomColors.Load();
-            CustomHatManager.LoadHats();
             if (BepInExUpdater.UpdateRequired)
             {
                 AddComponent<BepInExUpdater>();
