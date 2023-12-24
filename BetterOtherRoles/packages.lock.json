@@ -10,9 +10,9 @@
       },
       "AmongUs.Specimen": {
         "type": "Direct",
-        "requested": "[0.1.0, )",
-        "resolved": "0.1.0",
-        "contentHash": "SWWDaeHaLWdrS1cub2GFXh344l8apsyghWNUARgvYnWL6zorlnyzHzpQXRZ4xbLSyeSd4DlGooC40zsKwmkWBA==",
+        "requested": "[0.1.1, )",
+        "resolved": "0.1.1",
+        "contentHash": "kkSjh+4KMA3rfu5X11k21AmjAZqOQT0gc/EbimZFC4ypu+YkHO+ESqvKxzfP8v7O10DYDlUGHylyUT5BkA4G4g==",
         "dependencies": {
           "AmongUs.GameLibs.Steam": "2023.11.28",
           "BepInEx.Unity.IL2CPP": "6.0.0-be.671"
