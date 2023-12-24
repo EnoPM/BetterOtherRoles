@@ -16,17 +16,14 @@
    
 	<ItemGroup>
 		<PackageReference Include="AmongUs.GameLibs.Steam" Version="2023.11.28" />
+		<PackageReference Include="AmongUs.Specimen" Version="0.1.0" />
         <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.671" />
 		<PackageReference Include="BepInEx.IL2CPP.MSBuild" Version="2.1.0-rc.1" />
     </ItemGroup>
    
 	<ItemGroup>
-	  <Reference Include="AmongUsSpecimen">
-	    <HintPath>libs\AmongUsSpecimen.dll</HintPath>
-	  </Reference>
 	  <Reference Include="UniverseLib.IL2CPP">
 	    <HintPath>libs\UniverseLib.IL2CPP.dll</HintPath>
-	    <HintPath>libs\AmongUsSpecimen.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
     <Target Name="CopyPluginToGameDirectory" AfterTargets="AfterBuild" Condition="Exists('$(AmongUsDev)/BepInEx/plugins/')">

@@ -8,6 +8,16 @@
         "resolved": "2023.11.28",
         "contentHash": "EsKrZS4tjTRrY7mtZls3tMy54zije4vleEA9s0UGUr4SF3qm2axR6wMncyIJCk4ACXlN5Bxpsd3/upDe9Gnx6A=="
       },
+      "AmongUs.Specimen": {
+        "type": "Direct",
+        "requested": "[0.1.0, )",
+        "resolved": "0.1.0",
+        "contentHash": "SWWDaeHaLWdrS1cub2GFXh344l8apsyghWNUARgvYnWL6zorlnyzHzpQXRZ4xbLSyeSd4DlGooC40zsKwmkWBA==",
+        "dependencies": {
+          "AmongUs.GameLibs.Steam": "2023.11.28",
+          "BepInEx.Unity.IL2CPP": "6.0.0-be.671"
+        }
+      },
       "BepInEx.IL2CPP.MSBuild": {
         "type": "Direct",
         "requested": "[2.1.0-rc.1, )",
