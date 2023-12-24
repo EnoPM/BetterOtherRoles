@@ -1246,8 +1246,9 @@ namespace BetterOtherRoles.Patches {
         public static bool resetToCrewmate = false;
         public static bool resetToDead = false;
 
-        public static void Prefix(PlayerControl __instance, [HarmonyArgument(0)]PlayerControl target)
+        public static void Prefix(PlayerControl __instance, PlayerControl target, MurderResultFlags resultFlags)
         {
+            BetterOtherRolesPlugin.Logger.LogMessage($"MurderPlayer: {__instance.Data?.PlayerName} {target.Data?.PlayerName}");
             // Allow everyone to murder players
             resetToCrewmate = !__instance.Data.Role.IsImpostor;
             resetToDead = __instance.Data.IsDead;
@@ -1255,7 +1256,7 @@ namespace BetterOtherRoles.Patches {
             __instance.Data.IsDead = false;
         }
 
-        public static void Postfix(PlayerControl __instance, [HarmonyArgument(0)]PlayerControl target)
+        public static void Postfix(PlayerControl __instance, PlayerControl target, MurderResultFlags resultFlags)
         {
             // Collect dead player info
             DeadPlayer deadPlayer = new DeadPlayer(target, DateTime.UtcNow, DeadPlayer.CustomDeathReason.Kill, __instance);

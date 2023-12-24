@@ -386,18 +386,26 @@ namespace BetterOtherRoles {
             return roleCouldUse;
         }
 
+        private static MurderAttemptResult LogAttempt(MurderAttemptResult result, string report = "")
+        {
+            BetterOtherRolesPlugin.Logger.LogMessage($"CheckMurderAttempt: {result.ToString()} {report}");
+            return result;
+        }
+
         public static MurderAttemptResult checkMuderAttempt(PlayerControl killer, PlayerControl target, bool blockRewind = false, bool ignoreBlank = false, bool ignoreIfKillerIsDead = false, bool showShieldAnimation = true, bool ignoreShield = false) {
             var targetRole = RoleInfo.getRoleInfoForPlayer(target, false).FirstOrDefault();
 
+            var report = string.Empty;
+
             // Modified vanilla checks
-            if (AmongUsClient.Instance.IsGameOver) return MurderAttemptResult.SuppressKill;
-            if (killer == null || killer.Data == null || (killer.Data.IsDead && !ignoreIfKillerIsDead) || killer.Data.Disconnected) return MurderAttemptResult.SuppressKill; // Allow non Impostor kills compared to vanilla code
-            if (target == null || target.Data == null || target.Data.IsDead || target.Data.Disconnected) return MurderAttemptResult.SuppressKill; // Allow killing players in vents compared to vanilla code
+            if (AmongUsClient.Instance.IsGameOver) return LogAttempt(MurderAttemptResult.SuppressKill, "game is over");
+            if (killer == null || killer.Data == null || (killer.Data.IsDead && !ignoreIfKillerIsDead) || killer.Data.Disconnected) return LogAttempt(MurderAttemptResult.SuppressKill, "no killer data or dead killer"); // Allow non Impostor kills compared to vanilla code
+            if (target == null || target.Data == null || target.Data.IsDead || target.Data.Disconnected) return LogAttempt(MurderAttemptResult.SuppressKill, "no target data or data dead"); // Allow killing players in vents compared to vanilla code
 
             if (GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek) return MurderAttemptResult.PerformKill;
 
             // Handle first kill attempt
-            if (!ignoreShield && FirstKillShield.Enabled && FirstKillShield.ShieldedPlayer == target) return MurderAttemptResult.SuppressKill;
+            if (!ignoreShield && FirstKillShield.Enabled && FirstKillShield.ShieldedPlayer == target) return LogAttempt(MurderAttemptResult.SuppressKill, "target are shielded");
 
             // Handle blank shot
             if (!ignoreBlank && Pursuer.blankedList.Any(x => x.PlayerId == killer.PlayerId)) {
@@ -420,12 +428,12 @@ namespace BetterOtherRoles {
                     SoundEffectsManager.play("fail");
                 }
                 
-                return MurderAttemptResult.SuppressKill;
+                return LogAttempt(MurderAttemptResult.SuppressKill, "target are medic shielded");
             }
 
             // Block impostor not fully grown mini kill
             else if (Mini.mini != null && target == Mini.mini && !Mini.isGrownUp()) {
-                return MurderAttemptResult.SuppressKill;
+                return LogAttempt(MurderAttemptResult.SuppressKill, "target are mini");
             }
 
             // Block Time Master with time shield kill
@@ -435,18 +443,13 @@ namespace BetterOtherRoles {
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.timeMasterRewindTime();
                 }
-                return MurderAttemptResult.SuppressKill;
+                return LogAttempt(MurderAttemptResult.SuppressKill, "target are timemaster shielded");
             }
 
             // Thief if hit crew only kill if setting says so, but also kill the thief.
             else if (Thief.isFailedThiefKill(target, killer, targetRole)) {
                 Thief.suicideFlag = true;
-                return MurderAttemptResult.SuppressKill;
-            }
-
-            // Block hunted with time shield kill
-            else if (!ignoreShield) {
-                return MurderAttemptResult.SuppressKill;
+                return LogAttempt(MurderAttemptResult.SuppressKill, "thief failed");
             }
 
             return MurderAttemptResult.PerformKill;

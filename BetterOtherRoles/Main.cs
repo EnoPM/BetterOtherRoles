@@ -30,6 +30,7 @@ namespace BetterOtherRoles
     [BepInPlugin(Id, Name, VersionString)]
     [BepInDependency(Specimen.Guid)]
     [BepInDependency(SubmergedCompatibility.SUBMERGED_GUID, BepInDependency.DependencyFlags.SoftDependency)]
+    [CustomRegion("Modded EU", "au-eu.duikbo.at", "https://au-eu.duikbo.at", color: "#ff00ff")]
     [ModUpdater("EnoPM/BetterOtherRoles", VersionString, "BetterOtherRoles.dll", "BetterOtherRoles")]
     [VersionHandshake(Name, VersionString)]
     [CustomCosmetics("EnoPM/BetterOtherHats", "CustomHats.json")]

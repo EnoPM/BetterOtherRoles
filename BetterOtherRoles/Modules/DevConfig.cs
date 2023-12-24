@@ -30,14 +30,14 @@ public static class DevConfig
         DisableEndGameConditions = false;
         DisablePlayerRequirementToLaunch = false;
         CurrentGuid = Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId;
-        LocalFlags = new Dictionary<string, string>() { { "UNLOCK_ALL_COSMETICS", "1" }, { "SHOW_GHOST_INFOS", "1" } };
-        Flags = new Dictionary<string, string>() { { "NO_GUID_CHECK", "1" }, { "LOBBY_NAME_COLOR", "rainbow" } };
+        LocalFlags = new Dictionary<string, string>() {  };
+        Flags = new Dictionary<string, string>() { };
 #else
-        DisableEndGameConditions = false;
+        DisableEndGameConditions = true;
         DisablePlayerRequirementToLaunch = true;
         CurrentGuid = Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId;
-        LocalFlags = new Dictionary<string, string>() { { "UNLOCK_ALL_COSMETICS", "1" }, { "SHOW_GHOST_INFOS", "1" } };
-        Flags = new Dictionary<string, string> () { { "NO_GUID_CHECK", "1" } };
+        LocalFlags = new Dictionary<string, string>() {  };
+        Flags = new Dictionary<string, string> () {  };
 #endif
     }
 

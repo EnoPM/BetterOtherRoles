@@ -29,7 +29,7 @@
 	    <HintPath>libs\AmongUsSpecimen.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
-    <Target Name="CopyPlugins" AfterTargets="AfterBuild">
-        <Copy SourceFiles="$(TargetPath)" DestinationFolder="C:\Program Files (x86)\Steam\steamapps\common\Among Us - BetterOtherRoles2\BepInEx\plugins\BetterOtherRoles" />
+    <Target Name="CopyPluginToGameDirectory" AfterTargets="AfterBuild" Condition="Exists('$(AmongUsDev)/BepInEx/plugins/')">
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(AmongUsDev)/BepInEx/plugins/" />
     </Target>
 </Project>

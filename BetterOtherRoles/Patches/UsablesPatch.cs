@@ -172,41 +172,6 @@ namespace BetterOtherRoles.Patches {
         }
     }
 
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
-    class KillButtonDoClickPatch {
-        public static bool Prefix(KillButton __instance) {
-            if (__instance.isActiveAndEnabled && __instance.currentTarget && !__instance.isCoolingDown && !CachedPlayer.LocalPlayer.Data.IsDead && CachedPlayer.LocalPlayer.PlayerControl.CanMove) {
-                // Deputy handcuff update.
-                if (Deputy.handcuffedPlayers.Contains(CachedPlayer.LocalPlayer.PlayerId)) {
-                    Deputy.setHandcuffedKnows();
-                    return false;
-                }
-                
-                // Use an unchecked kill command, to allow shorter kill cooldowns etc. without getting kicked
-                MurderAttemptResult res = Helpers.checkMurderAttemptAndKill(CachedPlayer.LocalPlayer.PlayerControl, __instance.currentTarget);
-                // Handle blank kill
-                if (res == MurderAttemptResult.BlankKill) {
-                    CachedPlayer.LocalPlayer.PlayerControl.killTimer = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown;
-                    if (CachedPlayer.LocalPlayer.PlayerControl == Cleaner.cleaner)
-                        Cleaner.cleaner.killTimer = HudManagerStartPatch.cleanerCleanButton.Timer = HudManagerStartPatch.cleanerCleanButton.MaxTimer;
-                    else if (CachedPlayer.LocalPlayer.PlayerControl == Warlock.warlock)
-                        Warlock.warlock.killTimer = HudManagerStartPatch.warlockCurseButton.Timer = HudManagerStartPatch.warlockCurseButton.MaxTimer;
-                    else if (CachedPlayer.LocalPlayer.PlayerControl == Mini.mini && Mini.mini.Data.Role.IsImpostor)
-                        Mini.mini.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown * (Mini.isGrownUp() ? 0.66f : 2f));
-                    else if (CachedPlayer.LocalPlayer.PlayerControl == Witch.witch)
-                        Witch.witch.killTimer = HudManagerStartPatch.witchSpellButton.Timer = HudManagerStartPatch.witchSpellButton.MaxTimer;
-                    else if (CachedPlayer.LocalPlayer.PlayerControl == Ninja.ninja)
-                        Ninja.ninja.killTimer = HudManagerStartPatch.ninjaButton.Timer = HudManagerStartPatch.ninjaButton.MaxTimer;
-                    else if (StickyBomber.TriggerBothCooldown && CachedPlayer.LocalPlayer.PlayerControl == StickyBomber.Player)
-                        StickyBomber.Player.killTimer = HudManagerStartPatch.stickyBomberButton.Timer =
-                            HudManagerStartPatch.stickyBomberButton.MaxTimer;
-                }
-                __instance.SetTarget(null);
-            }
-            return false;
-        }
-    }
-
     [HarmonyPatch(typeof(SabotageButton), nameof(SabotageButton.Refresh))]
     class SabotageButtonRefreshPatch {
         static void Postfix() {
