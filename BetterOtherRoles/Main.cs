@@ -24,6 +24,7 @@ using AmongUsSpecimen.Updater;
 using AmongUsSpecimen.VersionCheck;
 using BetterOtherRoles.UI;
 using BetterOtherRoles.Utilities.Attributes;
+using Rewired;
 
 namespace BetterOtherRoles
 {
@@ -34,6 +35,13 @@ namespace BetterOtherRoles
     [ModUpdater("EnoPM/BetterOtherRoles", VersionString, "BetterOtherRoles.dll", "BetterOtherRoles")]
     [VersionHandshake(Name, VersionString)]
     [CustomCosmetics("EnoPM/BetterOtherHats", "CustomHats.json")]
+    [CustomKeyBind("ActionUsePortal", "Use a portal", KeyboardKeyCode.P)]
+    [CustomKeyBind("ActionZoomOut", "Zoom Out", KeyboardKeyCode.KeypadPlus)]
+    [CustomKeyBind("ActionModifier", "Modifier Ability", KeyboardKeyCode.M)]
+    [CustomKeyBind("ActionPlaceGarlic", "Place Garlic", KeyboardKeyCode.G)]
+    [CustomKeyBind("ActionDefuseBomb", "Defuse Bomb", KeyboardKeyCode.R)]
+    [CustomKeyBind("ActionTransferBomb", "Transfer sticky Bomb", KeyboardKeyCode.T)]
+    [CustomKeyBind("ActionToggleUpdater", "Toggle mod updater", KeyboardKeyCode.F12)]
     [BepInProcess("Among Us.exe")]
     public class BetterOtherRolesPlugin : BasePlugin
     {

@@ -30,14 +30,14 @@ public static class DevConfig
         DisableEndGameConditions = false;
         DisablePlayerRequirementToLaunch = false;
         CurrentGuid = Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId;
-        LocalFlags = new Dictionary<string, string>() {  };
-        Flags = new Dictionary<string, string>() { };
+        LocalFlags = new Dictionary<string, string>();
+        Flags = new Dictionary<string, string>();
 #else
         DisableEndGameConditions = true;
         DisablePlayerRequirementToLaunch = true;
         CurrentGuid = Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId;
-        LocalFlags = new Dictionary<string, string>() {  };
-        Flags = new Dictionary<string, string> () {  };
+        LocalFlags = new Dictionary<string, string>();
+        Flags = new Dictionary<string, string> ();
 #endif
     }
 

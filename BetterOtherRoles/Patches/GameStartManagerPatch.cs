@@ -93,7 +93,7 @@ namespace BetterOtherRoles.Patches {
         public class GameStartManagerBeginGame {
             public static bool Prefix(GameStartManager __instance) {
                 // Block game start if not everyone has the same mod version
-                bool continueStart = true;
+                var continueStart = true;
 
                 if (__instance.startState != GameStartManager.StartingStates.NotStarting)
                 {
